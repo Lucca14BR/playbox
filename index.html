@@ -15,7 +15,7 @@
   Arquitetura (tudo neste arquivo):
 
   Transport  -> camada de rede. Abas do mesmo navegador: BroadcastChannel +
-                evento "storage". Outros aparelhos: WebRTC via PeerJS.
+                evento "storage". Outros aparelhos: retransmissor MQTT via WebSocket.
                 Para um backend real, troque só este objeto mantendo
                 open(pin, onMessage) / send(msg) / close().
   Host       -> a aba que cria a sala é a autoridade: recebe ações,
@@ -576,8 +576,8 @@ button.game-card:disabled{filter:grayscale(.9) brightness(.45);cursor:not-allowe
 </header>
 <main id="app" aria-live="polite"></main>
 <div id="toast" role="status" aria-live="polite"></div>
-<!-- PeerJS: conexão WebRTC entre aparelhos diferentes. Sem internet, o jogo segue só entre abas. -->
-<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<!-- MQTT.js: retransmissor via WebSocket entre aparelhos em qualquer rede. Sem internet, o jogo segue só entre abas. -->
+<script src="https://unpkg.com/mqtt@5.10.1/dist/mqtt.min.js"></script>
 
 <script>
 'use strict';
@@ -867,25 +867,34 @@ function postcard(artKey) {
    ===================================================================== */
 // Dois caminhos ao mesmo tempo, com mensagens deduplicadas pelo id (mid):
 //  1. Local: BroadcastChannel + evento "storage" (abas do mesmo navegador, instantâneo).
-//  2. Rede: WebRTC ponto a ponto via PeerJS (qualquer aparelho com internet). O host registra
-//     o id "playbox-v1-<pin>" no servidor público do PeerJS, que só faz a apresentação;
-//     os dados vão direto entre os aparelhos.
+//  2. Rede: retransmissor MQTT sobre WebSocket seguro, em dois servidores públicos gratuitos
+//     ao mesmo tempo. Como tudo passa por uma conexão WebSocket comum, funciona entre
+//     quaisquer redes (Wi-Fi diferentes, 4G/5G), sem depender de conexão direta.
+//     Tópicos: <ns>/<PIN>/up (jogadores -> host), <ns>/<PIN>/down (host -> jogadores) e
+//     <ns>/<PIN>/host (presença do host, retida no servidor).
 // ?rede=local desliga a rede; ?rede=internet desliga o canal local (útil para testar).
-const PEER_PREFIX = 'playbox-v1-';
+const RELAYS = ['wss://broker.emqx.io:8084/mqtt', 'wss://broker.hivemq.com:8884/mqtt'];
+const RELAY_NS = 'playbox-v2';
 const Transport = (() => {
   let bc = null, pin = null, handler = null, role = null;
-  let peer = null, hostConn = null, retryT = null, queue = [];
-  const conns = new Set();
-  let net = 'off';            // off | connecting | online | nohost | offline
+  let relays = [], presenceT = null, absentT = null;
+  let net = 'off';            // off | connecting | online | offline
+  let presence = 'unknown';   // só para jogadores: unknown | present | absent
   const mode = new URLSearchParams(location.search).get('rede');
   const useLocal = mode !== 'internet', useNet = mode !== 'local';
   const src = uid(10), seen = new Set(), seenQ = [];
   const remember = id => { seen.add(id); seenQ.push(id); if (seenQ.length > 400) seen.delete(seenQ.shift()); };
-  const FATAL = ['network', 'server-error', 'socket-error', 'socket-closed', 'browser-incompatible', 'ssl-unavailable'];
+  const topic = (p, k) => `${RELAY_NS}/${p}/${k}`;
   function setNet(v) {
     if (net === v) return;
     net = v;
     Transport.onStatus && Transport.onStatus(v);
+  }
+  function refreshNet() {
+    if (!relays.length) return setNet('offline');
+    if (relays.some(r => r.state === 'up')) setNet('online');
+    else if (relays.every(r => r.state === 'down')) setNet('offline');
+    else setNet('connecting');
   }
   function deliver(msg) {
     if (typeof msg === 'string') { try { msg = JSON.parse(msg); } catch { return; } }
@@ -897,71 +906,55 @@ const Transport = (() => {
     if (e.key !== 'playbox:bus:' + pin || !e.newValue) return;
     try { deliver(JSON.parse(e.newValue)); } catch {}
   }
-  const peerIdFor = p => PEER_PREFIX + p.toLowerCase();
-
-  function hostPeer(attempt = 0) {
-    const me = new Peer(peerIdFor(pin), { debug: 0 });
-    peer = me;
-    me.on('open', () => { if (peer === me) setNet('online'); });
-    me.on('connection', c => {
-      c.on('data', deliver);
-      c.on('open', () => conns.add(c));
-      c.on('close', () => conns.delete(c));
-      c.on('error', () => conns.delete(c));
-    });
-    me.on('disconnected', () => { if (peer === me) setTimeout(() => { if (peer === me && !me.destroyed) try { me.reconnect(); } catch {} }, 1500); });
-    me.on('error', err => {
-      if (peer !== me) return;
-      if (err.type === 'unavailable-id' && attempt < 10) {
-        // Depois de recarregar a página, o servidor ainda segura o id antigo por alguns segundos.
-        peer = null; me.destroy(); setNet('connecting');
-        retryT = setTimeout(() => { if (pin) hostPeer(attempt + 1); }, 3000);
-      } else if (FATAL.includes(err.type) || err.type === 'unavailable-id') setNet('offline');
-    });
+  function onPresence(text) {
+    // O horário vem do relógio do host; a margem larga tolera relógios um pouco errados.
+    let at = 0;
+    try { at = JSON.parse(text || '{}').at || 0; } catch {}
+    presence = at && Math.abs(Date.now() - at) < 5 * 60 * 1000 ? 'present' : 'absent';
   }
-  function clientPeer() {
-    if (peer && !peer.destroyed) { if (peer.open) connectHost(); return; }
-    const me = new Peer({ debug: 0 });
-    peer = me;
-    me.on('open', () => { if (peer === me) connectHost(); });
-    me.on('disconnected', () => { if (peer === me) setTimeout(() => { if (peer === me && !me.destroyed) try { me.reconnect(); } catch {} }, 1500); });
-    me.on('error', err => {
-      if (peer !== me) return;
-      if (err.type === 'peer-unavailable') { setNet('nohost'); scheduleRetry(); }
-      else if (FATAL.includes(err.type)) { setNet('offline'); scheduleRetry(); }
-    });
+  function publishPresence(r) {
+    if (r.client.connected) r.client.publish(topic(pin, 'host'), JSON.stringify({ at: Date.now() }), { qos: 1, retain: true });
   }
-  function connectHost() {
-    if (!pin || !peer) return;
-    const c = peer.connect(peerIdFor(pin), { reliable: true, serialization: 'json' });
-    c.on('data', deliver);
-    c.on('open', () => {
-      hostConn = c; setNet('online');
-      const q = queue; queue = [];
-      q.forEach(m => { try { c.send(m); } catch {} });
+  function startRelays() {
+    const inbox = role === 'host' ? 'up' : 'down';
+    relays = RELAYS.map(url => {
+      const r = { state: 'connecting', client: null };
+      const c = mqtt.connect(url, { clientId: 'pb_' + uid(12), clean: true, connectTimeout: 8000, reconnectPeriod: 2500, keepalive: 30 });
+      r.client = c;
+      c.on('connect', () => {
+        r.state = 'up';
+        c.subscribe(role === 'host' ? [topic(pin, inbox)] : [topic(pin, inbox), topic(pin, 'host')], { qos: 0 });
+        if (role === 'host') publishPresence(r);
+        else if (!absentT) absentT = setTimeout(() => { if (presence === 'unknown') presence = 'absent'; }, 2500);
+        refreshNet();
+      });
+      c.on('close', () => { if (r.state !== 'closed') { r.state = 'down'; refreshNet(); } });
+      c.on('error', () => {});
+      c.on('message', (t, payload) => {
+        const text = payload.toString();
+        if (t === topic(pin, 'host')) onPresence(text);
+        else deliver(text);
+      });
+      return r;
     });
-    c.on('close', () => { if (hostConn === c) { hostConn = null; setNet('connecting'); scheduleRetry(); } });
-    c.on('error', () => { if (hostConn === c) hostConn = null; });
-  }
-  function scheduleRetry() {
-    clearTimeout(retryT);
-    if (pin && role === 'client') retryT = setTimeout(() => { if (pin && !hostConn) clientPeer(); }, 3000);
+    if (role === 'host') presenceT = setInterval(() => relays.forEach(publishPresence), 15000);
   }
 
   const Transport = {
     onStatus: null,
     get status() { return net; },
-    get networkAvailable() { return useNet && typeof window.Peer === 'function'; },
+    get presence() { return presence; },
+    get networkAvailable() { return useNet && typeof window.mqtt === 'object' && typeof window.mqtt.connect === 'function'; },
     open(p, h, r = 'client') {
       this.close();
-      pin = p; handler = h; role = r;
+      pin = p; handler = h; role = r; presence = 'unknown';
       if (useLocal) {
         if ('BroadcastChannel' in window) { bc = new BroadcastChannel('playbox:' + p); bc.onmessage = e => deliver(e.data); }
         window.addEventListener('storage', onStorage);
       }
       if (this.networkAvailable) {
         setNet('connecting');
-        try { role === 'host' ? hostPeer() : clientPeer(); } catch { setNet('offline'); }
+        try { startRelays(); } catch { setNet('offline'); }
       } else setNet('offline');
     },
     send(msg) {
@@ -972,18 +965,24 @@ const Transport = (() => {
         try { bc && bc.postMessage(msg); } catch {}
         try { localStorage.setItem('playbox:bus:' + pin, JSON.stringify(msg)); } catch {}
       }
-      if (role === 'host') conns.forEach(c => { if (c.open) try { c.send(msg); } catch {} });
-      else if (hostConn && hostConn.open) { try { hostConn.send(msg); } catch {} }
-      else if (peer) { queue.push(msg); if (queue.length > 30) queue.shift(); }
+      // Enquanto conecta, o MQTT.js guarda as mensagens e envia assim que a conexão abrir.
+      const t = topic(pin, role === 'host' ? 'down' : 'up'), text = JSON.stringify(msg);
+      relays.forEach(r => { try { r.client.publish(t, text, { qos: 0 }); } catch {} });
     },
     close() {
-      clearTimeout(retryT);
-      conns.forEach(c => { try { c.close(); } catch {} });
-      conns.clear(); hostConn = null; queue = [];
-      if (peer) { const p = peer; peer = null; try { p.destroy(); } catch {} }
+      clearInterval(presenceT); clearTimeout(absentT); presenceT = absentT = null;
+      relays.forEach(r => {
+        r.state = 'closed';
+        try {
+          // O host apaga o aviso de presença ao fechar a sala.
+          if (role === 'host' && r.client.connected) r.client.publish(topic(pin, 'host'), '', { qos: 1, retain: true });
+          r.client.end(false);
+        } catch {}
+      });
+      relays = [];
       if (bc) { bc.close(); bc = null; }
       window.removeEventListener('storage', onStorage);
-      pin = null; handler = null; role = null;
+      pin = null; handler = null; role = null; presence = 'unknown';
       setNet('off');
     },
   };
@@ -1722,7 +1721,8 @@ function onMessage(msg) {
   const me = Store.me;
   if (!me) return;
   if (isHost()) {
-    if (msg.kind === 'action' && msg.from) hostHandle(msg.from, msg.action);
+    // Ações do próprio host nunca chegam pela rede; ignora quem tenta se passar por ele.
+    if (msg.kind === 'action' && msg.from && msg.from !== me.id) hostHandle(msg.from, msg.action);
     else if (msg.kind === 'hello') Transport.send({ kind: 'state', state: Store.room });
     return;
   }
@@ -1810,8 +1810,8 @@ function joinRoom(pin, profile, existingId) {
     const watch = setInterval(() => {
       const t = now() - started, st = Transport.status;
       if (t < 3000) return;
-      if (st === 'nohost') fail(`A sala ${pin} não foi encontrada. Confira o código e se a tela de quem criou a sala continua aberta.`);
-      else if (st === 'offline') fail(`Sem conexão com a internet para procurar a sala ${pin}. Verifique a rede e tente de novo.`);
+      if (st === 'offline' && t > 9000) fail(`Sem conexão com a internet para procurar a sala ${pin}. Verifique a rede e tente de novo.`);
+      else if (Transport.presence === 'absent' && t > 6000) fail(`A sala ${pin} não foi encontrada. Confira o código e se a tela de quem criou a sala continua aberta.`);
       else if (t > 15000) fail(`A sala ${pin} não respondeu. Confira o código e se a tela de quem criou a sala continua aberta.`);
     }, 400);
     Transport.send({ kind: 'action', from: id, action: { type: 'join', player: { id, ...profile } } });
