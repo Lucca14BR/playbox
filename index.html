@@ -2427,3 +2427,42 @@ const Wake = {
     try { this.lock = await navigator.wakeLock.request('screen'); this.lock.addEventListener('release', () => { this.lock = null; }); } catch {}
   },
   off() { try { this.lock && this.lock.release(); } catch {} this.lock = null; },
+};
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState !== 'visible' || !Store.me) return;
+  Wake.on();
+  Transport.wake();
+  if (isHost()) { if (Store.room) Transport.send({ kind: 'state', state: Store.room }); }
+  else if (!joinWait) Transport.send({ kind: 'hello' });
+});
+
+async function boot() {
+  Store.local.profile = loadProfile();
+  const hashPin = location.hash.slice(1).toUpperCase();
+  if (/^[A-Z0-9]{4}$/.test(hashPin)) { Store.local.pinDraft = hashPin; Store.local.invite = true; Store.local.homeTab = 'join'; }
+  requestAnimationFrame(frame);
+  const sess = Session.load();
+  if (sess?.isHost) {
+    const saved = loadRoom(sess.pin);
+    if (saved && saved.hostId === sess.id) {
+      Store.me = sess; Store.room = saved;
+      Object.values(saved.players).forEach(p => { p.lastSeen = now(); });
+      Transport.open(sess.pin, onMessage, 'host');
+      startHost();
+      commit();
+      Wake.on();
+      return;
+    }
+    Session.clear();
+  } else if (sess?.pin) {
+    render();
+    const res = await joinRoom(sess.pin, sess.profile, sess.id);
+    if (!res.ok) { Session.clear(); render(); toast('A sala anterior não está mais aberta.'); }
+    return;
+  }
+  render();
+}
+boot();
+</script>
+</body>
+</html>
