@@ -236,6 +236,11 @@ button.game-card:disabled{filter:grayscale(.9) brightness(.45);cursor:not-allowe
 .create-btn:hover{filter:brightness(1.1)}
 .create-btn:active{transform:scale(.98)}
 .quick{justify-self:center}
+/* Convite: quem chega pelo link vê só a entrada naquela sala */
+.home-form.invite .tabs,.home-form.invite #panel-create{display:none !important}
+.home-form.invite .tb-title{display:block;font-size:1.05rem}
+#joinHint{text-align:center}
+@media (min-width:900px){ .home-form.invite .join-card{grid-column:1 / -1;max-width:560px;width:100%;justify-self:center} }
 @media (min-width:900px){
   .home{
     max-width:1000px;padding-top:32px;row-gap:28px;column-gap:40px;
@@ -870,16 +875,15 @@ function postcard(artKey) {
 //  2. Rede: retransmissor MQTT sobre WebSocket seguro, em dois servidores públicos gratuitos
 //     ao mesmo tempo. Como tudo passa por uma conexão WebSocket comum, funciona entre
 //     quaisquer redes (Wi-Fi diferentes, 4G/5G), sem depender de conexão direta.
-//     Tópicos: <ns>/<PIN>/up (jogadores -> host), <ns>/<PIN>/down (host -> jogadores) e
-//     <ns>/<PIN>/host (presença do host, retida no servidor).
+//     Tópicos: <ns>/<PIN>/up (jogadores -> host) e <ns>/<PIN>/down (host -> jogadores).
+// Toda vez que um servidor (re)conecta, onLinkUp avisa o app para ressincronizar a sala.
 // ?rede=local desliga a rede; ?rede=internet desliga o canal local (útil para testar).
 const RELAYS = ['wss://broker.emqx.io:8084/mqtt', 'wss://broker.hivemq.com:8884/mqtt'];
 const RELAY_NS = 'playbox-v2';
 const Transport = (() => {
   let bc = null, pin = null, handler = null, role = null;
-  let relays = [], presenceT = null, absentT = null;
+  let relays = [];
   let net = 'off';            // off | connecting | online | offline
-  let presence = 'unknown';   // só para jogadores: unknown | present | absent
   const mode = new URLSearchParams(location.search).get('rede');
   const useLocal = mode !== 'internet', useNet = mode !== 'local';
   const src = uid(10), seen = new Set(), seenQ = [];
@@ -906,48 +910,33 @@ const Transport = (() => {
     if (e.key !== 'playbox:bus:' + pin || !e.newValue) return;
     try { deliver(JSON.parse(e.newValue)); } catch {}
   }
-  function onPresence(text) {
-    // O horário vem do relógio do host; a margem larga tolera relógios um pouco errados.
-    let at = 0;
-    try { at = JSON.parse(text || '{}').at || 0; } catch {}
-    presence = at && Math.abs(Date.now() - at) < 5 * 60 * 1000 ? 'present' : 'absent';
-  }
-  function publishPresence(r) {
-    if (r.client.connected) r.client.publish(topic(pin, 'host'), JSON.stringify({ at: Date.now() }), { qos: 1, retain: true });
-  }
   function startRelays() {
-    const inbox = role === 'host' ? 'up' : 'down';
+    const inbox = topic(pin, role === 'host' ? 'up' : 'down');
     relays = RELAYS.map(url => {
       const r = { state: 'connecting', client: null };
-      const c = mqtt.connect(url, { clientId: 'pb_' + uid(12), clean: true, connectTimeout: 8000, reconnectPeriod: 2500, keepalive: 30 });
+      const c = mqtt.connect(url, { clientId: 'pb_' + uid(12), clean: true, connectTimeout: 10000, reconnectPeriod: 2000, keepalive: 20 });
       r.client = c;
       c.on('connect', () => {
         r.state = 'up';
-        c.subscribe(role === 'host' ? [topic(pin, inbox)] : [topic(pin, inbox), topic(pin, 'host')], { qos: 0 });
-        if (role === 'host') publishPresence(r);
-        else if (!absentT) absentT = setTimeout(() => { if (presence === 'unknown') presence = 'absent'; }, 2500);
+        c.subscribe(inbox, { qos: 0 });
         refreshNet();
+        Transport.onLinkUp && Transport.onLinkUp(role);
       });
       c.on('close', () => { if (r.state !== 'closed') { r.state = 'down'; refreshNet(); } });
       c.on('error', () => {});
-      c.on('message', (t, payload) => {
-        const text = payload.toString();
-        if (t === topic(pin, 'host')) onPresence(text);
-        else deliver(text);
-      });
+      c.on('message', (t, payload) => deliver(payload.toString()));
       return r;
     });
-    if (role === 'host') presenceT = setInterval(() => relays.forEach(publishPresence), 15000);
   }
 
   const Transport = {
     onStatus: null,
+    onLinkUp: null,
     get status() { return net; },
-    get presence() { return presence; },
     get networkAvailable() { return useNet && typeof window.mqtt === 'object' && typeof window.mqtt.connect === 'function'; },
     open(p, h, r = 'client') {
       this.close();
-      pin = p; handler = h; role = r; presence = 'unknown';
+      pin = p; handler = h; role = r;
       if (useLocal) {
         if ('BroadcastChannel' in window) { bc = new BroadcastChannel('playbox:' + p); bc.onmessage = e => deliver(e.data); }
         window.addEventListener('storage', onStorage);
@@ -969,20 +958,16 @@ const Transport = (() => {
       const t = topic(pin, role === 'host' ? 'down' : 'up'), text = JSON.stringify(msg);
       relays.forEach(r => { try { r.client.publish(t, text, { qos: 0 }); } catch {} });
     },
+    // Ao voltar para a tela (o celular pode ter suspendido a conexão), reconecta na hora.
+    wake() {
+      relays.forEach(r => { if (r.state !== 'closed' && r.client && !r.client.connected && !r.client.reconnecting) try { r.client.reconnect(); } catch {} });
+    },
     close() {
-      clearInterval(presenceT); clearTimeout(absentT); presenceT = absentT = null;
-      relays.forEach(r => {
-        r.state = 'closed';
-        try {
-          // O host apaga o aviso de presença ao fechar a sala.
-          if (role === 'host' && r.client.connected) r.client.publish(topic(pin, 'host'), '', { qos: 1, retain: true });
-          r.client.end(false);
-        } catch {}
-      });
+      relays.forEach(r => { r.state = 'closed'; try { r.client.end(false); } catch {} });
       relays = [];
       if (bc) { bc.close(); bc = null; }
       window.removeEventListener('storage', onStorage);
-      pin = null; handler = null; role = null; presence = 'unknown';
+      pin = null; handler = null; role = null;
       setNet('off');
     },
   };
@@ -1784,16 +1769,19 @@ function createRoom(profile) {
   startHost();
   history.replaceState(null, '', '#' + pin);
   commit();
+  Wake.on();
   return pin;
 }
 
 /** Entra numa sala (outra aba ou outro aparelho). Resolve com { ok, reason }. */
-function joinRoom(pin, profile, existingId) {
+function joinRoom(pin, profile, existingId, onProgress) {
   pin = String(pin || '').toUpperCase().trim();
   const id = existingId || 'p-' + uid(8);
   Store.me = { id, pin, isHost: false, profile };
   Transport.open(pin, onMessage, 'client');
   const started = now();
+  let lastAsk = now();
+  const ask = () => { lastAsk = now(); Transport.send({ kind: 'action', from: id, action: { type: 'join', player: { id, ...profile } } }); };
   return new Promise(resolve => {
     joinWait = { done: res => {
       clearInterval(watch);
@@ -1801,20 +1789,22 @@ function joinRoom(pin, profile, existingId) {
         Session.save(Store.me);
         lastHostSignal = now();
         startPresence();
+        Wake.on();
         history.replaceState(null, '', '#' + pin);
       } else { Transport.close(); Store.me = null; }
       resolve(res);
     } };
     const fail = reason => { if (!joinWait) return; const w = joinWait; joinWait = null; w.done({ ok: false, reason }); };
-    // Abas do mesmo navegador respondem na hora; pela rede pode levar alguns segundos.
+    // Reenvia o pedido até o host responder. Cobre conexão lenta e host que acabou de voltar à tela.
     const watch = setInterval(() => {
-      const t = now() - started, st = Transport.status;
-      if (t < 3000) return;
-      if (st === 'offline' && t > 9000) fail(`Sem conexão com a internet para procurar a sala ${pin}. Verifique a rede e tente de novo.`);
-      else if (Transport.presence === 'absent' && t > 6000) fail(`A sala ${pin} não foi encontrada. Confira o código e se a tela de quem criou a sala continua aberta.`);
-      else if (t > 15000) fail(`A sala ${pin} não respondeu. Confira o código e se a tela de quem criou a sala continua aberta.`);
-    }, 400);
-    Transport.send({ kind: 'action', from: id, action: { type: 'join', player: { id, ...profile } } });
+      const t = now() - started;
+      onProgress && onProgress(t);
+      if (now() - lastAsk > 2500) ask();
+      if (t > 25000) fail(Transport.status === 'offline'
+        ? 'Sem conexão com a internet. Verifique a rede e tente de novo.'
+        : `A sala ${pin} não respondeu. Confira o código e peça para quem criou a sala deixar a tela do PlayBox aberta.`);
+    }, 500);
+    ask();
   });
 }
 
@@ -1826,6 +1816,8 @@ function leaveRoom(msg, silent) {
   }
   clearInterval(pingTimer);
   Transport.close();
+  Wake.off();
+  Store.local.invite = false;
   Store.me = null; Store.room = null; Store.hostLost = false; joinWait = null;
   Session.clear();
   history.replaceState(null, '', location.pathname + location.search);
@@ -1942,7 +1934,10 @@ const cubeArt = () => `<svg class="cube-art" viewBox="0 0 240 240" aria-hidden="
 
 /* ---------- Telas ---------- */
 function viewHome() {
-  const pr = Store.local.profile, tab = Store.local.homeTab, open = Store.local.pickerOpen;
+  const pr = Store.local.profile, open = Store.local.pickerOpen;
+  // Quem chega por um link de convite vê só a entrada naquela sala.
+  const invite = Store.local.invite && /^[A-Z0-9]{4}$/.test(Store.local.pinDraft || '') ? Store.local.pinDraft : null;
+  const tab = invite ? 'join' : Store.local.homeTab;
   const games = GAME_ORDER.map(id => { const m = Games[id]; return `<li class="game-card" style="${gameVars(m)}"><span class="gc-icon">${gameIcon(m)}</span>
     <span class="gc-name">${m.name}</span><span class="gc-tag">${m.tag}</span></li>`; }).join('');
   const tabBtn = (id, label) => `<button type="button" class="tab" role="tab" id="tab-${id}" data-act="tab" data-v="${id}" aria-controls="panel-${id}" aria-selected="${tab === id}" tabindex="${tab === id ? 0 : -1}">${label}</button>`;
@@ -1950,16 +1945,16 @@ function viewHome() {
   return `<section class="screen home">
     <div class="home-hero">
       <h1 class="hero-title"><span>Abra a caixa.</span><span class="accent">Chame a galera.</span></h1>
-      <p class="lede">6 jogos. 1 sala. Quem será o maior? Crie uma sala ou entre com o código que um amigo te passou.</p>
+      <p class="lede">${invite ? `Você foi chamado para a sala ${invite}. Escolha um apelido e entre.` : '6 jogos. 1 sala. Quem será o maior? Crie uma sala ou entre com o código que um amigo te passou.'}</p>
     </div>
     <div class="home-art">${cubeArt()}</div>
 
-    <form class="home-form" data-form="home" novalidate aria-label="Jogar">
+    <form class="home-form ${invite ? 'invite' : ''}" data-form="home" novalidate aria-label="Jogar">
       <section class="panel profile" aria-label="Seu jogador">
         <button type="button" class="av-btn" data-act="picker" aria-expanded="${open}" aria-controls="picker" aria-label="Trocar avatar"><span id="avPreview">${avatar(pr, 'lg')}</span></button>
         <div class="profile-main">
           <div class="nick-field"><label for="nick">Seu apelido</label>
-            <span class="nick-wrap"><input class="nick-input" id="nick" data-keep="nick" maxlength="14" autocomplete="nickname" placeholder="Como te chamam?" value="${esc(pr.name)}">${icon('pencil')}</span></div>
+            <span class="nick-wrap"><input class="nick-input" id="nick" data-keep="nick" maxlength="14" autocomplete="nickname" placeholder="Como te chamam?" value="${esc(pr.name)}" ${invite && !pr.name ? 'data-autofocus' : ''}>${icon('pencil')}</span></div>
           <div class="swatches" role="radiogroup" aria-label="Cor do avatar">${COLORS.map((c, i) => `<button type="button" class="sw ${c === pr.color ? 'on' : ''}" style="--c:${c}" data-act="color" data-v="${c}" role="radio" aria-checked="${c === pr.color}" aria-label="Cor ${i + 1}"></button>`).join('')}</div>
         </div>
         <button type="button" class="icon-btn chev" data-act="picker" aria-expanded="${open}" aria-controls="picker" aria-label="Escolher avatar">${icon('down')}</button>
@@ -1972,14 +1967,16 @@ function viewHome() {
       <div class="tabs" role="tablist" aria-label="Como você quer jogar">${tabBtn('join', 'Entrar na sala')}${tabBtn('create', 'Criar sala')}</div>
 
       <section class="panel tab-body join-card" id="panel-join" role="tabpanel" aria-labelledby="tab-join" ${tab === 'join' ? '' : 'hidden'}>
-        <p class="tb-title">Entrar na sala</p>
+        <p class="tb-title">${invite ? `Entrar na sala ${invite}` : 'Entrar na sala'}</p>
         <div class="field"><label for="pin">PIN da sala (4 letras)</label>
           <div class="pin-row">
             <div class="pin-slots">${slots}<input class="pin-input" id="pin" data-keep="pin" maxlength="4" autocomplete="off" autocapitalize="characters" spellcheck="false" value="${esc(Store.local.pinDraft || '')}"></div>
             <button class="btn primary pin-go" id="joinArrow" aria-label="Entrar na sala">${icon('arrow')}</button>
           </div></div>
         <p class="err" id="joinErr" role="alert"></p>
-        <button class="btn primary big pill join-big" id="joinBtn">Entrar</button>
+        <button class="btn primary big pill join-big" id="joinBtn">${invite ? 'Entrar na sala' : 'Entrar'}</button>
+        <p class="hint" id="joinHint" role="status" hidden></p>
+        ${invite ? '<button type="button" class="linkish quick" data-act="uninvite">Quero criar outra sala</button>' : ''}
       </section>
 
       <section class="tab-body create-card" id="panel-create" role="tabpanel" aria-labelledby="tab-create" ${tab === 'create' ? '' : 'hidden'}>
@@ -2026,7 +2023,7 @@ function viewLobby(s) {
         <section class="panel pin-block" aria-label="PIN da sala">
           <p class="label-caps">PIN da sala</p>
           <div class="pin-keys" aria-label="${s.pin.split('').join(' ')}">${s.pin.split('').map(c => `<span class="key" aria-hidden="true">${c}</span>`).join('')}</div>
-          <div class="row center"><button class="btn xs" data-act="copyCode">${icon('copy')}Copiar código</button><button class="btn xs" data-act="copyLink">${icon('link')}Copiar link</button></div>
+          <div class="row center"><button class="btn xs primary" data-act="share">${icon('link')}Convidar</button><button class="btn xs" data-act="copyCode">${icon('copy')}Copiar código</button></div>
           ${netStatusHTML()}
         </section>
         <section class="panel" aria-labelledby="plTitle">
@@ -2048,10 +2045,14 @@ function viewLobby(s) {
   </section>`;
 }
 
+// Link limpo da sala: sem parâmetros de teste (como ?rede=), só a página e o código.
+const roomLink = () => location.origin + location.pathname + '#' + Store.room.pin;
+
 function netStatusHTML() {
   const st = Transport.status;
-  const text = st === 'online' ? 'Online: amigos em qualquer aparelho entram com o código ou o link.'
-    : st === 'connecting' ? 'Conectando ao servidor de salas…'
+  const text = st === 'online'
+    ? (isHost() ? 'Online. Mande o convite e deixe esta tela aberta: a sala roda neste aparelho.' : 'Online. Você está conectado à sala.')
+    : st === 'connecting' ? 'Conectando à internet…'
     : 'Sem internet: só outras abas deste navegador conseguem entrar.';
   const fileNote = location.protocol === 'file:' && st === 'online'
     ? '<p class="hint">O arquivo está aberto direto do disco, então o link só funciona neste computador. Nos outros aparelhos, abra o PlayBox e digite o código.</p>' : '';
@@ -2228,9 +2229,18 @@ const Actions = {
   },
   async copyCode() { toast(await copyText(Store.room.pin) ? `Código ${Store.room.pin} copiado` : `O código é ${Store.room.pin}`); },
   async copyLink() {
-    const link = location.href.split('#')[0] + '#' + Store.room.pin;
-    toast(await copyText(link) ? 'Link da sala copiado' : 'Não deu para copiar. Use o código da sala.');
+    toast(await copyText(roomLink()) ? 'Link da sala copiado' : 'Não deu para copiar. Use o código da sala.');
   },
+  // Abre o menu de compartilhar do celular (WhatsApp etc.); no PC, copia o link.
+  async share() {
+    const pin = Store.room.pin, url = roomLink();
+    if (navigator.share) {
+      try { await navigator.share({ title: 'PlayBox', text: `Bora jogar PlayBox! Entra na minha sala, código ${pin}:`, url }); return; }
+      catch (e) { if (e && e.name === 'AbortError') return; }
+    }
+    toast(await copyText(url) ? 'Link do convite copiado' : `Não deu para copiar. O código é ${pin}`);
+  },
+  uninvite() { Store.local.invite = false; Store.local.homeTab = 'create'; render(); },
   leave() {
     if (!isHost() && Store.room?.screen === 'game' && !confirm('Sair da partida? Você pode voltar depois com o mesmo código.')) return;
     if (isHost() && Store.room?.order.some(id => id !== Store.me.id && !Store.room.players[id]?.isBot) && !confirm('Sair encerra a sala para todo mundo. Encerrar?')) return;
@@ -2306,7 +2316,12 @@ const Forms = {
     if (!/^[A-Z0-9]{4}$/.test(pin)) { err.textContent = 'O código da sala tem 4 letras ou números.'; $('#pin').focus(); return; }
     const btn = $('#joinBtn'); btn.disabled = true; btn.textContent = 'Procurando a sala…';
     const arrow = $('#joinArrow'); if (arrow) arrow.disabled = true;
-    const res = await joinRoom(pin, pr);
+    const res = await joinRoom(pin, pr, null, t => {
+      if (t < 6000) return;
+      const b = $('#joinBtn'); if (b) b.textContent = 'Ainda procurando…';
+      const hint = $('#joinHint');
+      if (hint) { hint.hidden = false; hint.textContent = `Conectando à sala ${pin}. Se demorar, peça para quem criou a sala abrir a tela do PlayBox.`; }
+    });
     if (!res.ok) {
       render();
       const e2 = $('#joinErr'); if (e2) e2.textContent = res.reason;
@@ -2397,33 +2412,18 @@ const PlayBox = window.PlayBox = {
    ===================================================================== */
 // Atualiza o aviso de conexão do lobby quando o estado da rede muda.
 Transport.onStatus = () => { if (Store.room && Store.me && Store.room.screen === 'lobby') render(); };
-
-async function boot() {
-  Store.local.profile = loadProfile();
-  const hashPin = location.hash.slice(1).toUpperCase();
-  if (/^[A-Z0-9]{4}$/.test(hashPin)) Store.local.pinDraft = hashPin;
-  requestAnimationFrame(frame);
-  const sess = Session.load();
-  if (sess?.isHost) {
-    const saved = loadRoom(sess.pin);
-    if (saved && saved.hostId === sess.id) {
-      Store.me = sess; Store.room = saved;
-      Object.values(saved.players).forEach(p => { p.lastSeen = now(); });
-      Transport.open(sess.pin, onMessage, 'host');
-      startHost();
-      commit();
-      return;
-    }
-    Session.clear();
-  } else if (sess?.pin) {
-    render();
-    const res = await joinRoom(sess.pin, sess.profile, sess.id);
-    if (!res.ok) { Session.clear(); render(); toast('A sala anterior não está mais aberta.'); }
-    return;
-  }
-  render();
-}
-boot();
-</script>
-</body>
-</html>
+// Quando a conexão com um servidor (re)abre, a sala se ressincroniza: o host reenvia o estado
+// e o jogador pede o estado atual (ele pode ter perdido mensagens enquanto estava fora).
+Transport.onLinkUp = role => {
+  if (!Store.me || joinWait) return;
+  if (role === 'host' && Store.room) Transport.send({ kind: 'state', state: Store.room });
+  else if (role === 'client') Transport.send({ kind: 'hello' });
+};
+// Mantém a tela acesa durante a partida: no celular, tela apagada derruba a conexão.
+const Wake = {
+  lock: null,
+  async on() {
+    if (!('wakeLock' in navigator) || this.lock || document.visibilityState !== 'visible' || !Store.me) return;
+    try { this.lock = await navigator.wakeLock.request('screen'); this.lock.addEventListener('release', () => { this.lock = null; }); } catch {}
+  },
+  off() { try { this.lock && this.lock.release(); } catch {} this.lock = null; },
