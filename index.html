@@ -704,6 +704,72 @@ button.game-card:disabled{filter:grayscale(.9) brightness(.45);cursor:not-allowe
 .pl-adj button:hover:not(:disabled){color:var(--ink);background:rgba(255,255,255,.06)}
 .pl-adj button:disabled{opacity:.3;cursor:not-allowed}
 
+/* ---------- Chat, reações, QR code e destaques ---------- */
+body.in-room #app{padding-bottom:120px}
+.fab{
+  position:fixed;z-index:34;display:grid;place-items:center;width:56px;height:56px;border-radius:50%;
+  right:max(16px,env(safe-area-inset-right));bottom:max(16px,env(safe-area-inset-bottom));
+  background:linear-gradient(180deg,#6366F1,#4F46E5);color:#fff;box-shadow:0 12px 30px -8px rgba(99,102,241,.7);transition:transform .15s;
+}
+.fab:hover{transform:scale(1.05)}
+.fab:active{transform:scale(.95)}
+.fab .ic{width:24px;height:24px}
+.fab-react{position:static;width:46px;height:46px;background:var(--surface-solid);color:var(--ink);border:1px solid var(--line-2);box-shadow:0 10px 24px -10px rgba(0,0,0,.8)}
+.fab-react .ic{width:22px;height:22px}
+.fab-badge{position:absolute;top:-4px;right:-4px;min-width:22px;height:22px;padding:0 6px;border-radius:999px;background:var(--red);color:#fff;font-size:.75rem;font-weight:800;display:grid;place-items:center;box-shadow:0 0 0 3px var(--bg)}
+.fab-badge[hidden]{display:none}
+.react-wrap{position:fixed;z-index:34;right:max(21px,calc(env(safe-area-inset-right) + 5px));bottom:calc(max(16px,env(safe-area-inset-bottom)) + 66px);display:flex;flex-direction:column;align-items:center;gap:8px}
+.react-tray{display:flex;flex-direction:column;gap:4px;padding:6px;border-radius:999px;background:var(--surface-solid);border:1px solid var(--line-2);box-shadow:0 14px 30px -12px rgba(0,0,0,.8);animation:pickerIn .18s ease}
+.react-tray[hidden]{display:none}
+.react-tray button,.chat-reacts button{display:grid;place-items:center;width:36px;height:36px;border-radius:50%;font-size:1.25rem;transition:transform .12s,background .12s}
+.react-tray button:hover,.chat-reacts button:hover{background:rgba(255,255,255,.08);transform:scale(1.15)}
+.chat-panel{
+  position:fixed;z-index:36;display:flex;flex-direction:column;left:8px;right:8px;bottom:max(8px,env(safe-area-inset-bottom));height:min(72vh,560px);
+  border-radius:22px;background:#12131A;border:1px solid var(--line-2);box-shadow:0 30px 60px -20px rgba(0,0,0,.9);overflow:hidden;animation:chatIn .22s cubic-bezier(.2,.8,.2,1);
+}
+.chat-panel[hidden]{display:none}
+@keyframes chatIn{from{opacity:0;transform:translateY(16px)}}
+@media (min-width:720px){ .chat-panel{left:auto;right:16px;bottom:84px;width:370px;height:min(70vh,520px)} }
+.chat-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 12px 12px 18px;border-bottom:1px solid var(--line)}
+.chat-list{flex:1;overflow:auto;display:flex;flex-direction:column;gap:10px;padding:14px}
+.chat-msg{display:flex;align-items:flex-end;gap:8px;max-width:88%}
+.chat-msg.me{align-self:flex-end;flex-direction:row-reverse}
+.chat-bubble{padding:8px 12px;border-radius:16px 16px 16px 4px;background:var(--bg-2);border:1px solid var(--line)}
+.chat-msg.me .chat-bubble{border-radius:16px 16px 4px 16px;background:rgba(99,102,241,.2);border-color:rgba(99,102,241,.4)}
+.chat-bubble b{display:block;font-size:.72rem;color:var(--muted);font-weight:700}
+.chat-bubble p{font-size:.92rem;line-height:1.35;word-break:break-word}
+.chat-bubble p.hid{color:var(--dim);font-style:italic}
+.chat-sys{align-self:center;font-size:.76rem;color:var(--dim);padding:2px 10px;border-radius:999px;background:rgba(255,255,255,.03)}
+.chat-reacts{display:flex;justify-content:space-around;padding:4px 10px;border-top:1px solid var(--line)}
+.chat-form{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;padding:10px 12px 12px}
+.chat-form .input{min-height:46px}
+.chat-send{width:46px;min-height:46px;padding:0;border-radius:14px}
+#fxLayer{position:fixed;inset:0;pointer-events:none;z-index:33;overflow:hidden}
+.fx{position:absolute;left:var(--x);bottom:-60px;display:grid;justify-items:center;animation:fxUp 2.6s cubic-bezier(.2,.7,.3,1) forwards}
+.fx-e{font-size:2.6rem;line-height:1;filter:drop-shadow(0 6px 12px rgba(0,0,0,.5))}
+.fx-n{margin-top:2px;padding:1px 8px;border-radius:999px;background:rgba(11,11,15,.75);font-size:.68rem;font-weight:700;color:var(--ink)}
+@keyframes fxUp{0%{transform:translate(0,0) scale(.4) rotate(0);opacity:0}12%{opacity:1;transform:translate(0,-40px) scale(1.1) rotate(var(--r))}100%{transform:translate(var(--dx),-70vh) scale(1) rotate(calc(var(--r) * -1));opacity:0}}
+.modal{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:16px;background:rgba(5,5,8,.75);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);animation:screenIn .2s ease}
+.modal-card{display:grid;justify-items:center;gap:12px;width:min(380px,100%);padding:24px;border-radius:24px;background:var(--surface-solid);border:1px solid var(--line-2);text-align:center}
+.modal-card h2{font-size:1.25rem;font-weight:800}
+.qr-box{width:min(260px,70vw);padding:10px;border-radius:18px;background:#fff}
+.qr-box svg{display:block;width:100%;height:auto}
+.qr-pin{color:var(--muted)}
+.qr-pin b{color:var(--white);letter-spacing:.14em;font-size:1.2rem}
+.highlights{margin-top:22px}
+.hl-list{display:grid;gap:8px;margin-top:12px}
+@media (min-width:720px){ .hl-list{grid-template-columns:repeat(2,minmax(0,1fr))} }
+.hl-list li{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;align-items:center;gap:10px;padding:10px 12px;border-radius:16px;background:var(--bg-2);border:1px solid color-mix(in srgb,var(--g) 30%,var(--line))}
+.hl-ic{display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:var(--g);color:var(--on-color)}
+.hl-ic .ic{width:18px;height:18px}
+.hl-txt{display:grid;min-width:0}
+.hl-txt b{font-size:.92rem}
+.hl-txt small,.hl-who small{font-size:.72rem;color:var(--muted)}
+.hl-who{display:grid;font-weight:700;font-size:.88rem;text-align:right}
+.hl-avs{display:flex}
+.hl-avs .av+.av{margin-left:-8px}
+@media (prefers-reduced-motion: reduce){ .fx{animation:none;bottom:40%;opacity:.9} }
+
 /* Fim de mini-jogo */
 .final-head{display:flex;align-items:center;gap:14px;margin-bottom:6px}
 .rk-list{display:grid;gap:10px}
@@ -783,8 +849,13 @@ button.game-card:disabled{filter:grayscale(.9) brightness(.45);cursor:not-allowe
 </header>
 <main id="app" aria-live="polite"></main>
 <div id="toast" role="status" aria-live="polite"></div>
+<div id="chatRoot"></div>
+<div id="fxLayer" aria-hidden="true"></div>
+<div id="modalRoot"></div>
 <!-- MQTT.js: retransmissor via WebSocket entre aparelhos em qualquer rede. Sem internet, o jogo segue só entre abas. -->
 <script src="https://unpkg.com/mqtt@5.10.1/dist/mqtt.min.js"></script>
+<!-- qrcode-generator: QR code do convite. Sem ele, o lobby só mostra o código da sala. -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 
 <script>
 'use strict';
@@ -1240,6 +1311,7 @@ function enginePhase(s, name) {
   HostRT.allInAt = null;
   ph.enter && ph.enter(g, s);
   if (g.deadline && rushOn(s, ph)) { g.dur *= RUSH; g.deadline = g.phaseStart + g.dur * 1000; }
+  if (name === 'reveal') botsReact(s);
 }
 function engineAdvance(s) {
   const g = s.game, ph = Games[g.id].phases[g.phase];
@@ -1251,7 +1323,11 @@ function updateScores(s, deltas) {
   for (const [pid, pts] of Object.entries(deltas)) {
     if (!pts || !s.players[pid]) continue;
     s.players[pid].score += pts;
-    if (g) { add(g.earned, pid, pts); add(g.roundDelta, pid, pts); }
+    if (g) {
+      add(g.earned, pid, pts); add(g.roundDelta, pid, pts);
+      s.match.byGame = s.match.byGame || {};
+      add(s.match.byGame[g.id] || (s.match.byGame[g.id] = {}), pid, pts);
+    }
   }
 }
 
@@ -2468,6 +2544,13 @@ Games.bomba = {
 
 GAME_ORDER.push('desenho', 'termo', 'reflexo', 'emoji', 'mente', 'bomba');
 
+// Segredos da rodada: mensagens no chat que contenham isso ficam escondidas.
+Games.desenho.secret = g => g.phase === 'pick' ? g.data.choices : g.phase === 'draw' ? [g.data.word] : [];
+Games.termo.secret = g => g.phase === 'play' ? [g.data.answer] : [];
+Games.emoji.secret = g => g.phase === 'guess' ? [EMOJI_Q[g.data.qi].t, ...EMOJI_Q[g.data.qi].a] : [];
+Games.impostor.secret = g => g.phase !== 'reveal' ? [IMP_WORDS[g.data.wi].w] : [];
+Games.geo.secret = g => g.phase === 'answer' ? GEO_Q[g.data.qi].o[0].split('+').map(x => x.trim()) : [];
+
 /* =====================================================================
    Host: processa ações e transmite o estado
    ===================================================================== */
@@ -2511,6 +2594,7 @@ function hostHandle(from, a) {
       const name = uniqueName(s, cleanName(pl.name) || 'Jogador');
       s.players[pl.id] = mkPlayer(pl.id, { name, avatar: AVATARS.includes(pl.avatar) ? pl.avatar : pick(AVATARS), color: COLORS.includes(pl.color) ? pl.color : pick(COLORS) }, false);
       s.order.push(pl.id);
+      pushChat(s, { sys: true, text: `${name} entrou na sala` });
       changed = true;
     }
   } else if (a.type === 'ping') {
@@ -2523,6 +2607,10 @@ function hostHandle(from, a) {
     }
   } else if (!p) {
     return;
+  } else if (a.type === 'chat') {
+    changed = hostChat(s, from, a.text) || changed;
+  } else if (a.type === 'react') {
+    hostReact(s, from, a.e);
   } else if (a.type.startsWith('host:')) {
     if (from === s.hostId) changed = hostCommand(s, a) || changed;
   } else if (s.game && s.game.phase && s.game.phase !== 'final' && !s.game.paused) {
@@ -2613,11 +2701,55 @@ function hostCommand(s, a) {
     }
     case 'host:newMatch':
       Object.values(s.players).forEach(p => { p.score = 0; });
-      s.match.played = []; s.game = null; s.screen = 'lobby';
+      s.match.played = []; s.match.byGame = {}; s.game = null; s.screen = 'lobby';
       return true;
   }
   return false;
 }
+/* ---------- Chat e reações (o host recebe, filtra e repassa) ---------- */
+const REACTS = ['😂', '🔥', '👏', '😱', '❤️', '🤯'];
+const BOT_CHAT = ['kkkkk', 'essa foi difícil', 'gg', 'tô ficando bom nisso', 'próxima eu ganho', 'que isso 😂', 'eita', 'quase!'];
+const ChatRT = { last: {}, lastReact: {} };
+function pushChat(s, m) {
+  s.chat = s.chat || [];
+  s.chatSeq = (s.chatSeq || 0) + 1;
+  s.chat.push({ n: s.chatSeq, t: now(), ...m });
+  if (s.chat.length > 40) s.chat.splice(0, s.chat.length - 40);
+}
+// Mensagens que entregariam a resposta da rodada ficam escondidas (cada jogo diz o que é segredo).
+function chatLeaks(s, text) {
+  const g = s.game, mod = g && g.phase && g.phase !== 'final' ? Games[g.id] : null;
+  if (!mod || !mod.secret) return false;
+  const flat = norm(text).replace(/[^a-z0-9]/g, '');
+  return (mod.secret(g, s) || []).map(x => norm(x).replace(/[^a-z0-9]/g, '')).some(x => x.length >= 3 && flat.includes(x));
+}
+function hostChat(s, pid, raw) {
+  const text = String(raw || '').replace(/\s+/g, ' ').trim().slice(0, 140);
+  if (!text || now() - (ChatRT.last[pid] || 0) < 600) return false;
+  ChatRT.last[pid] = now();
+  const hid = chatLeaks(s, text);
+  pushChat(s, { pid, name: s.players[pid].name, text: hid ? '' : text, hid });
+  return true;
+}
+function hostReact(s, pid, e) {
+  // Margem menor que a do aparelho (350 ms) para absorver atrasos da rede.
+  if (!REACTS.includes(e) || now() - (ChatRT.lastReact[pid] || 0) < 200) return;
+  ChatRT.lastReact[pid] = now();
+  Transport.send({ kind: 'fx', pid, e });
+  if (pid !== Store.me?.id) spawnFx(e, s.players[pid]);
+}
+// Bots reagem aos resultados (e de vez em quando comentam no chat).
+function botsReact(s) {
+  if (!isHost() || !s.game) return;
+  s.game.roster.filter(id => s.players[id]?.isBot).forEach(id => {
+    if (Math.random() < .45) setTimeout(() => { if (Store.room?.players[id]) hostReact(Store.room, id, pick(REACTS)); }, rand(500, 2600));
+    if (Math.random() < .12) setTimeout(() => {
+      const room = Store.room, p = room?.players[id];
+      if (p && isHost()) { pushChat(room, { pid: id, name: p.name, text: pick(BOT_CHAT) }); commit(); }
+    }, rand(1500, 4500));
+  });
+}
+
 // Depois de uma pausa, empurra para frente todos os horários marcados da partida.
 function shiftTimers(g, d) {
   if (g.deadline) g.deadline += d;
@@ -2714,6 +2846,8 @@ function onMessage(msg) {
     Store.room = msg.state;
     if (Store.hostLost) Store.hostLost = false;
     render();
+  } else if (msg.kind === 'fx') {
+    if (msg.pid !== me.id) spawnFx(msg.e, Store.room?.players[msg.pid]);
   } else if (msg.kind === 'beat') {
     lastHostSignal = now();
     if (Store.hostLost) { Store.hostLost = false; render(); }
@@ -2830,6 +2964,7 @@ let lastSig = '';
 function render() {
   const s = Store.room, app = $('#app');
   soundCues(s);
+  renderChat();
   renderTop();
   // Brilho radial do fundo segue a cor do jogo ativo (índigo fora das partidas).
   document.body.style.setProperty('--glow', s && Store.me && s.screen === 'game' && s.game ? Games[s.game.id].color : '#6366F1');
@@ -2924,6 +3059,10 @@ const ICONS = {
   copy: '<rect x="8" y="8" width="12" height="12" rx="2.5"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/>',
   link: '<path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1"/>',
   check: '<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+  chat: '<path d="M5 4.5h14a2 2 0 0 1 2 2v8.5a2 2 0 0 1-2 2h-7l-5 4v-4H5a2 2 0 0 1-2-2V6.5a2 2 0 0 1 2-2z"/>',
+  send: '<path d="M4 12L20 4l-6 16-2.5-6.5z"/><path d="M11.5 13.5L20 4"/>',
+  close: '<path d="M6 6l12 12M18 6L6 18"/>',
+  qr: '<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><path d="M14 14h3v3h-3zM18 18h3v3h-3zM14 20.5h1M20.5 14h.5"/>',
   volume: '<path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/>',
   mute: '<path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M16 9.5l5 5M21 9.5l-5 5"/>',
   pause: '<rect x="6" y="5" width="4" height="14" rx="1.2"/><rect x="14" y="5" width="4" height="14" rx="1.2"/>',
@@ -3053,7 +3192,7 @@ function viewLobby(s) {
         <section class="panel pin-block" aria-label="PIN da sala">
           <p class="label-caps">PIN da sala</p>
           <div class="pin-keys" aria-label="${s.pin.split('').join(' ')}">${s.pin.split('').map(c => `<span class="key" aria-hidden="true">${c}</span>`).join('')}</div>
-          <div class="row center"><button class="btn xs primary" data-act="share">${icon('link')}Convidar</button><button class="btn xs" data-act="copyCode">${icon('copy')}Copiar código</button></div>
+          <div class="row center"><button class="btn xs primary" data-act="share">${icon('link')}Convidar</button><button class="btn xs" data-act="copyCode">${icon('copy')}Copiar código</button><button class="btn xs" data-act="qr">${icon('qr')}QR code</button></div>
           ${netStatusHTML()}
         </section>
         <section class="panel" aria-labelledby="plTitle">
@@ -3182,9 +3321,91 @@ function viewPodium(s) {
       </div>
       <section class="panel ranking" aria-labelledby="rkTitle"><h2 class="panel-title" id="rkTitle">Ranking geral</h2><ol class="rk-list">${rows}</ol></section>
     </div>
+    ${highlightsHTML(s)}
     <div class="row center pod-actions">${isHost() ? '<button class="btn primary pill" data-act="newMatch">Nova partida com a mesma sala</button>' : ''}<button class="btn pill" data-act="leave">Sair da sala</button></div>
     <div class="confetti" aria-hidden="true">${conf}</div>
   </section>`;
+}
+
+/* ---------- Chat ao vivo e reações flutuantes ---------- */
+const Chat = { open: false, seen: 0, lastN: null, built: false };
+const chatItem = (s, m) => m.sys
+  ? `<li class="chat-sys">${esc(m.text)}</li>`
+  : `<li class="chat-msg ${m.pid === Store.me.id ? 'me' : ''}">${avatar(s.players[m.pid] || { color: '#6B7280', avatar: '👤' }, 'sm')}
+      <div class="chat-bubble"><b>${esc(m.name)}</b><p class="${m.hid ? 'hid' : ''}">${m.hid ? '🤐 Mensagem escondida: parecia a resposta da rodada.' : esc(m.text)}</p></div></li>`;
+function renderChat() {
+  const root = $('#chatRoot'), s = Store.room;
+  document.body.classList.toggle('in-room', !!(s && Store.me));
+  if (!s || !Store.me) {
+    if (Chat.built) root.innerHTML = '';
+    Object.assign(Chat, { open: false, seen: 0, lastN: null, built: false });
+    return;
+  }
+  if (!Chat.built) {
+    const reacts = REACTS.map(e => `<button type="button" data-act="react" data-v="${e}" aria-label="Reagir com ${e}">${e}</button>`).join('');
+    root.innerHTML = `
+      <div class="react-wrap"><div class="react-tray" id="reactTray" hidden>${reacts}</div>
+        <button class="fab fab-react" data-act="reactTray" aria-label="Reações" aria-expanded="false">${icon('smile')}</button></div>
+      <button class="fab fab-chat" data-act="chat" aria-label="Abrir o chat" aria-expanded="false">${icon('chat')}<span class="fab-badge" id="chatBadge" hidden></span></button>
+      <section class="chat-panel" id="chatPanel" hidden aria-label="Chat da sala">
+        <header class="chat-head"><b>Chat da sala</b><button class="icon-btn" data-act="chat" aria-label="Fechar o chat">${icon('close')}</button></header>
+        <ul class="chat-list" id="chatList"></ul>
+        <div class="chat-reacts">${reacts}</div>
+        <form class="chat-form" data-form="chat" novalidate><label class="sr-only" for="chatIn">Mensagem</label>
+          <input class="input" id="chatIn" maxlength="140" autocomplete="off" placeholder="Mande uma mensagem…">
+          <button class="btn primary chat-send" aria-label="Enviar mensagem">${icon('send')}</button></form>
+      </section>`;
+    Chat.built = true;
+  }
+  const msgs = s.chat || [], maxN = msgs.length ? msgs[msgs.length - 1].n : 0, me = Store.me.id;
+  if (Chat.lastN === null) Chat.lastN = Chat.seen = maxN;   // ao entrar, o histórico não conta como novo
+  if (maxN > Chat.lastN) {
+    if (msgs.some(m => m.n > Chat.lastN && !m.sys && m.pid !== me)) Sound.play('pop');
+    Chat.lastN = maxN;
+  }
+  if (Chat.open) Chat.seen = maxN;
+  const list = $('#chatList');
+  const nearBottom = list.scrollHeight - list.scrollTop - list.clientHeight < 60;
+  list.innerHTML = msgs.map(m => chatItem(s, m)).join('') || '<li class="chat-sys">Ninguém falou nada ainda. Puxa o assunto!</li>';
+  if (nearBottom || Chat.open) list.scrollTop = list.scrollHeight;
+  const unread = msgs.filter(m => m.n > Chat.seen && !m.sys && m.pid !== me).length, badge = $('#chatBadge');
+  badge.hidden = !unread;
+  badge.textContent = unread > 9 ? '9+' : unread;
+}
+function spawnFx(e, p) {
+  const layer = $('#fxLayer');
+  if (!layer || layer.childElementCount > 24) return;
+  const el = document.createElement('div');
+  el.className = 'fx';
+  el.style.setProperty('--x', rand(8, 88).toFixed(1) + '%');
+  el.style.setProperty('--dx', rand(-70, 70).toFixed(0) + 'px');
+  el.style.setProperty('--r', rand(-25, 25).toFixed(0) + 'deg');
+  el.innerHTML = `<span class="fx-e">${e}</span>${p ? `<span class="fx-n">${esc(p.name)}</span>` : ''}`;
+  layer.appendChild(el);
+  Sound.play('react');
+  setTimeout(() => el.remove(), 2700);
+}
+function closeOverlays() {
+  $('#modalRoot').innerHTML = '';
+  if (Chat.open) Actions.chat();
+  const tray = $('#reactTray');
+  if (tray && !tray.hidden) Actions.reactTray();
+}
+
+// Títulos dos destaques do pódio: quem mais pontuou em cada jogo.
+const TITLES = { mane: 'Rei do chute', provavel: 'Termômetro da galera', impostor: 'Mestre do blefe', geo: 'Viajante do mundo', stop: 'Dicionário ambulante', fato: 'Caçador de fakes', desenho: 'Picasso da noite', termo: 'Gênio das palavras', reflexo: 'Mão mais rápida', emoji: 'Decifrador de emojis', mente: 'Mente sintonizada', bomba: 'Sangue frio' };
+function highlightsHTML(s) {
+  const byGame = s.match.byGame || {};
+  const items = GAME_ORDER.filter(id => byGame[id]).map(id => {
+    const entries = Object.entries(byGame[id]).filter(([pid]) => s.players[pid]);
+    const pts = Math.max(0, ...entries.map(e => e[1]));
+    const tops = entries.filter(e => e[1] === pts).map(e => e[0]);   // empates dividem o título
+    if (!pts || !tops.length) return '';
+    const m = Games[id];
+    return `<li style="${gameVars(m)}"><span class="hl-ic">${gameIcon(m)}</span><span class="hl-txt"><b>${TITLES[id]}</b><small>${m.name}</small></span>
+      <span class="hl-avs">${tops.map(pid => avatar(s.players[pid], 'sm')).join('')}</span><span class="hl-who">${tops.map(pid => esc(s.players[pid].name)).join(' e ')}<small>+${pts}</small></span></li>`;
+  }).join('');
+  return items ? `<section class="panel highlights" aria-labelledby="hlTitle"><h2 class="panel-title" id="hlTitle">Destaques da partida</h2><ul class="hl-list">${items}</ul></section>` : '';
 }
 
 /* ---------- Efeitos sonoros (sintetizados com Web Audio, sem arquivos) ---------- */
@@ -3251,6 +3472,8 @@ const SFX = {
   boom: S => { S.noise(1.1, { vol: .55, from: 1800, to: 80 }); S.tone(110, .7, { vol: .4, slide: 35 }); },
   pause: S => { S.tone(660, .1, { type: 'triangle', vol: .1 }); S.tone(440, .16, { type: 'triangle', vol: .1, at: .09 }); },
   resume: S => { S.tone(440, .1, { type: 'triangle', vol: .1 }); S.tone(660, .16, { type: 'triangle', vol: .1, at: .09 }); },
+  pop: S => { S.tone(784, .05, { vol: .08 }); S.tone(1175, .08, { vol: .07, at: .045 }); },
+  react: S => S.tone(1400, .06, { type: 'triangle', vol: .045, slide: 2100 }),
   fanfare: S => [523, 659, 784, 1046, 784, 1046].forEach((f, i) => S.tone(f, i === 5 ? .45 : .13, { type: 'triangle', vol: .14, at: i * .12 })),
 };
 ['pointerdown', 'keydown'].forEach(ev => document.addEventListener(ev, () => Sound.unlock(), { passive: true, capture: true }));
@@ -3394,6 +3617,43 @@ const Actions = {
   },
   addBot() { dispatch({ type: 'host:addBot' }); },
   sound() { Sound.unlock(); Sound.toggle(); renderTop(); },
+  chat() {
+    Chat.open = !Chat.open;
+    const panel = $('#chatPanel');
+    if (!panel) return;
+    panel.hidden = !Chat.open;
+    $$('[data-act="chat"]').forEach(b => b.setAttribute('aria-expanded', Chat.open));
+    if (Chat.open) { const tray = $('#reactTray'); if (tray) tray.hidden = true; renderChat(); setTimeout(() => $('#chatIn')?.focus(), 30); }
+    else renderChat();
+  },
+  reactTray() {
+    const tray = $('#reactTray'), btn = $('[data-act="reactTray"]');
+    tray.hidden = !tray.hidden;
+    btn.setAttribute('aria-expanded', !tray.hidden);
+  },
+  react(el) {
+    const e = el.dataset.v;
+    // Uma reação a cada 350 ms: o que aparece aqui é o mesmo que os outros veem.
+    if (now() - (Actions.lastReact || 0) < 350) return;
+    Actions.lastReact = now();
+    spawnFx(e, Store.room?.players[Store.me.id]);
+    dispatch({ type: 'react', e });
+  },
+  qr() {
+    let svg = '';
+    try { const q = qrcode(0, 'M'); q.addData(roomLink()); q.make(); svg = q.createSvgTag({ cellSize: 8, margin: 2, scalable: true }); } catch {}
+    $('#modalRoot').innerHTML = `<div class="modal" data-act="closeModal"><div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="qrTitle" data-keep-open>
+      <h2 id="qrTitle">Entre pela câmera</h2><p class="hint">Aponte a câmera do celular para o código e toque no link que aparecer.</p>
+      ${svg ? `<div class="qr-box">${svg}</div>` : '<p class="err">Não deu para gerar o QR code agora. Use o código da sala.</p>'}
+      <p class="qr-pin">Sala <b>${Store.room.pin}</b></p>
+      <button class="btn primary pill" data-act="closeModal">Fechar</button></div></div>`;
+    $('#modalRoot .modal-card .btn')?.focus();
+  },
+  closeModal(el, e) {
+    // Clique dentro do cartão não fecha; só no fundo escuro ou no botão Fechar.
+    if (el.classList.contains('modal') && e.target.closest('[data-keep-open]')) return;
+    $('#modalRoot').innerHTML = '';
+  },
   toggle(el) { dispatch({ type: 'host:toggle', key: el.dataset.k }); },
   random() { dispatch({ type: 'host:random' }); },
   pause() { dispatch({ type: 'host:pause' }); },
@@ -3455,6 +3715,13 @@ function selectTab(id, focus) {
 }
 
 const Forms = {
+  chat() {
+    const input = $('#chatIn'), text = (input.value || '').trim();
+    if (!text) return;
+    input.value = '';
+    dispatch({ type: 'chat', text });
+    input.focus();
+  },
   home(form, submitter) {
     // No PC as duas ações ficam visíveis lado a lado; no celular vale a aba aberta.
     const visible = submitter && submitter.offsetParent !== null;
@@ -3535,6 +3802,7 @@ document.addEventListener('input', e => {
 document.addEventListener('keydown', e => {
   // Enter num campo do Stop pula para o próximo; no último, aperta Stop se puder.
   const t = e.target;
+  if (e.key === 'Escape') { closeOverlays(); return; }
   const gm = Store.room?.screen === 'game' && Store.room.game;
   if (gm && Games[gm.id].keydown && !['INPUT', 'TEXTAREA', 'SELECT'].includes(t.tagName) && Games[gm.id].keydown(e, gm, Store.room, Store.me?.id)) return;
   if (t.getAttribute?.('role') === 'tab' && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
@@ -3600,7 +3868,9 @@ async function boot() {
   const hashPin = location.hash.slice(1).toUpperCase();
   if (/^[A-Z0-9]{4}$/.test(hashPin)) { Store.local.pinDraft = hashPin; Store.local.invite = true; Store.local.homeTab = 'join'; }
   requestAnimationFrame(frame);
-  const sess = Session.load();
+  let sess = Session.load();
+  // Um link de convite para outra sala vale mais que a sala antiga guardada nesta aba.
+  if (sess && /^[A-Z0-9]{4}$/.test(hashPin) && sess.pin !== hashPin) { Session.clear(); sess = null; }
   if (sess?.isHost) {
     const saved = loadRoom(sess.pin);
     if (saved && saved.hostId === sess.id) {
