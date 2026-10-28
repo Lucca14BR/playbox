@@ -502,6 +502,167 @@ button.game-card:disabled{filter:grayscale(.9) brightness(.45);cursor:not-allowe
 .mult-row span{display:grid;place-items:center;height:32px;border-radius:999px;font-weight:700;font-size:.88rem;color:var(--dim);transition:background .2s,color .2s}
 .mult-row span.now{background:var(--blue);color:#fff;box-shadow:0 4px 14px -4px rgba(59,130,246,.6)}
 
+/* ---------- Desenha Aí ---------- */
+.dw-choices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.dw-choice{
+  min-height:96px;padding:12px;border-radius:18px;background:var(--bg-2);border:1px solid var(--line-in);
+  font-weight:800;font-size:clamp(.95rem,3.4vw,1.15rem);text-transform:capitalize;line-height:1.15;transition:border-color .15s,transform .12s,background .15s;
+}
+.dw-choice:hover:not(:disabled){border-color:var(--g);background:color-mix(in srgb,var(--g) 12%,var(--bg-2))}
+.dw-choice:active:not(:disabled){transform:scale(.97)}
+.dw-choice.on{border-color:var(--g);background:color-mix(in srgb,var(--g) 22%,var(--bg-2))}
+.dw-board-wrap{position:relative}
+.dw-board{
+  display:block;width:100%;height:auto;aspect-ratio:4/3;background:#fff;border-radius:18px;touch-action:none;
+  box-shadow:0 18px 40px -20px color-mix(in srgb,var(--g) 80%,transparent),0 0 0 1px rgba(255,255,255,.08);
+}
+.dw-board.can-draw{cursor:crosshair;box-shadow:0 18px 40px -20px color-mix(in srgb,var(--g) 80%,transparent),0 0 0 3px var(--g)}
+.dw-word{text-align:center;font-size:1rem;color:var(--muted)}
+.dw-word b{display:block;margin-top:2px;font-size:clamp(1.5rem,6vw,2rem);font-weight:800;color:var(--white);text-transform:uppercase;letter-spacing:.04em}
+.dw-hint{display:flex;flex-wrap:wrap;justify-content:center;align-items:flex-end;gap:7px;min-height:30px}
+.dw-hint i{display:block;width:clamp(16px,4.5vw,24px);height:4px;border-radius:2px;background:var(--ink)}
+.dw-hint span{font-weight:800;line-height:1}
+.dw-hint+.hint{margin-top:6px}
+.dw-tools{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:7px;padding:10px;border-radius:16px;background:var(--bg-2);border:1px solid var(--line)}
+.dw-sw{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--c);box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.18);transition:transform .12s}
+.dw-sw:hover{transform:scale(1.1)}
+.dw-sw.on{box-shadow:0 0 0 2px var(--bg-2),0 0 0 4px var(--g)}
+.dw-sw.is-eraser{color:#374151}
+.dw-sw.is-eraser .ic{width:16px;height:16px}
+.dw-sep{width:1px;height:24px;background:var(--line-2);margin:0 2px}
+.dw-size{display:grid;place-items:center;width:34px;height:34px;border-radius:10px;border:1px solid var(--line)}
+.dw-size i{display:block;width:var(--d);height:var(--d);border-radius:50%;background:var(--ink)}
+.dw-size.on{border-color:var(--g);background:color-mix(in srgb,var(--g) 18%,transparent)}
+.dw-guess{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
+.dw-guess .btn{min-height:50px}
+.dw-got,.emj-got{display:flex;align-items:center;justify-content:center;gap:8px;padding:12px 16px;border-radius:999px;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.4);color:#86EFAC;font-weight:700;text-align:center}
+.dw-got .ic,.emj-got .ic{width:18px;height:18px;stroke-width:3}
+.dw-feed{display:grid;gap:4px;max-height:190px;overflow:auto;padding:4px}
+.dw-feed li{display:flex;align-items:center;gap:8px;font-size:.9rem;color:var(--muted)}
+.dw-feed li b{color:var(--ink);font-weight:600}
+.dw-feed li.ok,.dw-feed li.ok b{color:#86EFAC}
+.dw-feed .av{--s:24px;font-size:13px}
+.dw-empty{justify-content:center;color:var(--dim)}
+.dw-solvers,.emj-solvers{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+.dw-solvers li,.emj-solvers li{display:flex;align-items:center;gap:6px;padding:5px 12px 5px 5px;border-radius:999px;background:var(--bg-2);border:1px solid var(--line);font-size:.88rem}
+.dw-solvers li span,.emj-solvers li b{color:var(--g);font-weight:800}
+
+/* ---------- Termo Relâmpago ---------- */
+.tm-board{display:grid;gap:6px;justify-content:center;perspective:600px}
+.tm-row{display:grid;grid-template-columns:repeat(5,clamp(44px,12vw,56px));gap:6px}
+.tm-tile{
+  display:grid;place-items:center;aspect-ratio:1;border-radius:11px;border:2px solid var(--line-2);
+  font-weight:800;font-size:clamp(1.35rem,5.4vw,1.75rem);color:var(--white);text-transform:uppercase;background:rgba(11,11,15,.4);
+}
+.tm-tile.filled{border-color:#6B7280;animation:tmPop .12s ease}
+.tm-row.pending .tm-tile{border-color:#9CA3AF;opacity:.75}
+.tm-tile.g{background:#22C55E;border-color:#22C55E;color:#052E16}
+.tm-tile.y{background:#EAB308;border-color:#EAB308;color:#1C1300}
+.tm-tile.x{background:#374151;border-color:#374151;color:#E5E7EB}
+.tm-row.flip .tm-tile{animation:tmFlip .55s calc(var(--i) * .12s) ease both}
+.tm-row.shake{animation:tmShake .35s ease}
+@keyframes tmPop{50%{transform:scale(1.08)}}
+@keyframes tmFlip{0%{transform:rotateX(0);filter:brightness(1)}45%{transform:rotateX(90deg);filter:brightness(.3)}100%{transform:rotateX(0)}}
+@keyframes tmShake{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+.tm-status{font-weight:600}
+.tm-kb{display:grid;gap:6px;max-width:520px;margin-left:auto;margin-right:auto}
+.tm-kr{display:flex;gap:5px;justify-content:center}
+.tm-k{
+  flex:1 1 0;min-width:0;max-width:46px;height:52px;border-radius:9px;background:#2A2D3A;color:var(--ink);
+  font-weight:700;font-size:.95rem;transition:background .15s,transform .08s;
+}
+.tm-k:active{transform:scale(.94)}
+.tm-k.wide{flex:1.6 1 0;max-width:76px;font-size:.78rem;display:grid;place-items:center}
+.tm-k.wide .ic{width:20px;height:20px}
+.tm-k.g{background:#22C55E;color:#052E16}
+.tm-k.y{background:#EAB308;color:#1C1300}
+.tm-k.x{background:#1F2129;color:#6B7280}
+.tm-others{display:flex;flex-wrap:wrap;justify-content:center;gap:14px;padding-top:6px;border-top:1px solid var(--line)}
+.tm-mini{display:grid;justify-items:center;gap:2px;padding-top:10px}
+.tm-mini-row{display:grid;grid-template-columns:repeat(5,9px);gap:2px}
+.tm-mini i{display:block;width:9px;height:9px;border-radius:2px;background:rgba(255,255,255,.08)}
+.tm-mini i.g{background:#22C55E}.tm-mini i.y{background:#EAB308}.tm-mini i.x{background:#4B5563}
+.tm-mini span{margin-top:4px;font-size:.7rem;color:var(--muted);max-width:64px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tm-mini.is-solved span{color:#86EFAC;font-weight:700}
+
+/* ---------- Reflexo ---------- */
+.rx-pad{
+  display:grid;align-content:center;justify-items:center;gap:8px;width:100%;min-height:clamp(240px,46vh,380px);padding:20px;
+  border-radius:26px;font-weight:800;user-select:none;-webkit-user-select:none;touch-action:manipulation;transition:background .06s;
+}
+.rx-big{font-size:clamp(2.4rem,10vw,4rem);letter-spacing:-.035em;line-height:1}
+.rx-sub{font-size:.95rem;font-weight:600;opacity:.8}
+.rx-pad.is-wait{background:radial-gradient(circle at 50% 40%,#3B0D14,#140709);border:1px solid rgba(239,68,68,.35);color:#FCA5A5}
+.rx-pad.is-wait .rx-big{animation:rxBreathe 1.6s ease-in-out infinite}
+.rx-pad.is-go{background:radial-gradient(circle at 50% 40%,#A5F3FC,#06B6D4 55%,#0E7490);color:#062B33;box-shadow:0 0 90px -10px rgba(34,211,238,.85)}
+.rx-pad.is-done{background:var(--bg-2);border:1px solid var(--line-2);color:var(--white)}
+.rx-pad.is-early{background:#1F2329;border:1px solid rgba(239,68,68,.4);color:#FCA5A5}
+.rx-pad:disabled{cursor:default}
+@keyframes rxBreathe{50%{opacity:.55;transform:scale(.97)}}
+.rx-results{display:grid;gap:8px}
+.rx-results li{display:grid;grid-template-columns:auto 7.5em minmax(0,1fr) 4.8em auto;align-items:center;gap:10px}
+.rx-name{font-weight:600;font-size:.9rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rx-bar{height:10px;border-radius:999px;background:rgba(255,255,255,.06);overflow:hidden}
+.rx-bar i{display:block;height:100%;width:var(--w);border-radius:999px;background:linear-gradient(90deg,#67E8F9,#06B6D4)}
+.enter .rx-bar i{animation:barGrow .8s .2s cubic-bezier(.2,.8,.2,1) both;transform-origin:left}
+.rx-results b{text-align:right;font-variant-numeric:tabular-nums}
+.rx-results li.is-early b{color:#FCA5A5}
+
+/* ---------- Emoji Charada ---------- */
+.emj-card{
+  padding:clamp(22px,6vw,34px) 10px;border-radius:24px;text-align:center;font-size:clamp(3rem,15vw,5.2rem);line-height:1.1;letter-spacing:.06em;
+  background:radial-gradient(circle at 50% 30%,color-mix(in srgb,var(--g) 22%,transparent),transparent 70%),rgba(11,11,15,.55);
+  border:1px solid color-mix(in srgb,var(--g) 35%,transparent);
+}
+.enter .emj-card{animation:emjIn .6s cubic-bezier(.3,1.5,.5,1) both}
+@keyframes emjIn{from{transform:scale(.6) rotate(-6deg);opacity:0}}
+.emj-meta{display:flex;justify-content:center}
+.emj-hint b{color:var(--g)}
+
+/* ---------- Mente Coletiva ---------- */
+.mt-prompt{max-width:none}
+.mt-clouds{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:12px;padding:6px 0}
+.mt-bubble{
+  display:grid;align-content:center;justify-items:center;gap:6px;width:var(--s);height:var(--s);padding:12px;border-radius:50%;text-align:center;
+  background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.07),rgba(255,255,255,.02));border:1px solid var(--line-2);
+}
+.mt-bubble.is-match{
+  background:radial-gradient(circle at 35% 28%,color-mix(in srgb,var(--g) 60%,#fff 0%),color-mix(in srgb,var(--g) 22%,#12131A) 70%);
+  border-color:color-mix(in srgb,var(--g) 70%,transparent);box-shadow:0 14px 40px -16px color-mix(in srgb,var(--g) 80%,transparent);
+}
+.enter .mt-bubble{animation:mtPop .6s calc(var(--i) * .08s + .2s) cubic-bezier(.3,1.6,.5,1) both}
+@keyframes mtPop{from{transform:scale(0);opacity:0}}
+.mt-bubble b{font-size:.95rem;line-height:1.15;word-break:break-word;text-transform:capitalize}
+.mt-avs{display:flex;flex-wrap:wrap;justify-content:center;gap:2px}
+.mt-avs .av{--s:22px;font-size:12px}
+.mt-pts{font-size:.72rem;font-weight:700;opacity:.8}
+
+/* ---------- Batata Quente ---------- */
+.bm-stage{display:flex;flex-direction:column;align-items:center;gap:8px}
+.bm-bomb{width:min(150px,38vw);height:auto;filter:drop-shadow(0 16px 30px rgba(249,115,22,.35));animation:bmWobble .45s ease-in-out infinite alternate}
+.bm-stage.is-me .bm-bomb{animation-duration:.18s;filter:drop-shadow(0 0 36px rgba(249,115,22,.75))}
+.bm-spark{transform-origin:105px 15px;animation:bmSpark .14s steps(2) infinite}
+@keyframes bmWobble{from{transform:rotate(-5deg)}to{transform:rotate(5deg)}}
+@keyframes bmSpark{50%{transform:scale(1.35) rotate(25deg)}}
+.bm-holder{display:flex;align-items:center;gap:10px;font-size:1rem;color:var(--muted)}
+.bm-holder b{color:var(--white)}
+.bm-stage.is-me .bm-holder b{color:var(--g)}
+.bm-syl{
+  justify-self:center;width:max-content;margin:0 auto;padding:8px 26px;border-radius:20px;font-size:clamp(2.6rem,12vw,3.8rem);font-weight:800;letter-spacing:.1em;
+  color:#FDBA74;background:rgba(249,115,22,.12);border:1px solid rgba(249,115,22,.5);box-shadow:0 0 40px -12px rgba(249,115,22,.7);
+}
+.bm-form{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;max-width:440px;margin-left:auto;margin-right:auto}
+.bm-form .btn{min-height:50px}
+.bm-last{display:flex;align-items:center;justify-content:center;gap:8px;font-size:.9rem;color:var(--muted);text-align:center}
+.bm-last i{font-style:normal;font-weight:800;color:#FDBA74;text-transform:uppercase}
+.bm-used{display:flex;flex-wrap:wrap;justify-content:center;gap:6px}
+.bm-used span{padding:3px 10px;border-radius:999px;background:var(--bg-2);border:1px solid var(--line);font-size:.78rem;color:var(--muted)}
+.bm-boom{display:grid;justify-items:center;gap:10px;padding:26px 10px;border-radius:24px;background:radial-gradient(circle at 50% 45%,rgba(253,224,71,.35),rgba(249,115,22,.25) 35%,transparent 70%)}
+.bm-boom-word{font-size:clamp(3.4rem,15vw,5.4rem);font-weight:800;letter-spacing:-.04em;line-height:1;color:#FDE047;text-shadow:0 0 30px rgba(249,115,22,.9)}
+.enter .bm-boom-word{animation:slam .5s cubic-bezier(.3,1.5,.5,1) both}
+.bm-boom .av{filter:grayscale(.4)}
+@media (min-width:900px){ .game-grid.is-12{grid-template-columns:repeat(4,minmax(0,1fr))} }
+
 /* Fim de mini-jogo */
 .final-head{display:flex;align-items:center;gap:14px;margin-bottom:6px}
 .rk-list{display:grid;gap:10px}
@@ -981,7 +1142,8 @@ const Store = {
   me: null,      // { id, pin, isHost, profile }
   room: null,    // snapshot compartilhado da sala
   hostLost: false,
-  local: { profile: null, pinDraft: '', homeTab: 'join', pickerOpen: false, flip: null, stopSent: null },
+  local: { profile: null, pinDraft: '', homeTab: 'join', pickerOpen: false, flip: null, stopSent: null,
+    dw: { c: 1, w: 1 }, termo: { key: null, draft: '', anim: null, pending: null }, rxTap: null, rxGo: null, emj: null, bombTurn: null },
 };
 const Session = {
   load() { try { return JSON.parse(sessionStorage.getItem('playbox:me')); } catch { return null; } },
@@ -1544,6 +1706,720 @@ Games.fato = {
 };
 
 /* =====================================================================
+   Mini-jogos, segunda caixa
+   Ganchos opcionais de um módulo (além de init/phases/handle/bot/done/view):
+     tick(g, s)      -> host: ações com tempo próprio (bots que jogam várias vezes)
+     mount(g, s, me) -> cliente: depois de desenhar a tela (eventos de ponteiro, foco)
+     patch(g, s, me) -> cliente: atualiza só partes da tela quando a fase não mudou
+     keydown(e, ...) -> cliente: teclado físico; devolve true se tratou a tecla
+     ui / forms      -> handlers de data-act="g:nome" e data-form="g:nome"
+     phases[x].hideTimer -> esconde o cronômetro (o tempo é segredo)
+   ===================================================================== */
+
+/* ---------- 7. Desenha Aí ---------- */
+const DRAW_WORDS = ['casa','sol','gato','cachorro','árvore','carro','bicicleta','peixe','pizza','banana','guarda-chuva','avião','foguete','castelo','coração','estrela','lua','flor','bola','óculos','chapéu','sorvete','bolo','violão','televisão','relógio','cadeira','montanha','praia','cobra','tartaruga','girafa','elefante','robô','fantasma','dragão','pirata','sereia','palhaço','astronauta','chave','escada','ponte','barco','trem','nuvem','arco-íris','abacaxi','pinguim','vulcão'];
+const DRAW_COLORS = ['#FFFFFF','#111827','#EF4444','#F97316','#FBBF24','#22C55E','#3B82F6','#8B5CF6','#EC4899','#92400E'];
+const DRAW_SIZES = [5, 11, 22];
+const drawKey = w => norm(w).replace(/[^a-z0-9]/g, '');
+const DW = { cur: null, sent: 0, timer: null };
+
+function dwPaintStroke(ctx, st) {
+  const p = st.p;
+  if (!p || p.length < 2) return;
+  ctx.strokeStyle = ctx.fillStyle = DRAW_COLORS[st.c] || '#111827';
+  ctx.lineWidth = DRAW_SIZES[st.w] || 11;
+  ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  if (p.length === 2) { ctx.beginPath(); ctx.arc(p[0], p[1], ctx.lineWidth / 2, 0, Math.PI * 2); ctx.fill(); return; }
+  ctx.beginPath(); ctx.moveTo(p[0], p[1]);
+  for (let i = 2; i < p.length; i += 2) ctx.lineTo(p[i], p[i + 1]);
+  ctx.stroke();
+}
+function dwPaint(g) {
+  const cv = $('#dwBoard');
+  if (!cv) return;
+  const ctx = cv.getContext('2d');
+  ctx.fillStyle = '#FFFFFF'; ctx.fillRect(0, 0, cv.width, cv.height);
+  g.data.strokes.forEach(st => { if (!DW.cur || st.id !== DW.cur.id) dwPaintStroke(ctx, st); });
+  if (DW.cur) dwPaintStroke(ctx, DW.cur);
+}
+// Envia os pontos novos do traço atual em lotes (a cada 200 ms), não a cada movimento.
+function dwFlush(final) {
+  const c = DW.cur;
+  if (!c) return;
+  if (c.p.length > DW.sent) {
+    const chunk = c.p.slice(DW.sent);
+    DW.sent = c.p.length;
+    dispatch({ type: 'stroke', id: c.id, c: c.c, w: c.w, p: chunk });
+  }
+  if (final) { clearInterval(DW.timer); DW.timer = null; DW.cur = null; DW.sent = 0; }
+}
+function dwAddStroke(d, a) {
+  const pts = Array.isArray(a.p) ? a.p.slice(0, 400).map((n, i) => clamp(Math.round(+n) || 0, 0, i % 2 ? 750 : 1000)) : [];
+  if (pts.length < 2 || pts.length % 2) return false;
+  let st = d.strokes.find(x => x.id === a.id);
+  if (!st) {
+    if (d.strokes.length >= 400) return false;
+    st = { id: String(a.id).slice(0, 12), c: clamp(a.c | 0, 0, DRAW_COLORS.length - 1), w: clamp(a.w | 0, 0, DRAW_SIZES.length - 1), p: [] };
+    d.strokes.push(st);
+  }
+  if (st.p.length < 3000) st.p.push(...pts.slice(0, 3000 - st.p.length));
+  return true;
+}
+const dwMask = w => {
+  const n = w.replace(/[^a-zà-úç]/gi, '').length;
+  return `<div class="dw-hint" aria-label="Palavra com ${n} letras">${[...w].map(ch => /[a-zà-úç]/i.test(ch) ? '<i></i>' : `<span>${esc(ch)}</span>`).join('')}</div>
+    <p class="hint center">${n} letras</p>`;
+};
+const dwFeedHTML = (d, s) => d.feed.slice(-12).reverse().map(f => f.ok
+  ? `<li class="ok">${avatar(s.players[f.pid], 'sm')}<span><b>${esc(nameOf(s, f.pid))}</b> acertou!</span></li>`
+  : `<li>${avatar(s.players[f.pid], 'sm')}<span><b>${esc(nameOf(s, f.pid))}</b> ${esc(f.text)}</span></li>`).join('')
+  || '<li class="dw-empty">Os chutes aparecem aqui.</li>';
+
+Games.desenho = {
+  id: 'desenho', name: 'Desenha Aí', tag: 'Desenhe e adivinhe', icon: 'brush', color: '#8B5CF6', lip: '#6D28D9', min: 2,
+  how: 'Um jogador desenha a palavra secreta e o resto tenta adivinhar digitando. Quem acerta primeiro ganha mais, e quem desenha ganha um ponto por acerto.',
+  first: 'pick',
+  init(g, s) {
+    const humans = g.roster.filter(id => !s.players[id]?.isBot);
+    const drawer = humans.length ? humans[(g.round - 1) % humans.length] : g.roster[0];
+    const choices = [];
+    while (choices.length < 3) choices.push(DRAW_WORDS[drawItem(g, DRAW_WORDS)]);
+    g.data = { drawer, choices, word: null, strokes: [], guessed: {}, order: [], feed: [] };
+  },
+  phases: {
+    pick: { label: 'Escolhendo a palavra', dur: 12, bot: [1, 3], next: 'draw', allIn: g => !!g.data.word },
+    draw: { label: 'Desenhe e adivinhe', dur: 80, bot: [12, 55], next: 'reveal',
+      enter(g) { if (!g.data.word) g.data.word = g.data.choices[0]; },
+      allIn: (g, s) => active(g, s).filter(id => id !== g.data.drawer).every(id => id in g.data.guessed) },
+    reveal: { label: 'Era…', dur: 12, enter(g, s) {
+      const d = g.data, deltas = {};
+      d.order.forEach((pid, k) => add(deltas, pid, Math.max(1, 3 - k)));
+      if (d.order.length) add(deltas, d.drawer, Math.min(3, d.order.length));
+      updateScores(s, deltas);
+    } },
+  },
+  handle(g, s, pid, a) {
+    const d = g.data;
+    if (!inRoster(g, pid)) return false;
+    if (g.phase === 'pick' && a.type === 'choose' && pid === d.drawer && d.choices.includes(a.word)) { d.word = a.word; return true; }
+    if (g.phase !== 'draw') return false;
+    if (pid === d.drawer) {
+      if (a.type === 'stroke') return dwAddStroke(d, a);
+      if (a.type === 'undo') { d.strokes.pop(); return true; }
+      if (a.type === 'clear') { d.strokes = []; return true; }
+      return false;
+    }
+    if (a.type !== 'guess' || pid in d.guessed) return false;
+    const text = String(a.text || '').trim().slice(0, 30);
+    if (!text) return false;
+    if (drawKey(text) === drawKey(d.word)) { d.guessed[pid] = d.order.length; d.order.push(pid); d.feed.push({ pid, ok: true }); }
+    else d.feed.push({ pid, text });
+    if (d.feed.length > 40) d.feed.shift();
+    return true;
+  },
+  done(g, pid) { return g.phase === 'pick' ? pid === g.data.drawer && !!g.data.word : g.phase === 'draw' ? pid in g.data.guessed : false; },
+  bot(g, s, pid) {
+    const d = g.data;
+    if (g.phase === 'pick' && pid === d.drawer) return { type: 'choose', word: pick(d.choices) };
+    if (g.phase === 'draw' && pid !== d.drawer) return { type: 'guess', text: Math.random() < .6 ? d.word : pick(DRAW_WORDS.filter(w => w !== d.word)) };
+    return null;
+  },
+  view(g, s, me) {
+    const d = g.data, drawer = d.drawer === me, can = inRoster(g, me);
+    if (g.phase === 'pick') {
+      if (!drawer) return waitCard(`${avatar(s.players[d.drawer], 'lg')}<br>${esc(nameOf(s, d.drawer))} vai desenhar`, 'Escolhendo a palavra');
+      return `<h2 class="ask center">Escolha o que desenhar</h2>
+        <div class="dw-choices">${d.choices.map(w => `<button class="dw-choice ${d.word === w ? 'on' : ''}" data-act="g:choose" data-v="${esc(w)}" ${d.word ? 'disabled' : ''}>${esc(w)}</button>`).join('')}</div>
+        <p class="hint center">Ninguém mais vê essas opções.</p>`;
+    }
+    const board = `<div class="dw-board-wrap"><canvas id="dwBoard" class="dw-board ${drawer && g.phase === 'draw' ? 'can-draw' : ''}" width="1000" height="750" role="img" aria-label="Quadro de desenho"></canvas></div>`;
+    if (g.phase === 'reveal') {
+      const solvers = d.order.map((pid, k) => `<li>${avatar(s.players[pid], 'sm')}<b>${esc(nameOf(s, pid))}</b><span>${k + 1}º</span></li>`).join('');
+      return `<p class="verdict center">Era ${esc(d.word)}</p>${board}
+        ${solvers ? `<ul class="dw-solvers">${solvers}</ul>` : '<p class="hint center">Ninguém acertou dessa vez.</p>'}`;
+    }
+    const top = drawer ? `<p class="dw-word">Desenhe: <b>${esc(d.word)}</b></p>` : dwMask(d.word);
+    const tool = Store.local.dw;
+    const tools = drawer ? `<div class="dw-tools" role="toolbar" aria-label="Ferramentas de desenho">
+        ${DRAW_COLORS.map((c, i) => `<button class="dw-sw ${tool.c === i ? 'on' : ''} ${i === 0 ? 'is-eraser' : ''}" style="--c:${c}" data-act="g:color" data-v="${i}" aria-label="${i === 0 ? 'Borracha' : 'Cor ' + i}">${i === 0 ? icon('eraser') : ''}</button>`).join('')}
+        <span class="dw-sep"></span>
+        ${DRAW_SIZES.map((sz, i) => `<button class="dw-size ${tool.w === i ? 'on' : ''}" data-act="g:size" data-v="${i}" aria-label="Espessura ${i + 1}"><i style="--d:${6 + i * 6}px"></i></button>`).join('')}
+        <span class="dw-sep"></span>
+        <button class="icon-btn" data-act="g:undo" aria-label="Desfazer">${icon('undo')}</button>
+        <button class="icon-btn" data-act="g:clear" aria-label="Limpar quadro">${icon('trash')}</button></div>` : '';
+    let guess = '';
+    if (!drawer && can) guess = me in d.guessed
+      ? `<p class="dw-got" id="dwGuessBox">${icon('check')} Você acertou! Agora é torcer pela galera.</p>`
+      : `<form class="dw-guess" id="dwGuessBox" data-form="g:guess" novalidate><label class="sr-only" for="dwGuess">Seu chute</label>
+          <input class="input" id="dwGuess" data-keep="dwguess-${g.round}" maxlength="30" autocomplete="off" spellcheck="false" placeholder="Seu chute…">
+          <button class="btn game pill">Chutar</button></form>`;
+    return `${top}${board}${tools}${guess}<ul class="dw-feed" id="dwFeed" aria-label="Chutes">${dwFeedHTML(d, s)}</ul>`;
+  },
+  // Na fase de desenho, só atualiza o quadro, os chutes e o seu status (o quadro não pisca).
+  patch(g, s, me) {
+    const d = g.data;
+    if (g.phase !== 'draw') { $('.stage-body').innerHTML = this.view(g, s, me); this.mount(g, s, me); return; }
+    const feed = $('#dwFeed');
+    if (feed) feed.innerHTML = dwFeedHTML(d, s);
+    const box = $('#dwGuessBox');
+    if (box && box.tagName === 'FORM' && me in d.guessed) box.outerHTML = `<p class="dw-got" id="dwGuessBox">${icon('check')} Você acertou! Agora é torcer pela galera.</p>`;
+    dwPaint(g);
+  },
+  mount(g, s, me) {
+    const d = g.data, cv = $('#dwBoard');
+    const drawing = g.phase === 'draw' && d.drawer === me;
+    if (!drawing && DW.cur) { clearInterval(DW.timer); DW.timer = null; DW.cur = null; }
+    if (!cv) return;
+    dwPaint(g);
+    if (!drawing || cv.dataset.bound) return;
+    cv.dataset.bound = '1';
+    const pt = e => { const r = cv.getBoundingClientRect(); return [clamp(Math.round((e.clientX - r.left) / r.width * 1000), 0, 1000), clamp(Math.round((e.clientY - r.top) / r.height * 750), 0, 750)]; };
+    cv.addEventListener('pointerdown', e => {
+      e.preventDefault();
+      try { cv.setPointerCapture(e.pointerId); } catch {}
+      const t = Store.local.dw;
+      DW.cur = { id: uid(6), c: t.c, w: t.w, p: pt(e) };
+      DW.sent = 0;
+      clearInterval(DW.timer); DW.timer = setInterval(() => dwFlush(false), 200);
+      dwPaint(Store.room.game);
+    });
+    cv.addEventListener('pointermove', e => {
+      if (!DW.cur) return;
+      // Alguns navegadores devolvem a lista de eventos agrupados vazia: aí vale o próprio evento.
+      const co = e.getCoalescedEvents ? e.getCoalescedEvents() : null;
+      const ctx = cv.getContext('2d'), evs = co && co.length ? co : [e];
+      for (const ev of evs) {
+        const p = DW.cur.p, [x, y] = pt(ev), lx = p[p.length - 2], ly = p[p.length - 1];
+        if (Math.abs(x - lx) + Math.abs(y - ly) < 3 || p.length >= 2900) continue;
+        p.push(x, y);
+        ctx.strokeStyle = DRAW_COLORS[DW.cur.c]; ctx.lineWidth = DRAW_SIZES[DW.cur.w]; ctx.lineCap = 'round';
+        ctx.beginPath(); ctx.moveTo(lx, ly); ctx.lineTo(x, y); ctx.stroke();
+      }
+    });
+    const end = () => { if (DW.cur) dwFlush(true); };
+    cv.addEventListener('pointerup', end);
+    cv.addEventListener('pointercancel', end);
+    cv.addEventListener('lostpointercapture', end);
+  },
+  ui: {
+    choose(el) { dispatch({ type: 'choose', word: el.dataset.v }); },
+    color(el) { Store.local.dw.c = +el.dataset.v; $$('.dw-sw').forEach(b => b.classList.toggle('on', +b.dataset.v === Store.local.dw.c)); },
+    size(el) { Store.local.dw.w = +el.dataset.v; $$('.dw-size').forEach(b => b.classList.toggle('on', +b.dataset.v === Store.local.dw.w)); },
+    undo() { dispatch({ type: 'undo' }); },
+    clear() { dispatch({ type: 'clear' }); },
+  },
+  forms: {
+    guess() {
+      const input = $('#dwGuess'), text = (input.value || '').trim();
+      if (!text) return;
+      input.value = '';
+      dispatch({ type: 'guess', text });
+      input.focus();
+    },
+  },
+};
+
+/* ---------- 8. Termo Relâmpago ---------- */
+const TERMO_WORDS = ['CARRO','PRAIA','LIVRO','TEMPO','NOITE','PEDRA','VERDE','FESTA','MUNDO','PORTA','CAMPO','PRATO','LIMAO','MANGA','TIGRE','ZEBRA','PIANO','NUVEM','PLUMA','FORNO','SALTO','GRUPO','CINCO','FUGIR','SONHO','CHAVE','BOLSA','TROCA','VENTO','PEIXE','FOLHA','TERRA','NADAR','MOLHO','CAIXA','JOGAR','BRAVO','RISCO','LEITE','VIDRO','SORTE','FELIZ','TRIGO','POLVO','CERTO','LUGAR','HOTEL','AMIGO','ROUPA','CANTO','SAMBA','PAGAR','FALAR','BICHO','DOCES','TORTA'];
+const termoKey = w => norm(w).toUpperCase().replace(/[^A-Z]/g, '');
+function termoScore(guess, answer) {
+  const res = Array(5).fill('x'), used = Array(5).fill(false);
+  for (let i = 0; i < 5; i++) if (guess[i] === answer[i]) { res[i] = 'g'; used[i] = true; }
+  for (let i = 0; i < 5; i++) {
+    if (res[i] === 'g') continue;
+    const j = [...answer].findIndex((ch, k) => !used[k] && ch === guess[i]);
+    if (j >= 0) { res[i] = 'y'; used[j] = true; }
+  }
+  return res;
+}
+const termoDone = (g, pid) => pid in g.data.solved || (g.data.tries[pid] || []).length >= 6;
+function termoTry(g, pid, word) {
+  const d = g.data, w = termoKey(word);
+  if (w.length !== 5 || termoDone(g, pid)) return false;
+  const list = d.tries[pid] || (d.tries[pid] = []);
+  list.push(w);
+  if (w === d.answer) {
+    d.solved[pid] = { n: list.length, t: now() - g.phaseStart };
+    if (!d.first) d.first = pid;
+  }
+  return true;
+}
+function termoBotPlan(answer) {
+  const solve = Math.random() < .8, n = solve ? 2 + Math.floor(Math.random() * 5) : 6;
+  const pool = shuffle(TERMO_WORDS.filter(w => w !== answer));
+  const words = pool.slice(0, n - 1);
+  words.push(solve ? answer : pool[n - 1]);
+  let t = now();
+  return { words, times: words.map(() => (t += rand(7000, 16000))), i: 0 };
+}
+function termoInput(k) {
+  const s = Store.room, g = s?.game, me = Store.me?.id;
+  if (!g || g.id !== 'termo' || g.phase !== 'play' || !inRoster(g, me) || termoDone(g, me)) return;
+  const T = Store.local.termo;
+  if (T.pending) return;
+  if (k === 'ENTER') {
+    if (T.draft.length !== 5) { $('.tm-row.cur')?.classList.remove('shake'); void $('.tm-row.cur')?.offsetWidth; $('.tm-row.cur')?.classList.add('shake'); return; }
+    T.anim = (g.data.tries[me] || []).length;
+    T.pending = T.draft; T.draft = '';
+    dispatch({ type: 'try', word: T.pending });
+    render();
+    return;
+  }
+  if (k === 'BACK') T.draft = T.draft.slice(0, -1);
+  else if (/^[A-Z]$/.test(k) && T.draft.length < 5) T.draft += k;
+  $$('.tm-row.cur .tm-tile').forEach((el, i) => { el.textContent = T.draft[i] || ''; el.classList.toggle('filled', !!T.draft[i]); });
+}
+
+Games.termo = {
+  id: 'termo', name: 'Termo Relâmpago', tag: 'Palavra secreta', icon: 'grid', color: '#22C55E', lip: '#15803D', min: 1,
+  how: 'Todo mundo tenta a mesma palavra de 5 letras, em até 6 chutes. Verde: letra no lugar certo. Amarelo: a letra existe, mas em outro lugar. Menos chutes valem mais, e quem resolver primeiro ganha bônus.',
+  first: 'play',
+  init(g, s) {
+    const answer = TERMO_WORDS[drawItem(g, TERMO_WORDS)];
+    g.data = { answer, tries: {}, solved: {}, first: null, bots: {} };
+    g.roster.forEach(id => { if (s.players[id]?.isBot) g.data.bots[id] = termoBotPlan(answer); });
+  },
+  phases: {
+    play: { label: 'Descubra a palavra', dur: 120, next: 'reveal', allIn: (g, s) => active(g, s).every(id => termoDone(g, id)) },
+    reveal: { label: 'A palavra era', dur: 15, enter(g, s) {
+      const d = g.data, deltas = {};
+      Object.entries(d.solved).forEach(([pid, r]) => add(deltas, pid, r.n <= 2 ? 4 : r.n <= 4 ? 3 : 2));
+      if (d.first) add(deltas, d.first, 1);
+      updateScores(s, deltas);
+    } },
+  },
+  handle(g, s, pid, a) {
+    if (!inRoster(g, pid) || g.phase !== 'play' || a.type !== 'try') return false;
+    return termoTry(g, pid, a.word);
+  },
+  tick(g, s) {
+    if (g.phase !== 'play') return false;
+    let changed = false;
+    for (const [pid, plan] of Object.entries(g.data.bots)) {
+      if (plan.i >= plan.words.length || !inRoster(g, pid) || now() < plan.times[plan.i]) continue;
+      changed = termoTry(g, pid, plan.words[plan.i]) || changed;
+      plan.i++;
+    }
+    return changed;
+  },
+  done(g, pid) { return g.phase === 'play' && termoDone(g, pid); },
+  view(g, s, me) {
+    const d = g.data, can = inRoster(g, me), mine = d.tries[me] || [], done = termoDone(g, me);
+    const T = Store.local.termo;
+    if (T.key !== `${g.round}`) Object.assign(T, { key: `${g.round}`, draft: '', anim: null, pending: null });
+    if (T.pending && mine.length > T.anim) T.pending = null;
+    const tile = (ch, cls, i) => `<span class="tm-tile ${cls}" style="--i:${i}">${ch || ''}</span>`;
+    const rowHTML = (word, colors, extra) => `<div class="tm-row ${extra}">${[0, 1, 2, 3, 4].map(i => tile(word[i], colors ? colors[i] : word[i] ? 'filled' : '', i)).join('')}</div>`;
+    if (g.phase === 'reveal') {
+      const ranked = Object.entries(d.solved).sort((a, b) => a[1].n - b[1].n || a[1].t - b[1].t);
+      const failed = g.roster.filter(id => !(id in d.solved) && s.players[id]);
+      return `<div class="tm-board">${rowHTML(d.answer, Array(5).fill('g'), 'flip')}</div>
+        <ul class="res-list">${ranked.map(([pid, r]) => `<li class="res-row">${avatar(s.players[pid], 'sm')}<span class="res-who"><span class="res-name">${esc(nameOf(s, pid))}</span>${pid === d.first ? '<span class="tag tag-good">Primeiro</span>' : ''}</span>
+          <span class="res-val">${plural(r.n, 'chute', 'chutes')}<span class="res-sub">${(r.t / 1000).toFixed(0)} s</span></span>${deltaBadge(g.roundDelta[pid])}</li>`).join('')}
+        ${failed.map(pid => `<li class="res-row">${avatar(s.players[pid], 'sm')}<span class="res-who"><span class="res-name">${esc(nameOf(s, pid))}</span></span><span class="res-val">Não achou</span><span></span></li>`).join('')}</ul>`;
+    }
+    const rows = [];
+    for (let r = 0; r < 6; r++) {
+      if (r < mine.length) rows.push(rowHTML(mine[r], termoScore(mine[r], d.answer), r === T.anim ? 'flip' : ''));
+      else if (r === mine.length && T.pending) rows.push(rowHTML(T.pending, null, 'pending'));
+      else if (r === mine.length && can && !done) rows.push(rowHTML(T.draft, null, 'cur'));
+      else rows.push(rowHTML('', null, ''));
+    }
+    const status = !can ? 'Você joga na próxima rodada. Veja como a galera está indo.'
+      : d.solved[me] ? `Acertou em ${plural(d.solved[me].n, 'chute', 'chutes')}!${d.first === me ? ' Foi o primeiro.' : ''}`
+      : done ? 'Acabaram seus chutes. A palavra aparece no fim da rodada.' : `${plural(6 - mine.length, 'chute restante', 'chutes restantes')}`;
+    const best = {};
+    mine.forEach(w => termoScore(w, d.answer).forEach((c, i) => {
+      const ch = w[i], rank = { g: 3, y: 2, x: 1 };
+      if (!best[ch] || rank[c] > rank[best[ch]]) best[ch] = c;
+    }));
+    const keys = ['QWERTYUIOP', 'ASDFGHJKL', '>ZXCVBNM<'].map(row => `<div class="tm-kr">${[...row].map(k =>
+      k === '>' ? `<button class="tm-k wide" data-act="g:key" data-k="ENTER">Enviar</button>`
+      : k === '<' ? `<button class="tm-k wide" data-act="g:key" data-k="BACK" aria-label="Apagar">${icon('backspace')}</button>`
+      : `<button class="tm-k ${best[k] || ''}" data-act="g:key" data-k="${k}">${k}</button>`).join('')}</div>`).join('');
+    const others = g.roster.filter(id => id !== me && s.players[id]).map(id => {
+      const tr = d.tries[id] || [];
+      return `<div class="tm-mini ${id in d.solved ? 'is-solved' : ''}" title="${esc(nameOf(s, id))}">
+        ${[0, 1, 2, 3, 4, 5].map(r => `<div class="tm-mini-row">${(r < tr.length ? termoScore(tr[r], d.answer) : Array(5).fill('')).map(c => `<i class="${c}"></i>`).join('')}</div>`).join('')}
+        <span>${esc(nameOf(s, id))}</span></div>`;
+    }).join('');
+    return `<div class="tm-board" aria-label="Seus chutes">${rows.join('')}</div>
+      <p class="hint center tm-status" role="status">${status}</p>
+      ${can && !done ? `<div class="tm-kb" aria-label="Teclado">${keys}</div>` : ''}
+      ${others ? `<div class="tm-others" aria-label="Progresso dos outros">${others}</div>` : ''}`;
+  },
+  mount(g, s, me) {
+    const T = Store.local.termo;
+    if (T.anim !== null && (g.data.tries[me] || []).length > T.anim) setTimeout(() => { T.anim = null; }, 0);
+  },
+  keydown(e) {
+    if (e.ctrlKey || e.metaKey || e.altKey) return false;
+    const k = e.key === 'Enter' ? 'ENTER' : e.key === 'Backspace' ? 'BACK' : /^[a-zA-Z]$/.test(e.key) ? e.key.toUpperCase() : null;
+    if (!k) return false;
+    e.preventDefault();
+    termoInput(k);
+    return true;
+  },
+  ui: { key(el) { termoInput(el.dataset.k); } },
+};
+
+/* ---------- 9. Reflexo ---------- */
+function rxTap() {
+  const g = Store.room?.game, me = Store.me?.id;
+  if (!g || g.id !== 'reflexo' || !inRoster(g, me) || g.data.taps[me]) return;
+  const key = `${g.round}`;
+  if (Store.local.rxTap?.key === key) return;
+  if (g.phase === 'wait') {
+    Store.local.rxTap = { key, early: true };
+    dispatch({ type: 'tap', early: true });
+  } else if (g.phase === 'go') {
+    const go = Store.local.rxGo, ms = go && go.key === `${g.round}:${g.phaseStart}` ? Math.round(performance.now() - go.t) : 9999;
+    Store.local.rxTap = { key, ms };
+    dispatch({ type: 'tap', ms });
+  } else return;
+  render();
+}
+Games.reflexo = {
+  id: 'reflexo', name: 'Reflexo', tag: 'Teste de velocidade', icon: 'target', color: '#22D3EE', lip: '#0E7490', min: 1,
+  how: 'Espere a tela ficar azul e toque o mais rápido que puder. Tocou antes da hora? Queimou a largada e fica sem ponto. Os 3 mais rápidos ganham 3, 2 e 1.',
+  first: 'wait',
+  init(g) { g.data = { taps: {}, wait: rand(2.2, 5.5) }; },
+  phases: {
+    // O tempo de espera é sorteado e fica escondido, senão dava para prever o "agora".
+    wait: { label: 'Espere…', dur: 4, hideTimer: true, bot: [.6, 2.5], next: 'go',
+      enter(g) { g.dur = g.data.wait; g.deadline = g.phaseStart + g.data.wait * 1000; } },
+    go: { label: 'Toque!', dur: 3.5, bot: [.25, .55], next: 'reveal', allIn: (g, s) => active(g, s).every(id => id in g.data.taps) },
+    reveal: { label: 'Tempos', dur: 10, enter(g, s) {
+      const ok = Object.entries(g.data.taps).filter(([, t]) => !t.early).sort((a, b) => a[1].ms - b[1].ms), d = {};
+      ok.slice(0, 3).forEach(([pid], k) => add(d, pid, 3 - k));
+      updateScores(s, d);
+    } },
+  },
+  handle(g, s, pid, a) {
+    if (!inRoster(g, pid) || a.type !== 'tap' || pid in g.data.taps) return false;
+    if (g.phase === 'wait') { g.data.taps[pid] = { early: true }; return true; }
+    if (g.phase === 'go') { g.data.taps[pid] = a.early ? { early: true } : { ms: clamp(Math.round(+a.ms) || 9999, 80, 9999) }; return true; }
+    return false;
+  },
+  done(g, pid) { return pid in g.data.taps; },
+  bot(g) {
+    if (g.phase === 'wait') return Math.random() < .07 ? { type: 'tap', early: true } : null;
+    if (g.phase === 'go') return { type: 'tap', ms: Math.round(rand(215, 470)) };
+    return null;
+  },
+  view(g, s, me) {
+    const d = g.data, can = inRoster(g, me), mine = d.taps[me];
+    const local = Store.local.rxTap?.key === `${g.round}` ? Store.local.rxTap : null;
+    if (g.phase === 'reveal') {
+      const ok = Object.entries(d.taps).filter(([, t]) => !t.early).sort((a, b) => a[1].ms - b[1].ms);
+      const early = Object.entries(d.taps).filter(([, t]) => t.early);
+      const max = Math.max(1, ...ok.map(([, t]) => Math.min(t.ms, 1500)));
+      return `<ul class="rx-results">${ok.map(([pid, t], i) => `<li>${avatar(s.players[pid], 'sm')}<span class="rx-name">${esc(nameOf(s, pid))}</span>
+          <span class="rx-bar"><i style="--w:${Math.min(t.ms, 1500) / max * 100}%"></i></span><b>${t.ms >= 9999 ? '—' : t.ms + ' ms'}</b>${deltaBadge(g.roundDelta[pid])}</li>`).join('')}
+        ${early.map(([pid]) => `<li class="is-early">${avatar(s.players[pid], 'sm')}<span class="rx-name">${esc(nameOf(s, pid))}</span><span class="rx-bar"></span><b>Queimou</b><span></span></li>`).join('')}</ul>
+        ${!ok.length && !early.length ? '<p class="hint center">Ninguém tocou a tempo.</p>' : ''}`;
+    }
+    let cls, big, sub;
+    if (!can) { cls = 'is-done'; big = 'Assistindo'; sub = 'Você joga na próxima rodada'; }
+    else if (mine?.early || local?.early) { cls = 'is-early'; big = 'Queimou!'; sub = 'Tocou antes da hora. Nesta rodada, sem ponto.'; }
+    else if (g.phase === 'wait') { cls = 'is-wait'; big = 'Espere…'; sub = 'Toque quando ficar azul'; }
+    else if (mine || local) { const ms = mine ? mine.ms : local.ms; cls = 'is-done'; big = ms >= 9999 ? 'Tocou!' : `${ms} ms`; sub = 'Esperando os outros'; }
+    else { cls = 'is-go'; big = 'TOQUE!'; sub = 'Agora!'; }
+    return `<button class="rx-pad ${cls}" id="rxPad" ${can ? '' : 'disabled'} aria-live="assertive"><span class="rx-big">${big}</span><span class="rx-sub">${sub}</span></button>
+      <p class="hint center">No computador, a barra de espaço também vale.</p>`;
+  },
+  mount(g) {
+    // O tempo de reação é medido neste aparelho, a partir do momento em que a tela ficou azul.
+    if (g.phase === 'go') {
+      const k = `${g.round}:${g.phaseStart}`;
+      if (Store.local.rxGo?.key !== k) Store.local.rxGo = { key: k, t: performance.now() };
+    }
+    const pad = $('#rxPad');
+    if (pad) pad.onpointerdown = e => { e.preventDefault(); rxTap(); };
+  },
+  keydown(e) {
+    if (e.key !== ' ' && e.key !== 'Enter') return false;
+    e.preventDefault();
+    if (!e.repeat) rxTap();
+    return true;
+  },
+};
+
+/* ---------- 10. Emoji Charada ---------- */
+const EMOJI_Q = [
+  { e: '🦁👑', c: 'Filme', t: 'O Rei Leão', a: ['rei leao'] },
+  { e: '🕷️🧑', c: 'Filme', t: 'Homem-Aranha', a: ['homem aranha', 'spiderman', 'spider man'] },
+  { e: '❄️👸⛄', c: 'Filme', t: 'Frozen', a: ['frozen', 'frozen uma aventura congelante'] },
+  { e: '🧙‍♂️💍🌋', c: 'Filme', t: 'O Senhor dos Anéis', a: ['senhor dos aneis'] },
+  { e: '🦖🏝️🚙', c: 'Filme', t: 'Jurassic Park', a: ['jurassic park', 'parque dos dinossauros', 'jurassic world'] },
+  { e: '🚢🧊💔', c: 'Filme', t: 'Titanic', a: ['titanic'] },
+  { e: '👻🚫', c: 'Filme', t: 'Caça-Fantasmas', a: ['caca fantasmas', 'os caca fantasmas', 'ghostbusters'] },
+  { e: '🐠🔍', c: 'Filme', t: 'Procurando Nemo', a: ['procurando nemo', 'nemo'] },
+  { e: '🧸🤠🚀', c: 'Filme', t: 'Toy Story', a: ['toy story'] },
+  { e: '🦇🧔‍♂️🌃', c: 'Filme', t: 'Batman', a: ['batman', 'o batman'] },
+  { e: '🍫🏭🎩', c: 'Filme', t: 'A Fantástica Fábrica de Chocolate', a: ['fantastica fabrica de chocolate', 'fabrica de chocolate', 'a fantastica fabrica de chocolate'] },
+  { e: '🐀👨‍🍳', c: 'Filme', t: 'Ratatouille', a: ['ratatouille', 'ratatui'] },
+  { e: '🏠🎈👴', c: 'Filme', t: 'Up', a: ['up', 'up altas aventuras'] },
+  { e: '🧞‍♂️🪔🐒', c: 'Filme', t: 'Aladdin', a: ['aladdin', 'aladim', 'aladin'] },
+  { e: '🐼🥋', c: 'Filme', t: 'Kung Fu Panda', a: ['kung fu panda'] },
+  { e: '🧟‍♂️🚆', c: 'Filme', t: 'Invasão Zumbi', a: ['invasao zumbi', 'train to busan'] },
+  { e: '💸🌳🚫', c: 'Expressão', t: 'Dinheiro não dá em árvore', a: ['dinheiro nao da em arvore'] },
+  { e: '🐟🏜️', c: 'Expressão', t: 'Peixe fora d\'água', a: ['peixe fora d agua', 'peixe fora dagua', 'peixe fora da agua'] },
+  { e: '🔨🧊', c: 'Expressão', t: 'Quebrar o gelo', a: ['quebrar o gelo', 'quebra o gelo'] },
+  { e: '🌙🍯', c: 'Expressão', t: 'Lua de mel', a: ['lua de mel'] },
+  { e: '🐘🧠', c: 'Expressão', t: 'Memória de elefante', a: ['memoria de elefante'] },
+  { e: '🐔🥚❓', c: 'Expressão', t: 'O ovo ou a galinha', a: ['ovo ou a galinha', 'o ovo ou a galinha', 'quem veio primeiro o ovo ou a galinha'] },
+  { e: '🌧️☀️🌈', c: 'Expressão', t: 'Depois da tempestade vem a bonança', a: ['depois da tempestade vem a bonanca', 'depois da tempestade vem a calmaria'] },
+  { e: '🐒🌳🍌', c: 'Expressão', t: 'Macaco velho', a: ['macaco velho', 'macaco velho nao poe a mao em cumbuca'] },
+];
+const emjKey = s => norm(s).replace(/[^a-z0-9]+/g, ' ').trim().replace(/^(o|a|os|as) /, '');
+const emjMatch = (text, q) => { const k = emjKey(text); return !!k && (emjKey(q.t) === k || q.a.some(a => emjKey(a) === k)); };
+
+Games.emoji = {
+  id: 'emoji', name: 'Emoji Charada', tag: 'Filmes e expressões', icon: 'smile', color: '#FDE047', lip: '#A16207', min: 1,
+  how: 'Os emojis escondem um filme ou uma expressão. Digite o que você acha que é: o primeiro a acertar ganha 3, o segundo 2 e o resto 1. No meio do tempo aparece uma dica.',
+  first: 'guess',
+  init(g) { g.data = { qi: drawItem(g, EMOJI_Q), solved: {}, order: [] }; },
+  phases: {
+    guess: { label: 'Adivinhe', dur: 45, bot: [6, 32], next: 'reveal', allIn: (g, s) => active(g, s).every(id => id in g.data.solved) },
+    reveal: { label: 'Resposta', dur: 10, enter(g, s) {
+      const d = {};
+      g.data.order.forEach((pid, k) => add(d, pid, Math.max(1, 3 - k)));
+      updateScores(s, d);
+    } },
+  },
+  handle(g, s, pid, a) {
+    const d = g.data;
+    if (!inRoster(g, pid) || g.phase !== 'guess' || a.type !== 'guess' || pid in d.solved) return false;
+    if (!emjMatch(String(a.text || '').slice(0, 60), EMOJI_Q[d.qi])) return false;
+    d.solved[pid] = d.order.length; d.order.push(pid);
+    return true;
+  },
+  done(g, pid) { return g.phase === 'guess' && pid in g.data.solved; },
+  bot(g) { return Math.random() < .6 ? { type: 'guess', text: EMOJI_Q[g.data.qi].t } : null; },
+  view(g, s, me) {
+    const d = g.data, q = EMOJI_Q[d.qi], can = inRoster(g, me), got = me in d.solved;
+    const card = `<div class="emj-card" role="img" aria-label="Charada de emojis">${q.e}</div><div class="emj-meta"><span class="tag">${q.c}</span></div>`;
+    const solvers = d.order.length ? `<ul class="emj-solvers" aria-label="Quem já acertou">${d.order.map((pid, k) => `<li>${avatar(s.players[pid], 'sm')}<span>${esc(nameOf(s, pid))}</span><b>${k + 1}º</b></li>`).join('')}</ul>` : '';
+    if (g.phase === 'reveal') return card + `<p class="verdict center">${esc(q.t)}</p>` + (solvers || '<p class="hint center">Ninguém acertou dessa vez.</p>');
+    const words = q.t.split(/\s+/).length;
+    const hint = `<p class="hint center emj-hint" data-show-at="${g.phaseStart + 18000}" hidden>Dica: começa com <b>${esc(q.t[0])}</b> e tem ${plural(words, 'palavra', 'palavras')}.</p>`;
+    const last = Store.local.emj?.key === `${g.round}` ? Store.local.emj.last : null;
+    let box = '';
+    if (can) box = got ? `<p class="emj-got">${icon('check')} Você acertou! Era <b>${esc(q.t)}</b>.</p>`
+      : `<form class="dw-guess" data-form="g:guess" novalidate><label class="sr-only" for="emjIn">Seu palpite</label>
+          <input class="input" id="emjIn" data-keep="emj-${g.round}" data-autofocus maxlength="60" autocomplete="off" spellcheck="false" placeholder="Qual é o filme ou a expressão?">
+          <button class="btn game pill">Chutar</button></form>${last ? `<p class="err center">“${esc(last)}” não é. Tenta de novo!</p>` : ''}`;
+    return card + hint + box + solvers;
+  },
+  forms: {
+    guess() {
+      const g = Store.room.game, input = $('#emjIn'), text = (input.value || '').trim();
+      if (!text) return;
+      Store.local.emj = { key: `${g.round}`, last: emjMatch(text, EMOJI_Q[g.data.qi]) ? null : text };
+      input.value = '';
+      dispatch({ type: 'guess', text });
+      render();
+    },
+  },
+};
+
+/* ---------- 11. Mente Coletiva ---------- */
+const MENTE_Q = [
+  { t: 'Uma fruta amarela', b: ['banana', 'banana', 'banana', 'abacaxi', 'manga', 'limão', 'maracujá'] },
+  { t: 'Algo que tem na praia', b: ['areia', 'areia', 'mar', 'mar', 'sol', 'guarda-sol', 'concha'] },
+  { t: 'Um animal da fazenda', b: ['vaca', 'vaca', 'galinha', 'galinha', 'porco', 'cavalo', 'ovelha'] },
+  { t: 'Uma cor do arco-íris', b: ['vermelho', 'azul', 'azul', 'amarelo', 'verde', 'roxo', 'laranja'] },
+  { t: 'Algo que você leva numa viagem', b: ['mala', 'mala', 'roupa', 'celular', 'passaporte', 'escova de dente', 'carregador'] },
+  { t: 'Um esporte com bola', b: ['futebol', 'futebol', 'futebol', 'basquete', 'vôlei', 'vôlei', 'tênis'] },
+  { t: 'Uma comida de festa junina', b: ['pamonha', 'pipoca', 'pipoca', 'quentão', 'canjica', 'paçoca', 'milho'] },
+  { t: 'Um super-herói', b: ['homem-aranha', 'homem-aranha', 'batman', 'batman', 'superman', 'mulher-maravilha', 'hulk'] },
+  { t: 'Algo que fica na cozinha', b: ['geladeira', 'geladeira', 'fogão', 'fogão', 'pia', 'panela', 'micro-ondas'] },
+  { t: 'Um país da Europa', b: ['portugal', 'portugal', 'frança', 'itália', 'espanha', 'alemanha', 'inglaterra'] },
+  { t: 'Um instrumento musical', b: ['violão', 'violão', 'guitarra', 'piano', 'piano', 'bateria', 'flauta'] },
+  { t: 'Uma coisa gelada', b: ['gelo', 'gelo', 'sorvete', 'sorvete', 'geladeira', 'neve', 'picolé'] },
+  { t: 'Um doce brasileiro', b: ['brigadeiro', 'brigadeiro', 'brigadeiro', 'beijinho', 'paçoca', 'pé de moleque', 'quindim'] },
+  { t: 'Um aplicativo de celular', b: ['whatsapp', 'whatsapp', 'instagram', 'instagram', 'tiktok', 'youtube', 'uber'] },
+  { t: 'Algo que voa', b: ['avião', 'avião', 'pássaro', 'pássaro', 'helicóptero', 'pipa', 'borboleta'] },
+  { t: 'Um animal que dá medo', b: ['tubarão', 'tubarão', 'cobra', 'cobra', 'leão', 'aranha', 'crocodilo'] },
+  { t: 'Algo que tem numa festa de aniversário', b: ['bolo', 'bolo', 'bolo', 'balão', 'vela', 'brigadeiro', 'presente'] },
+  { t: 'Uma coisa que você faz de manhã', b: ['escovar os dentes', 'tomar café', 'tomar café', 'tomar banho', 'acordar', 'acordar'] },
+];
+const menteKey = t => {
+  let k = norm(t).replace(/[^a-z ]+/g, ' ').replace(/\s+/g, ' ').trim().replace(/^(o|a|os|as|um|uma) /, '').replace(/ /g, '');
+  if (k.length > 4 && k.endsWith('s')) k = k.slice(0, -1);
+  return k;
+};
+Games.mente = {
+  id: 'mente', name: 'Mente Coletiva', tag: 'Pense igual à galera', icon: 'bubbles', color: '#D946EF', lip: '#A21CAF', min: 2,
+  how: 'Aparece um tema e cada um escreve uma resposta em segredo. O objetivo é pensar igual à maioria: cada pessoa que escreveu o mesmo que você vale 1 ponto.',
+  first: 'answer',
+  init(g) { g.data = { qi: drawItem(g, MENTE_Q), answers: {}, groups: null }; },
+  phases: {
+    answer: { label: 'Resposta secreta', dur: 30, bot: [3, 15], next: 'reveal', allIn: (g, s) => active(g, s).every(id => id in g.data.answers) },
+    reveal: { label: 'A galera pensou…', dur: 15, enter(g, s) {
+      const map = {}, deltas = {};
+      Object.entries(g.data.answers).forEach(([pid, txt]) => {
+        const k = menteKey(txt) || '?';
+        (map[k] || (map[k] = { label: txt, ids: [] })).ids.push(pid);
+      });
+      // O nome da bolha é a grafia mais usada no grupo ("whatsapp", não "WHATSAPPs").
+      Object.values(map).forEach(gr => {
+        const count = {};
+        gr.ids.forEach(pid => add(count, g.data.answers[pid].trim().toLowerCase(), 1));
+        const best = Object.keys(count).sort((a, b) => count[b] - count[a] || a.length - b.length)[0];
+        gr.label = best.charAt(0).toUpperCase() + best.slice(1);
+      });
+      g.data.groups = Object.values(map).sort((a, b) => b.ids.length - a.ids.length);
+      g.data.groups.forEach(gr => { if (gr.ids.length > 1) gr.ids.forEach(pid => add(deltas, pid, Math.min(4, gr.ids.length - 1))); });
+      updateScores(s, deltas);
+    } },
+  },
+  handle(g, s, pid, a) {
+    if (!inRoster(g, pid) || g.phase !== 'answer' || a.type !== 'submit' || pid in g.data.answers) return false;
+    const v = String(a.text || '').trim().slice(0, 24);
+    if (!v) return false;
+    g.data.answers[pid] = v;
+    return true;
+  },
+  done(g, pid) { return g.phase === 'answer' && pid in g.data.answers; },
+  bot(g) { return { type: 'submit', text: pick(MENTE_Q[g.data.qi].b) }; },
+  view(g, s, me) {
+    const q = MENTE_Q[g.data.qi], d = g.data, can = inRoster(g, me), mine = d.answers[me];
+    const P = `<p class="prompt center mt-prompt">${esc(q.t)}</p>`;
+    if (g.phase === 'answer') {
+      if (!can) return P + waitCard('A galera está pensando', 'Você joga na próxima rodada');
+      if (mine !== undefined) return P + waitCard(`Você escreveu: <b>${esc(mine)}</b>`, 'Esperando a galera');
+      return P + `<p class="hint center">Escreva o que você acha que a maioria vai escrever.</p>
+        <form class="answer-form center" data-form="g:answer" novalidate><label class="sr-only" for="mtIn">Sua resposta</label>
+          <input class="input" id="mtIn" data-keep="mente-${g.round}" data-autofocus maxlength="24" autocomplete="off" placeholder="Sua resposta">
+          <button class="btn game big pill">Enviar</button></form>`;
+    }
+    const groups = d.groups || [];
+    const bubbles = groups.map((gr, i) => {
+      const n = gr.ids.length, size = Math.min(220, 104 + (n - 1) * 38);
+      return `<div class="mt-bubble ${n > 1 ? 'is-match' : ''}" style="--s:${size}px;--i:${i}">
+        <b>${esc(gr.label)}</b><span class="mt-avs">${gr.ids.map(pid => avatar(s.players[pid], 'sm')).join('')}</span>
+        ${n > 1 ? `<span class="mt-pts">+${Math.min(4, n - 1)} cada</span>` : '<span class="mt-pts">sozinho</span>'}</div>`;
+    }).join('');
+    const top = groups[0];
+    const headline = !top ? 'Ninguém respondeu.' : top.ids.length > 1 ? `A maioria foi de ${esc(top.label)}` : 'Cada um pensou uma coisa!';
+    return P + `<p class="verdict center">${headline}</p><div class="mt-clouds">${bubbles}</div>`;
+  },
+  forms: {
+    answer() {
+      const input = $('#mtIn'), text = (input.value || '').trim();
+      if (!text) { input.focus(); return; }
+      dispatch({ type: 'submit', text });
+    },
+  },
+};
+
+/* ---------- 12. Batata Quente ---------- */
+const BOMB_WORDS = ['casa','faca','vaca','cama','caneta','macaco','cavalo','barraca','cabelo','boneca','mala','mamão','manga','tomate','pomada','camelo','escada','telefone','tesoura','pente','sorvete','dente','gente','leite','rato','barata','girafa','arara','raposa','carro','bolo','lobo','loja','galo','palito','pato','papel','sapato','pera','panela','pipoca','tomada','gato','foto','moto','dado','nada','fada','roda','coco','copo','cobra','coxinha','boneco','cone','neve','janela','bola','boca','bota','bolsa','lata','lago','lápis','salada','sala','sapo','casaco','rio','arroz','risada','rico','vela','verde','novela','gata','garfo','garrafa','pena','peixe','perna','tapete','mico','milho','camisa','tatu','tapa','lima','limão','livro','lixo','dedo','doce','dono','cachorro','roupa','rosa','sorriso','navio','nariz','banana','sopa','sono','cebola','cereja','cenoura','cadeira','pedra','pedido','terra','tempo','teto','madeira','marido','tarde','tomara','soldado','sacola','bota','beleza','berço','abelha','rede','remo','riso','comida','corrida','coelho','colega','camelo','cimento','vidro','visita','medalha','mesa','metade','gelo','gelado','genro','ligado','limpo','linha','minhoca','amigo','mingau','minuto','formiga','cereal','cesta','centro','cego','gema','geleia','geladeira','tigela'];
+const BOMB_SYL = ['CA','MA','TE','RA','LO','PA','TO','DA','CO','NE','BO','LA','SA','RI','VE','GA','PE','MI','TA','LI','DO','RO','NA','SO','CE','DE','ME','GE'];
+const bombKey = s => norm(s).replace(/[^a-z]/g, '');
+function bombNext(g, s, from) {
+  const order = active(g, s);
+  if (!order.length) return from;
+  const i = order.indexOf(from);
+  return order[(i + 1) % order.length];
+}
+function bombArm(g, s) {
+  const d = g.data;
+  // Bots sempre respondem, mas de vez em quando demoram: é quando a bomba pode estourar com eles.
+  d.botAt = s.players[d.holder]?.isBot ? now() + (Math.random() < .2 ? rand(7000, 14000) : rand(1500, 5000)) : 0;
+}
+function bombPass(g, s, pid, word) {
+  const d = g.data, k = bombKey(word);
+  if (pid !== d.holder || k.length < 3 || !k.includes(d.syl.toLowerCase()) || d.used.includes(k)) return false;
+  d.used.push(k);
+  d.last = { pid, word: String(word).trim().slice(0, 20) };
+  d.passes++;
+  d.holder = bombNext(g, s, pid);
+  d.syl = pick(BOMB_SYL.filter(x => x !== d.syl));
+  bombArm(g, s);
+  return true;
+}
+const bombSVG = () => `<svg class="bm-bomb" viewBox="0 0 120 120" aria-hidden="true">
+  <defs><radialGradient id="bmG" cx=".35" cy=".35" r=".75"><stop offset="0" stop-color="#4B5563"/><stop offset="1" stop-color="#0B0B0F"/></radialGradient></defs>
+  <rect x="68" y="25" width="18" height="14" rx="3" transform="rotate(35 77 32)" fill="#374151"/>
+  <circle cx="56" cy="70" r="38" fill="url(#bmG)" stroke="rgba(255,255,255,.14)"/>
+  <ellipse cx="43" cy="55" rx="10" ry="6.5" fill="rgba(255,255,255,.2)"/>
+  <path d="M83 24q10-14 22-8" fill="none" stroke="#D6B98C" stroke-width="4" stroke-linecap="round"/>
+  <g class="bm-spark"><circle cx="105" cy="15" r="5" fill="#FDE047"/><path d="M105 3v6M105 21v6M93 15h6M111 15h6M97 7l4 4M109 19l4 4M113 7l-4 4M101 19l-4 4" stroke="#F97316" stroke-width="2.5" stroke-linecap="round"/></g>
+</svg>`;
+
+Games.bomba = {
+  id: 'bomba', name: 'Batata Quente', tag: 'Bomba de sílabas', icon: 'flame', color: '#F97316', lip: '#C2410C', min: 2,
+  how: 'Quem está com a bomba digita uma palavra com a sílaba da vez para passá-la adiante. Ninguém sabe quando ela explode: quem estiver com ela na hora fica sem ponto, e o resto ganha +2.',
+  first: 'play',
+  init(g, s) {
+    g.data = { holder: pick(g.roster), syl: pick(BOMB_SYL), used: [], last: null, passes: 0, fuse: rand(22, 40), botAt: 0 };
+    bombArm(g, s);
+  },
+  phases: {
+    // O pavio é sorteado e escondido: é isso que dá o suspense.
+    play: { label: 'Passe a bomba!', dur: 30, hideTimer: true, next: 'reveal',
+      enter(g) { g.dur = g.data.fuse; g.deadline = g.phaseStart + g.data.fuse * 1000; } },
+    reveal: { label: 'BUM!', dur: 10, enter(g, s) {
+      const d = {};
+      g.roster.forEach(id => { if (id !== g.data.holder && s.players[id]) add(d, id, 2); });
+      updateScores(s, d);
+    } },
+  },
+  handle(g, s, pid, a) {
+    if (!inRoster(g, pid) || g.phase !== 'play' || a.type !== 'pass') return false;
+    return bombPass(g, s, pid, a.word);
+  },
+  tick(g, s) {
+    const d = g.data;
+    if (g.phase !== 'play') return false;
+    if (!active(g, s).includes(d.holder)) { d.holder = bombNext(g, s, d.holder); bombArm(g, s); return true; }
+    if (!d.botAt || now() < d.botAt) return false;
+    d.botAt = 0;
+    const word = pick(BOMB_WORDS.filter(w => bombKey(w).includes(d.syl.toLowerCase()) && !d.used.includes(bombKey(w))));
+    return word ? bombPass(g, s, d.holder, word) : false;
+  },
+  done(g, pid) { return g.phase === 'play' && g.data.holder !== pid; },
+  view(g, s, me) {
+    const d = g.data, mine = d.holder === me, hp = s.players[d.holder];
+    if (g.phase === 'reveal') {
+      return `<div class="bm-boom"><span class="bm-boom-word">BUM!</span>${avatar(hp, 'xl')}
+        <p class="lede center">A bomba estourou com <b>${esc(nameOf(s, d.holder))}</b>.</p></div>
+        <p class="hint center">Quem se livrou dela ganhou +2. A bomba passou ${plural(d.passes, 'vez', 'vezes')} nesta rodada.</p>`;
+    }
+    const holder = `<div class="bm-holder">${avatar(hp, 'lg')}<span>${mine ? '<b>Está com você!</b>' : `Com <b>${esc(nameOf(s, d.holder))}</b>`}</span></div>`;
+    const form = mine
+      ? `<form class="bm-form" data-form="g:pass" novalidate><label class="sr-only" for="bmIn">Palavra com ${d.syl}</label>
+          <input class="input" id="bmIn" data-keep="bm-${g.round}-${d.passes}" maxlength="20" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Palavra com ${d.syl}…">
+          <button class="btn game pill">Passar</button></form><p class="err center" id="bmErr" role="alert"></p>`
+      : '<p class="hint center">Quando a bomba chegar em você, digite uma palavra com a sílaba da vez.</p>';
+    const last = d.last ? `<p class="bm-last">${avatar(s.players[d.last.pid], 'sm')}<span><b>${esc(nameOf(s, d.last.pid))}</b> passou com <i>${esc(d.last.word)}</i></span></p>` : '';
+    const used = d.used.length ? `<div class="bm-used" aria-label="Palavras já usadas">${d.used.slice(-8).map(w => `<span>${esc(w)}</span>`).join('')}</div>` : '';
+    return `<div class="bm-stage ${mine ? 'is-me' : ''}">${bombSVG()}${holder}</div>
+      <div class="bm-syl" aria-label="Sílaba da vez: ${d.syl}">${d.syl}</div>${form}${last}${used}`;
+  },
+  mount(g, s, me) {
+    if (g.phase !== 'play' || g.data.holder !== me || Store.local.bombTurn === `${g.round}:${g.data.passes}`) return;
+    Store.local.bombTurn = `${g.round}:${g.data.passes}`;
+    $('#bmIn')?.focus({ preventScroll: true });
+  },
+  forms: {
+    pass() {
+      const d = Store.room.game.data, input = $('#bmIn'), err = $('#bmErr'), w = bombKey(input.value);
+      const msg = w.length < 3 ? 'Use uma palavra com pelo menos 3 letras.'
+        : !w.includes(d.syl.toLowerCase()) ? `A palavra precisa ter “${d.syl}”.`
+        : d.used.includes(w) ? 'Essa palavra já foi usada nesta rodada.' : '';
+      if (msg) { err.textContent = msg; input.focus(); return; }
+      dispatch({ type: 'pass', word: input.value });
+    },
+  },
+};
+
+GAME_ORDER.push('desenho', 'termo', 'reflexo', 'emoji', 'mente', 'bomba');
+
+/* =====================================================================
    Host: processa ações e transmite o estado
    ===================================================================== */
 function commit() {
@@ -1846,7 +2722,18 @@ function render() {
   let html, sig;
   if (!s || !Store.me) { sig = 'home'; html = viewHome(); }
   else if (s.screen === 'lobby') { sig = 'lobby'; html = viewLobby(s); }
-  else if (s.screen === 'game' && s.game) { sig = `game:${s.game.id}:${s.game.round}:${s.game.phase}`; html = viewGame(s); }
+  else if (s.screen === 'game' && s.game) {
+    sig = `game:${s.game.id}:${s.game.round}:${s.game.phase}`;
+    // Mesma fase e o jogo sabe se atualizar por partes: não redesenha a tela toda.
+    const mod = Games[s.game.id];
+    if (sig === lastSig && mod.patch && s.game.phase !== 'final' && !Store.hostLost && !$('.banner', app) && $('.stage-body', app)) {
+      mod.patch(s.game, s, Store.me.id);
+      const strip = $('.strip', app);
+      if (strip) strip.outerHTML = stripHTML(s, s.game, mod);
+      return;
+    }
+    html = viewGame(s);
+  }
   else { sig = 'podium'; html = viewPodium(s); }
   if (s && !isHost() && Store.hostLost) html = `<div class="banner" role="alert">Sem sinal do host há alguns segundos. Se a aba do host foi fechada, a sala acabou.</div>` + html;
   const kept = captureInputs(app);
@@ -1892,6 +2779,8 @@ function afterRender(s) {
       setTimeout(() => dispatch({ type: 'submit', answers }), 0);
     }
   }
+  const mod = Games[g.id];
+  if (g.phase !== 'final' && mod.mount) mod.mount(g, s, Store.me.id);
 }
 
 function renderTop() {
@@ -1919,6 +2808,16 @@ const ICONS = {
   copy: '<rect x="8" y="8" width="12" height="12" rx="2.5"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/>',
   link: '<path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1"/>',
   check: '<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+  brush: '<path d="M18.4 2.6a2.1 2.1 0 0 1 3 3L12 15l-3-3z"/><path d="M7.5 13.5c-2.2 0-3.7 1.7-3.7 3.8 0 1.3-.6 2.2-1.6 2.7 1 .6 2.4.7 3.6.7 2.6 0 4.6-1.9 4.6-4.3z"/>',
+  grid: '<rect x="3" y="3" width="7.5" height="7.5" rx="1.6"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="1.6"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.6"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.6" fill="currentColor"/>',
+  target: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/>',
+  smile: '<circle cx="12" cy="12" r="9"/><path d="M8 14.5c1 1.4 2.4 2.1 4 2.1s3-.7 4-2.1"/><path d="M9 9.5h.01M15 9.5h.01" stroke-width="2.8"/>',
+  bubbles: '<path d="M4 4.5h10.5a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H9l-4 3v-3H4a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2z"/><path d="M19.5 8.5h.5a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-1v3l-3-3h-4"/>',
+  flame: '<path d="M12 21.5c-3.9 0-7-2.8-7-6.7 0-3 2-5.1 3.6-6.8.4 1.6 1.4 2.8 2.6 3.3-.3-3.2 1-6.2 3.8-8.4.2 2.8 1.7 4.6 3.3 6.4 1.3 1.4 1.7 3 1.7 5.5 0 3.9-3.1 6.7-8 6.7z"/><path d="M12 21.5c-1.8 0-3-1.2-3-2.9 0-1.5 1.1-2.5 2-3.5.3.9.9 1.5 1.6 1.8 1 .7 2.4 1.5 2.4 2.8 0 1.2-1.3 1.8-3 1.8z" fill="currentColor"/>',
+  eraser: '<path d="M7 20h13"/><path d="M4.5 14.5l9-9a2 2 0 0 1 2.8 0l2.2 2.2a2 2 0 0 1 0 2.8L11 18H7.5z"/><path d="M9 10l5 5"/>',
+  undo: '<path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/>',
+  trash: '<path d="M4 7h16M10 11v6M14 11v6"/><path d="M6 7l1 13h10l1-13M9 7V4h6v3"/>',
+  backspace: '<path d="M21 5H9l-6 7 6 7h12z"/><path d="M17 9.5l-5 5M12 9.5l5 5"/>',
   user: '<circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c.6-3.6 3.5-6 7-6s6.4 2.4 7 6"/>',
 };
 const icon = (name, cls = '') => `<svg class="ic ${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[name] || ''}</svg>`;
@@ -2037,7 +2936,7 @@ function viewLobby(s) {
           <div><h2 class="panel-title" id="gmTitle">${host ? 'Escolha um jogo' : 'O host escolhe o jogo'}</h2><p class="hint">Rodadas por jogo</p></div>
           ${host ? `<div class="seg" role="group" aria-label="Rodadas por jogo">${seg}</div>` : `<span class="seg-static">${s.settings.rounds}</span>`}
         </div>
-        <div class="game-grid">${cards}</div>
+        <div class="game-grid is-12">${cards}</div>
         ${host ? `<div class="lobby-foot"><p class="hint">${scored ? 'O placar soma todos os jogos desta partida.' : 'Os pontos de cada jogo vão para um placar geral.'}</p>
           <button class="btn xs" data-act="endMatch" ${scored ? '' : 'disabled'}>Encerrar partida e ver pódio</button></div>` : ''}
       </section>
@@ -2065,13 +2964,14 @@ function viewGame(s) {
   const ph = mod.phases[g.phase];
   const firstStep = g.round === 1 && g.phase === mod.first;
   const reveal = g.phase === 'reveal';
-  const left = g.deadline ? Math.max(0, g.deadline - now()) : 0;
-  const timerAttrs = g.deadline ? `data-deadline="${g.deadline}" data-dur="${g.dur}" style="--p:${g.dur ? left / (g.dur * 1000) : 0}"` : '';
+  const showTimer = !!g.deadline && !ph.hideTimer;
+  const left = showTimer ? Math.max(0, g.deadline - now()) : 0;
+  const timerAttrs = showTimer ? `data-deadline="${g.deadline}" data-dur="${g.dur}" style="--p:${g.dur ? left / (g.dur * 1000) : 0}"` : '';
   return `<section class="screen game" style="${gameVars(mod)}">
-    <div class="game-top ${g.deadline ? 'timer' : ''} ${g.deadline && left < 5000 ? 'low' : ''}" ${timerAttrs}>
+    <div class="game-top ${showTimer ? 'timer' : ''} ${showTimer && left < 5000 ? 'low' : ''}" ${timerAttrs}>
       <button class="icon-btn" data-act="${host ? 'toLobby' : 'leave'}" aria-label="${host ? 'Voltar ao lobby' : 'Sair da partida'}">${icon('back')}</button>
       <span class="gt-round">Rodada ${g.round}/${g.total}</span>
-      <span class="gt-time">${g.deadline ? `${icon('clock')}<span class="timer-num">${Math.ceil(left / 1000)}s</span>` : ''}</span>
+      <span class="gt-time">${showTimer ? `${icon('clock')}<span class="timer-num">${Math.ceil(left / 1000)}s</span>` : ph.hideTimer ? `${icon('clock')}<span>???</span>` : ''}</span>
       <div class="timer-track" role="progressbar" aria-label="Tempo restante"><div class="timer-fill"></div></div>
     </div>
     <div class="stage">
@@ -2160,6 +3060,7 @@ function frame() {
     const m = fatoMult(now() - +el.dataset.multStart, +el.dataset.multDur);
     el.querySelectorAll('[data-m]').forEach(x => x.classList.toggle('now', +x.dataset.m === m));
   });
+  $$('[data-show-at]').forEach(el => { const show = now() >= +el.dataset.showAt; if (el.hidden === show) el.hidden = !show; });
   requestAnimationFrame(frame);
 }
 
@@ -2344,14 +3245,18 @@ const Forms = {
 document.addEventListener('click', e => {
   const el = e.target.closest('[data-act]');
   if (!el || el.disabled) return;
-  const fn = Actions[el.dataset.act];
+  const act = el.dataset.act, gm = Store.room?.game;
+  const ui = act.startsWith('g:') && gm ? Games[gm.id].ui : null;
+  const fn = Actions[act] || (ui && ui[act.slice(2)] && ui[act.slice(2)].bind(ui));
   if (fn) { e.preventDefault(); fn(el, e); }
 });
 document.addEventListener('submit', e => {
   const f = e.target.closest('[data-form]');
   if (!f) return;
   e.preventDefault();
-  Forms[f.dataset.form]?.(f, e.submitter);
+  const name = f.dataset.form, gm = Store.room?.game;
+  if (name.startsWith('g:')) { const forms = gm && Games[gm.id].forms; forms && forms[name.slice(2)] && forms[name.slice(2)](f); return; }
+  Forms[name]?.(f, e.submitter);
 });
 document.addEventListener('focusin', e => { if (e.target.id === 'pin') syncPinSlots(); });
 document.addEventListener('focusout', e => { if (e.target.id === 'pin') syncPinSlots(); });
@@ -2378,6 +3283,8 @@ document.addEventListener('input', e => {
 document.addEventListener('keydown', e => {
   // Enter num campo do Stop pula para o próximo; no último, aperta Stop se puder.
   const t = e.target;
+  const gm = Store.room?.screen === 'game' && Store.room.game;
+  if (gm && Games[gm.id].keydown && !['INPUT', 'TEXTAREA', 'SELECT'].includes(t.tagName) && Games[gm.id].keydown(e, gm, Store.room, Store.me?.id)) return;
   if (t.getAttribute?.('role') === 'tab' && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
     e.preventDefault();
     selectTab(Store.local.homeTab === 'join' ? 'create' : 'join', true);
