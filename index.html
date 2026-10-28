@@ -1496,7 +1496,7 @@ function parseNum(v) {
 const AVATARS = ['🦊','🐸','🐼','🦄','🐙','🐯','🦖','🐧','🌵','🍕','👾','🤖','🦉','🐝','🍩','🐳'];
 const COLORS = ['#6366F1','#3B82F6','#EC4899','#FF5F57','#FBBF24','#14B8A6','#A3E635','#A78BFA'];
 const BOT_NAMES = ['Zé Bolacha','Dona Byte','Tchuca 3000','Lulu Pixel','Sr. Algoritmo','Biscoito.exe','Nina Nuvem','Chip Chopp','Tia Turbo','Bóris Bug'];
-const MAX_PLAYERS = 12;
+const MAX_PLAYERS = 30;
 
 const MANE_Q = [
   { t: 'Quantos degraus tem a Torre Eiffel, do chão até o topo?', a: 1665, u: 'degraus' },
@@ -5741,8 +5741,8 @@ function hostHandle(from, a) {
     else if (s.settings.locked) {
       Transport.send({ kind: 'reject', to: pl.id, reason: 'O host trancou esta sala. Peça para liberar a entrada e tente de novo.' });
       return;
-    } else if (Object.keys(s.players).length >= 40) {
-      Transport.send({ kind: 'reject', to: pl.id, reason: 'Essa sala está lotada (40 pessoas, contando a plateia).' });
+    } else if (Object.keys(s.players).length >= 60) {
+      Transport.send({ kind: 'reject', to: pl.id, reason: 'Essa sala está lotada (60 pessoas, contando a plateia).' });
       return;
     } else {
       // Até 12 jogadores; quem chega depois (ou pede) fica na plateia. O telão é só uma tela.
@@ -5755,7 +5755,7 @@ function hostHandle(from, a) {
       if (role !== 'player') np.role = role;
       s.players[pl.id] = np;
       s.order.push(pl.id);
-      pushChat(s, { sys: true, text: role === 'tv' ? 'Um telão foi conectado' : role === 'spectator' ? `${name} está assistindo${full ? ' (os 12 lugares de jogador estão ocupados)' : ''}` : `${name} entrou na sala` });
+      pushChat(s, { sys: true, text: role === 'tv' ? 'Um telão foi conectado' : role === 'spectator' ? `${name} está assistindo${full ? ' (os 30 lugares de jogador estão ocupados)' : ''}` : `${name} entrou na sala` });
       changed = true;
     }
   } else if (a.type === 'ping') {
@@ -6720,7 +6720,7 @@ function viewPodium(s) {
    ===================================================================== */
 // ---- Ajustes da sala
 const CFG = {
-  maxPlayers: { min: 2, max: 20, step: 1, def: 12, label: 'Limite de jogadores' },
+  maxPlayers: { min: 2, max: 30, step: 1, def: 30, label: 'Limite de jogadores' },
   rounds: { min: 1, max: 10, step: 1, def: 3, label: 'Rodadas por jogo' },
   timeMult: { min: .5, max: 2, step: .25, def: 1, label: 'Tempo das etapas', fmt: v => `${String(v).replace('.', ',')}×` },
   goal: { min: 0, max: 300, step: 10, def: 0, label: 'Meta de pontos (acaba a partida)', fmt: v => v ? `${v} pts` : 'sem meta' },
