@@ -650,7 +650,7 @@ body.in-game .game-top{margin-bottom:10px}
 /* Quadros e mapas encolhem para caber na altura disponível */
 body.in-game #dwBoard,body.in-game #telBoard{width:min(100%,calc((100dvh - var(--chrome-h) - 130px) * 4 / 3));margin-inline:auto}
 body.in-game .dw-board-wrap{display:flex;justify-content:center}
-body.in-game #mapBoard{width:min(100%,calc((100dvh - var(--chrome-h) - 150px) * 2));margin-inline:auto}
+body.in-game .map-wrap{width:min(100%,calc((100dvh - var(--chrome-h) - 150px) * 2));margin-inline:auto}
 body.in-game .sp-pair{max-width:calc((100dvh - var(--chrome-h)) / .7 * 2 + 10px);margin-inline:auto}
 body.in-game .rt-pad{width:min(70vw,260px,calc(100dvh - var(--chrome-h) - 40px))}
 /* Telas baixas (notebook, Chromebook, celular deitado): tudo mais compacto */
@@ -741,6 +741,46 @@ body.in-game .tm-k{height:clamp(38px,6.4vh,52px)}
   body.in-game .hostbar{margin-top:6px}
   body.in-game .hb-label{display:none}
 }
+/* ---------- Visual: fundo vivo, brilhos e detalhes ---------- */
+body::before{content:"";position:fixed;inset:-25%;z-index:-1;pointer-events:none;will-change:transform;
+  background:radial-gradient(30% 26% at 18% 28%,color-mix(in srgb,var(--glow) 22%,transparent),transparent 70%),
+    radial-gradient(28% 24% at 82% 66%,rgba(236,72,153,.12),transparent 70%),
+    radial-gradient(24% 22% at 62% 16%,rgba(20,184,166,.09),transparent 70%),
+    radial-gradient(28% 24% at 30% 86%,rgba(251,191,36,.06),transparent 70%);
+  animation:aurora 26s ease-in-out infinite alternate}
+@keyframes aurora{0%{transform:translate3d(0,0,0) rotate(0)}50%{transform:translate3d(4%,-3%,0) rotate(6deg)}100%{transform:translate3d(-3%,4%,0) rotate(-5deg)}}
+.topbar::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:1px;background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--glow) 75%,transparent),transparent);pointer-events:none}
+.wordmark{background:linear-gradient(90deg,#fff 0%,#C7D2FE 55%,#F9A8D4 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.brand:hover .logo-mark{animation:gcWiggle .6s ease}
+.hero-title .accent{background:linear-gradient(90deg,#818CF8,#EC4899,#F59E0B,#818CF8);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:heroShift 9s linear infinite}
+@keyframes heroShift{to{background-position:300% 0}}
+.panel{box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 24px 48px -32px rgba(0,0,0,.9);transition:border-color .2s}
+.panel:hover{border-color:var(--line-2)}
+.stage::before{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--g) 85%,#fff),transparent);opacity:.8;pointer-events:none}
+.game-top .timer-fill{box-shadow:0 0 12px color-mix(in srgb,var(--g) 80%,transparent)}
+/* Brilho que passa pelos botões principais */
+.btn.primary,.btn.game,.create-btn{position:relative;overflow:hidden;isolation:isolate}
+.btn.primary::after,.btn.game::after,.create-btn::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(105deg,transparent 35%,rgba(255,255,255,.34) 50%,transparent 65%);transform:translateX(-130%);transition:transform .7s ease}
+.btn.primary:hover:not(:disabled)::after,.btn.game:hover:not(:disabled)::after,.create-btn:hover::after{transform:translateX(130%)}
+.create-btn,.join-big{animation:ctaGlow 3.2s ease-in-out infinite}
+@keyframes ctaGlow{50%{box-shadow:0 10px 34px -4px rgba(129,140,248,.75)}}
+/* Cartões dos jogos: brilho e ícone que balança */
+button.game-card::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(110deg,transparent 40%,rgba(255,255,255,.4) 50%,transparent 60%);background-size:260% 100%;background-position:130% 0;transition:background-position .8s ease}
+button.game-card:hover:not(:disabled)::after{background-position:-30% 0}
+button.game-card:hover:not(:disabled){transform:translateY(-4px) rotate(-.6deg)}
+button.game-card:hover:not(:disabled) .gc-icon{animation:gcWiggle .5s ease}
+@keyframes gcWiggle{30%{transform:rotate(-10deg) scale(1.12)}60%{transform:rotate(8deg) scale(1.12)}}
+/* PIN da sala flutuando */
+.pin-keys .key{background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.02)),var(--bg-2);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 12px 24px -14px rgba(99,102,241,.7);animation:keyFloat 3.2s ease-in-out infinite}
+.pin-keys .key:nth-child(2){animation-delay:.2s}
+.pin-keys .key:nth-child(3){animation-delay:.4s}
+.pin-keys .key:nth-child(4){animation-delay:.6s}
+@keyframes keyFloat{50%{transform:translateY(-5px)}}
+/* Botão do chat pulsando quando tem mensagem nova */
+.fab-chat:has(.fab-badge:not([hidden])){animation:fabPulse 2s ease-in-out infinite}
+@keyframes fabPulse{0%,100%{box-shadow:0 0 0 0 rgba(99,102,241,.55),0 10px 24px -8px rgba(0,0,0,.7)}50%{box-shadow:0 0 0 12px rgba(99,102,241,0),0 10px 24px -8px rgba(0,0,0,.7)}}
+::selection{background:rgba(99,102,241,.5);color:#fff}
+html{scrollbar-color:rgba(255,255,255,.18) transparent}
 @media (min-width:1600px){ #app{max-width:1480px} body.in-game .game{max-width:1380px} }
 /* No celular, campos com letra pequena faziam o iPhone dar zoom sozinho */
 @media (pointer:coarse){ .cry-field .input,.cust-form textarea,.chat-form .input,.cfg-inline .input,.dw-guess .input{font-size:16px} }
@@ -819,7 +859,11 @@ body.fx-shake #app{animation:fxShake .6s}
 .sp-joker{position:absolute;top:-4px;left:-4px;font-size:16px}
 .sp{position:relative}
 .cry-bubble{display:flex;align-items:center;gap:10px;width:max-content;max-width:100%;margin:12px auto 0;padding:10px 16px;border-radius:18px 18px 18px 4px;background:linear-gradient(120deg,rgba(99,102,241,.3),rgba(236,72,153,.3));border:1px solid rgba(236,72,153,.4);font-size:15px;animation:evIn .5s cubic-bezier(.2,1.4,.4,1)}
-.kudos{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px;margin-top:12px}
+/* Uma linha só: com sala cheia, rola para o lado em vez de empurrar o jogo para baixo */
+.kudos{display:flex;flex-wrap:nowrap;align-items:center;gap:6px;margin-top:12px;padding:4px 2px;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.18) transparent}
+.kudos > *{flex:none}
+.kudos > :first-child{margin-left:auto}
+.kudos > :last-child{margin-right:auto}
 .kudos > span{font-size:12px;font-weight:800;color:var(--muted);margin-right:4px}
 .kudos button{border-radius:50%;transition:transform .12s}
 .kudos button:hover{transform:scale(1.12)}
@@ -866,8 +910,22 @@ body.fx-shake #app{animation:fxShake .6s}
 /* Mapa Misterioso */
 .map-card .map-ask{margin:0 0 2px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .map-wrap{position:relative}
-.map-cv{display:block;width:100%;height:auto;aspect-ratio:2/1;border-radius:16px;background:#0B2A4A;touch-action:manipulation;box-shadow:0 0 0 1px rgba(255,255,255,.08)}
+.map-cv{display:block;width:100%;height:auto;aspect-ratio:2/1;border-radius:16px;background:#0B2A4A;touch-action:none;box-shadow:0 0 0 1px rgba(255,255,255,.08);user-select:none;-webkit-user-select:none}
 .map-cv.can-pin{cursor:crosshair;box-shadow:0 0 0 3px var(--g)}
+.map-cv.is-zoomed{cursor:grab}
+.map-cv.is-zoomed.can-pin{cursor:crosshair}
+.map-cv.is-grab.is-zoomed{cursor:grabbing}
+.map-ctl{position:absolute;top:8px;right:8px;display:flex;flex-direction:column;gap:4px}
+.map-ctl button{display:grid;place-items:center;width:34px;height:34px;border-radius:10px;background:rgba(11,11,15,.78);border:1px solid rgba(255,255,255,.16);color:#fff;font-size:1.15rem;font-weight:800;line-height:1;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);transition:transform .12s,background .12s}
+.map-ctl button:hover{background:rgba(30,30,40,.9);transform:scale(1.06)}
+.map-ctl button:active{transform:scale(.94)}
+.map-info{position:absolute;left:8px;top:8px;max-width:calc(100% - 60px);margin:0;padding:5px 11px;border-radius:999px;background:rgba(11,11,15,.82);border:1px solid rgba(255,255,255,.16);color:#fff;font-size:.82rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none;animation:pickerIn .2s ease}
+.map-info[hidden]{display:none}
+.map-tip{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);margin:0;padding:3px 10px;border-radius:999px;background:rgba(11,11,15,.7);color:rgba(255,255,255,.85);font-size:.72rem;font-weight:600;white-space:nowrap;pointer-events:none;transition:opacity .4s}
+.map-tip.is-off{opacity:0}
+@media (max-width:520px){ .map-ctl button{width:30px;height:30px;font-size:1rem} .map-tip{font-size:.66rem} }
+/* Celular em pé: mapa mais alto para sobrar espaço ao dar zoom */
+@media (max-width:600px) and (orientation:portrait){ .map-cv{aspect-ratio:4/3} body.in-game .map-wrap{width:100%} }
 .map-loading{position:absolute;inset:0;display:grid;place-items:center;margin:0;color:#fff;font-weight:700;pointer-events:none}
 .stage-body .map-wrap + .res-list{margin-top:14px}
 /* Lobisomem Relâmpago */
@@ -1252,6 +1310,56 @@ body.in-room #app{padding-bottom:120px}
 .fx{position:absolute;left:var(--x);bottom:-60px;display:grid;justify-items:center;animation:fxUp 2.6s cubic-bezier(.2,.7,.3,1) forwards}
 .fx-e{font-size:2.6rem;line-height:1;filter:drop-shadow(0 6px 12px rgba(0,0,0,.5))}
 .fx-n{margin-top:2px;padding:1px 8px;border-radius:999px;background:rgba(11,11,15,.75);font-size:.68rem;font-weight:700;color:var(--ink)}
+.fx-e{font-size:calc(2.6rem * var(--s,1))}
+.fx-burst{position:absolute;bottom:40px;width:0;height:0}
+.fx-burst span{position:absolute;left:0;top:0;font-size:1.1rem;animation:fxBurst .95s cubic-bezier(.2,.8,.3,1) forwards}
+@keyframes fxBurst{0%{transform:translate(-50%,0) scale(.3);opacity:1}100%{transform:translate(calc(-50% + var(--bx)),var(--by)) rotate(var(--br)) scale(1);opacity:0}}
+.fx-combo{position:fixed;left:50%;top:38%;display:grid;justify-items:center;gap:2px;transform:translate(-50%,-50%) scale(var(--k,1));pointer-events:none}
+.fx-combo span{font-size:4.2rem;line-height:1;filter:drop-shadow(0 10px 20px rgba(0,0,0,.5))}
+.fx-combo b{padding:4px 14px;border-radius:999px;background:linear-gradient(90deg,#F43F5E,#F97316,#FBBF24);color:#fff;font-size:1.05rem;font-weight:900;letter-spacing:.06em;text-shadow:0 2px 0 rgba(0,0,0,.25);box-shadow:0 10px 30px -8px rgba(244,63,94,.7)}
+.fx-combo.bump{animation:fxBump .35s cubic-bezier(.3,1.8,.5,1)}
+@keyframes fxBump{0%{transform:translate(-50%,-50%) scale(calc(var(--k,1) * 1.35)) rotate(-6deg)}100%{transform:translate(-50%,-50%) scale(var(--k,1))}}
+.fx-tag{position:fixed;left:50%;top:calc(var(--top-h,60px) + 10px);display:flex;align-items:center;gap:8px;padding:6px 14px 6px 6px;border-radius:999px;background:rgba(11,11,15,.88);border:1px solid var(--line-2);font-size:.85rem;white-space:nowrap;transform:translateX(-50%);animation:fxTag 2.2s ease forwards;box-shadow:0 12px 30px -10px rgba(0,0,0,.8)}
+@keyframes fxTag{0%{transform:translate(-50%,-20px);opacity:0}12%,80%{transform:translate(-50%,0);opacity:1}100%{transform:translate(-50%,-10px);opacity:0}}
+.fx-box{position:fixed;inset:0;pointer-events:none}
+.fx-conf{position:fixed;left:0;top:0;width:9px;height:14px;border-radius:2px}
+.fx-flash{position:fixed;inset:0;background:radial-gradient(circle at 50% 30%,rgba(255,255,255,.95),rgba(253,224,71,.5) 40%,transparent 75%);animation:fxFlash .9s ease-out forwards}
+.fx-flash span{position:absolute;top:8%;font-size:min(36vw,220px);line-height:1;transform:translateX(-50%) rotate(12deg);filter:drop-shadow(0 0 30px #FDE047)}
+@keyframes fxFlash{0%{opacity:0}8%{opacity:1}20%{opacity:.3}30%{opacity:.9}100%{opacity:0}}
+.fx-boom{position:fixed;width:0;height:0}
+.fx-boom span{position:absolute;font-size:120px;line-height:1;transform:translate(-50%,-50%);animation:fxHit .9s ease-out forwards}
+.fx-boom i{position:absolute;left:0;top:0;width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;border:6px solid rgba(251,146,60,.9);animation:fxRing .9s ease-out forwards}
+.fx-boom i + i{animation-delay:.12s;border-color:rgba(253,224,71,.8)}
+@keyframes fxRing{to{transform:scale(14);opacity:0;border-width:1px}}
+body.fx-quake #app{animation:fxQuake .8s}
+@keyframes fxQuake{10%{transform:translate(-12px,6px) rotate(-1deg)}20%{transform:translate(14px,-8px) rotate(1deg)}30%{transform:translate(-16px,4px)}40%{transform:translate(12px,10px) rotate(-1deg)}55%{transform:translate(-8px,-6px)}70%{transform:translate(6px,4px)}85%{transform:translate(-3px,-2px)}}
+body.fx-spin #app{animation:fxSpin 1.2s cubic-bezier(.5,0,.3,1)}
+@keyframes fxSpin{0%{transform:none}25%{transform:rotate(-10deg) scale(.92)}100%{transform:rotate(360deg)}}
+.tray-chaos{position:relative;overflow:hidden}
+.tray-chaos.is-cool::after{content:"";position:absolute;inset:0;border-radius:inherit;background:rgba(11,11,15,.65);transform-origin:bottom;animation:trayCool var(--cd,3s) linear forwards}
+@keyframes trayCool{from{transform:scaleY(1)}to{transform:scaleY(0)}}
+/* Chat mais vivo */
+.chat-msg.is-new{animation:msgIn .38s cubic-bezier(.3,1.5,.5,1)}
+@keyframes msgIn{from{opacity:0;transform:translateY(14px) scale(.85)}}
+.chat-msg.is-loud .chat-bubble p{font-weight:900;letter-spacing:.02em}
+.chat-msg.is-loud.is-new .chat-bubble{animation:msgShake .5s .1s}
+@keyframes msgShake{20%{transform:translateX(-5px) rotate(-2deg)}40%{transform:translateX(5px) rotate(2deg)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
+.chat-msg.is-lol.is-new .chat-bubble{animation:msgLol .7s .1s}
+@keyframes msgLol{25%{transform:rotate(-4deg) scale(1.05)}50%{transform:rotate(4deg) scale(1.05)}75%{transform:rotate(-2deg)}}
+.chat-bubble p.big{animation:none}
+.chat-msg.is-new .chat-bubble p.big{display:inline-block;animation:msgBig .5s cubic-bezier(.3,1.8,.5,1)}
+@keyframes msgBig{from{transform:scale(.2) rotate(-20deg)}}
+.chat-reacts{overflow-x:auto;justify-content:flex-start;gap:2px;scrollbar-width:none}
+.chat-reacts::-webkit-scrollbar{display:none}
+.chat-reacts button{flex:none}
+.chat-peek{position:fixed;z-index:33;right:calc(max(16px,env(safe-area-inset-right)) + 70px);bottom:calc(max(16px,env(safe-area-inset-bottom)) + 4px);display:flex;flex-direction:column;align-items:flex-end;gap:6px;pointer-events:none;max-width:min(330px,calc(100vw - 100px))}
+.peek{display:flex;align-items:flex-start;gap:8px;padding:8px 12px 8px 8px;border-radius:18px 18px 4px 18px;background:rgba(24,24,32,.94);border:1px solid var(--line-2);box-shadow:0 14px 30px -12px rgba(0,0,0,.9);font-size:.85rem;line-height:1.3;animation:peekIn .35s cubic-bezier(.3,1.5,.5,1);transition:opacity .35s,transform .35s}
+.peek b{display:block;font-size:.72rem;color:var(--muted)}
+.peek span{min-width:0;overflow-wrap:anywhere}
+.peek.out{opacity:0;transform:translateX(20px)}
+@keyframes peekIn{from{opacity:0;transform:translateX(30px) scale(.8)}}
+.chat-panel:not([hidden]) ~ .chat-peek{display:none}
+@media (prefers-reduced-motion:reduce){body.fx-spin #app,body.fx-quake #app,.fx-burst,.chat-msg.is-new,.chat-msg .chat-bubble{animation:none!important}}
 @keyframes fxUp{0%{transform:translate(0,0) scale(.4) rotate(0);opacity:0}12%{opacity:1;transform:translate(0,-40px) scale(1.1) rotate(var(--r))}100%{transform:translate(var(--dx),-70vh) scale(1) rotate(calc(var(--r) * -1));opacity:0}}
 .modal{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:16px;background:rgba(5,5,8,.75);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);animation:screenIn .2s ease}
 .modal-card{display:grid;justify-items:center;gap:12px;width:min(380px,100%);padding:24px;border-radius:24px;background:var(--surface-solid);border:1px solid var(--line-2);text-align:center}
@@ -1543,8 +1651,21 @@ function parseNum(v) {
    ===================================================================== */
 const AVATARS = ['🦊','🐸','🐼','🦄','🐙','🐯','🦖','🐧','🌵','🍕','👾','🤖','🦉','🐝','🍩','🐳'];
 const COLORS = ['#6366F1','#3B82F6','#EC4899','#FF5F57','#FBBF24','#14B8A6','#A3E635','#A78BFA'];
-const BOT_NAMES = ['Zé Bolacha','Dona Byte','Tchuca 3000','Lulu Pixel','Sr. Algoritmo','Biscoito.exe','Nina Nuvem','Chip Chopp','Tia Turbo','Bóris Bug'];
-const MAX_PLAYERS = 12;
+const BOT_NAMES = ['Zé Bolacha','Dona Byte','Tchuca 3000','Lulu Pixel','Sr. Algoritmo','Biscoito.exe','Nina Nuvem','Chip Chopp','Tia Turbo','Bóris Bug',
+  'Capitão Wi-Fi','Dona Planilha','Kiki Cache','Juju Jpeg','Seu Pendrive','Lady Laser','Mestre Miojo','Pipoca Prime','Vovó Vetor','Doutor Delay',
+  'Tati Tecla','Coxinha 2.0','Bia Bluetooth','Fafá Firmware','Gigi Gigabyte','Pastel de Byte','Marquinhos RAM','Cléber Cookie','Dudu Download','Lola Loop',
+  'Mané Mouse','Rita Router','Tião Touch','Vivi Voxel','Zezé Zip','Beto Beta','Cacá Captcha','Seu Servidor','Teca Tablet','Guga Glitch',
+  'Fifi Fibra','Bebel Bit','Juca Java','Kátia Kernel','Pepe Python','Sueli Sinal','Tito Token','Úrsula USB','Nico Nanobot','Dona Lan House'];
+// Quando a lista acaba, monta um nome com as duas partes (ex.: "Tia Glitch").
+const BOT_FIRST = ['Zé', 'Dona', 'Tia', 'Seu', 'Lulu', 'Kiki', 'Juju', 'Dudu', 'Bia', 'Gigi', 'Tonho', 'Vovó', 'Capitão', 'Doutor', 'Lady', 'Mestre', 'Nena', 'Vavá'];
+const BOT_LAST = ['Byte', 'Pixel', 'Turbo', 'Bug', 'Cache', 'Glitch', 'Laser', 'Loop', 'Chip', 'Zip', 'Mouse', 'Token', 'Voxel', 'Sinal', 'Miojo', 'Pipoca', 'Paçoca', 'Bolacha', 'Coxinha', 'Brigadeiro'];
+function botName(s) {
+  const used = new Set(Object.values(s.players).map(p => p.name));
+  const free = BOT_NAMES.filter(n => !used.has(n));
+  if (free.length) return pick(free);
+  for (let i = 0; i < 60; i++) { const n = pick(BOT_FIRST) + ' ' + pick(BOT_LAST); if (n.length <= 14 && !used.has(n)) return n; }
+  return uniqueName(s, pick(BOT_FIRST) + ' ' + pick(BOT_LAST).slice(0, 5));
+}
 
 const MANE_Q = [
   { t: 'Quantos degraus tem a Torre Eiffel, do chão até o topo?', a: 1665, u: 'degraus' },
@@ -4335,46 +4456,297 @@ const mapKm = (a, b) => {
 };
 const mapPts = km => km < 300 ? 5 : km < 800 ? 4 : km < 1500 ? 3 : km < 3000 ? 2 : km < 5000 ? 1 : 0;
 const mapKmText = km => km < 10 ? 'menos de 10 km' : `${Math.round(km).toLocaleString('pt-BR')} km`;
-// Mapa-múndi: contornos de terra do world-atlas (110m), baixados só quando alguém abre este jogo.
-const MapBase = { rings: null, img: null, loading: null, failed: false };
-function mapLoad() {
-  if (MapBase.rings || MapBase.loading) return MapBase.loading;
-  MapBase.loading = fetch('https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/land-110m.json').then(r => r.json()).then(topo => {
-    const { scale: [sx, sy], translate: [tx, ty] } = topo.transform;
-    const arcs = topo.arcs.map(a => { let x = 0, y = 0; return a.map(([dx, dy]) => [(x += dx) * sx + tx, (y += dy) * sy + ty]); });
-    const arc = i => i < 0 ? [...arcs[~i]].reverse() : arcs[i];
-    const ring = idx => idx.flatMap((i, k) => k ? arc(i).slice(1) : arc(i));
-    const out = [], geom = o => o.type === 'GeometryCollection' ? o.geometries.forEach(geom)
-      : o.type === 'Polygon' ? o.arcs.forEach(r => out.push(ring(r))) : o.type === 'MultiPolygon' ? o.arcs.forEach(p => p.forEach(r => out.push(ring(r)))) : 0;
-    geom(topo.objects.land);
-    MapBase.rings = out;
-  }).catch(() => { MapBase.failed = true; }).finally(() => { MapBase.loading = null; if (Store.room?.game?.id === 'mapa') render(); });
-  return MapBase.loading;
-}
+// Mapa-múndi com zoom: países (contorno simples de longe, detalhado de perto) e estados/províncias
+// dos 9 maiores países. Os arquivos vêm do jsDelivr e só são baixados quando alguém abre este jogo;
+// os detalhados, só quando alguém dá zoom.
+const MAP_SRC = {
+  c110: 'https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/countries-110m.json',
+  c50: 'https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/countries-50m.json',
+  adm: 'https://cdn.jsdelivr.net/gh/nvkelso/natural-earth-vector@v5.1.2/geojson/ne_50m_admin_1_states_provinces.geojson',
+};
+// Nomes em português pelo código numérico do país (ISO 3166-1).
+const MAP_NAMES = Object.fromEntries("716:Zimbábue|894:Zâmbia|887:Iêmen|704:Vietnã|862:Venezuela|336:Cidade do Vaticano|548:Vanuatu|860:Uzbequistão|858:Uruguai|583:Micronésia|584:Ilhas Marshall|580:Ilhas Marianas do Norte|850:Ilhas Virgens Americanas|316:Guam|016:Samoa Americana|630:Porto Rico|840:Estados Unidos|239:Ilhas Geórgia do Sul e Sandwich do Sul|086:Território Britânico do Oceano Índico|654:Santa Helena|612:Ilhas Pitcairn|660:Anguila|238:Ilhas Malvinas|136:Ilhas Cayman|060:Bermudas|092:Ilhas Virgens Britânicas|796:Ilhas Turcas e Caicos|500:Montserrat|832:Jersey|831:Guernsey|833:Ilha de Man|826:Reino Unido|784:Emirados Árabes Unidos|804:Ucrânia|800:Uganda|795:Turcomenistão|792:Turquia|788:Tunísia|780:Trinidad e Tobago|776:Tonga|768:Togo|626:Timor-Leste|764:Tailândia|834:Tanzânia|762:Tadjiquistão|158:Taiwan|760:Síria|756:Suíça|752:Suécia|748:Essuatíni|740:Suriname|728:Sudão do Sul|729:Sudão|144:Sri Lanka|724:Espanha|410:Coreia do Sul|710:África do Sul|706:Somália|090:Ilhas Salomão|703:Eslováquia|705:Eslovênia|702:Singapura|694:Serra Leoa|690:Seicheles|688:Sérvia|686:Senegal|682:Arábia Saudita|678:São Tomé e Príncipe|674:San Marino|882:Samoa|670:São Vicente e Granadinas|662:Santa Lúcia|659:São Cristóvão e Névis|646:Ruanda|643:Rússia|642:Romênia|634:Catar|620:Portugal|616:Polônia|608:Filipinas|604:Peru|600:Paraguai|598:Papua-Nova Guiné|591:Panamá|585:Palau|586:Paquistão|512:Omã|578:Noruega|408:Coreia do Norte|566:Nigéria|562:Níger|558:Nicarágua|554:Nova Zelândia|570:Niue|184:Ilhas Cook|528:Países Baixos|533:Aruba|531:Curaçao|524:Nepal|520:Nauru|516:Namíbia|508:Moçambique|504:Marrocos|732:Saara Ocidental|499:Montenegro|496:Mongólia|498:Moldávia|492:Mônaco|484:México|480:Maurício|478:Mauritânia|470:Malta|466:Mali|462:Maldivas|458:Malásia|454:Malaui|450:Madagascar|807:Macedônia do Norte|442:Luxemburgo|440:Lituânia|438:Liechtenstein|434:Líbia|430:Libéria|426:Lesoto|422:Líbano|428:Letônia|418:Laos|417:Quirguistão|414:Kuwait|296:Quiribati|404:Quênia|398:Cazaquistão|400:Jordânia|392:Japão|388:Jamaica|380:Itália|376:Israel|275:Territórios palestinos|372:Irlanda|368:Iraque|364:Irã|360:Indonésia|356:Índia|352:Islândia|348:Hungria|340:Honduras|332:Haiti|328:Guiana|624:Guiné-Bissau|324:Guiné|320:Guatemala|308:Granada|300:Grécia|288:Gana|276:Alemanha|268:Geórgia|270:Gâmbia|266:Gabão|250:França|666:São Pedro e Miquelão|876:Wallis e Futuna|663:São Martinho|652:São Bartolomeu|258:Polinésia Francesa|540:Nova Caledônia|260:Territórios Franceses do Sul|248:Ilhas Aland|246:Finlândia|242:Fiji|231:Etiópia|233:Estônia|232:Eritreia|226:Guiné Equatorial|222:El Salvador|818:Egito|218:Equador|214:República Dominicana|212:Dominica|262:Djibuti|304:Groenlândia|234:Ilhas Faroé|208:Dinamarca|203:Tchéquia|196:Chipre|192:Cuba|191:Croácia|384:Costa do Marfim|188:Costa Rica|180:Congo - Kinshasa|178:República do Congo|174:Comores|170:Colômbia|156:China|446:Macau, RAE da China|344:Hong Kong, RAE da China|152:Chile|148:Chade|140:Rep. Centro-Africana|132:Cabo Verde|124:Canadá|120:Camarões|116:Camboja|104:Mianmar (Birmânia)|108:Burundi|854:Burquina Faso|100:Bulgária|096:Brunei|076:Brasil|072:Botsuana|070:Bósnia|068:Bolívia|064:Butão|204:Benin|084:Belize|056:Bélgica|112:Bielorrússia|052:Barbados|050:Bangladesh|048:Barein|044:Bahamas|031:Azerbaijão|040:Áustria|036:Austrália|334:Ilhas Heard e McDonald|574:Ilha Norfolk|036:Austrália|051:Armênia|032:Argentina|028:Antígua e Barbuda|024:Angola|020:Andorra|012:Argélia|008:Albânia|004:Afeganistão|010:Antártida|534:Sint Maarten".split('|').map(x => x.split(':')));
+const MAP_EXTRA = { Somaliland: 'Somalilândia', Kosovo: 'Kosovo', 'N. Cyprus': 'Chipre do Norte', 'Indian Ocean Ter.': 'Territórios do Índico', 'Siachen Glacier': 'Geleira de Siachen' };
+const MAP_SEAS = [['Oceano Atlântico', 28, -42], ['Oceano Atlântico', -22, -16], ['Oceano Pacífico', 8, -142], ['Oceano Pacífico', -28, -118], ['Oceano Pacífico', 22, 162], ['Oceano Índico', -24, 78], ['Oceano Ártico', 84, -20], ['Oceano Antártico', -60, 20]];
+const MAP_TONES = ['#2F6F4E', '#367A55', '#2A6547', '#3D8159', '#31704F'];
+const MAP_FONT = "'Plus Jakarta Sans',system-ui,sans-serif";
+const MapGeo = { c110: null, c50: null, adm: null, loading: {}, failed: false };
+const MapRT = { cv: null, key: null, z: 1, cx: 500, cy: 250, ptr: new Map(), moved: false, t0: 0, p0: null, tap: null, sel: null, raf: 0, zoomed: false };
 const mapXY = (lat, lon) => [(lon + 180) / 360 * 1000, (90 - lat) / 180 * 500];
-function mapBaseImage() {
-  if (MapBase.img) return MapBase.img;
-  const cv = document.createElement('canvas'); cv.width = 1000; cv.height = 500;
-  const ctx = cv.getContext('2d');
-  ctx.fillStyle = '#0B2A4A'; ctx.fillRect(0, 0, 1000, 500);
-  ctx.strokeStyle = 'rgba(255,255,255,.07)'; ctx.lineWidth = 1;
-  for (let lon = -150; lon <= 150; lon += 30) { const [x] = mapXY(0, lon); ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, 500); ctx.stroke(); }
-  for (let lat = -60; lat <= 60; lat += 30) { const [, y] = mapXY(lat, 0); ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(1000, y); ctx.stroke(); }
-  if (!MapBase.rings) return cv;
-  ctx.beginPath();
-  MapBase.rings.forEach(r => r.forEach(([lon, lat], i) => {
-    const [x, y] = mapXY(lat, lon);
-    // Saltos pela linha de data viram um novo trecho, sem riscar o mapa de ponta a ponta.
-    if (!i || Math.abs(lon - r[i - 1][0]) > 180) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+// Contornos de um país ou estado em coordenadas do mapa (1000 × 500), com caixa, ponto do nome e área.
+function mapFeature(name, polys, extra) {
+  const path = new Path2D(), rings = [];
+  let best = null;
+  polys.forEach(poly => poly.forEach(ring => {
+    if (ring.length < 3) return;
+    const pts = ring.map(([lon, lat]) => mapXY(lat, lon));
+    let a = 0, cx = 0, cy = 0, x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9, wrap = false;
+    pts.forEach(([x, y], i) => {
+      // Saltos pela linha de data viram um novo trecho, sem riscar o mapa de ponta a ponta.
+      if (i && Math.abs(ring[i][0] - ring[i - 1][0]) > 180) wrap = true;
+      if (!i || Math.abs(ring[i][0] - ring[i - 1][0]) > 180) path.moveTo(x, y); else path.lineTo(x, y);
+      if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y;
+      const [nx, ny] = pts[(i + 1) % pts.length], c = x * ny - nx * y;
+      a += c; cx += (x + nx) * c; cy += (y + ny) * c;
+    });
+    path.closePath();
+    rings.push({ pts, bb: [x0, y0, x1, y1] });
+    if (!wrap && (!best || Math.abs(a) > best.a)) best = { a: Math.abs(a), lp: Math.abs(a) > 1e-6 ? [cx / (3 * a), cy / (3 * a)] : [(x0 + x1) / 2, (y0 + y1) / 2], w: x1 - x0 };
   }));
-  ctx.fillStyle = '#2F6F4E'; ctx.fill('evenodd');
-  ctx.strokeStyle = 'rgba(255,255,255,.25)'; ctx.lineWidth = .8; ctx.stroke();
-  return (MapBase.img = cv);
+  if (!rings.length) return null;
+  const bb = rings.reduce((b, r) => [Math.min(b[0], r.bb[0]), Math.min(b[1], r.bb[1]), Math.max(b[2], r.bb[2]), Math.max(b[3], r.bb[3])], [1e9, 1e9, -1e9, -1e9]);
+  // Só tem pedaços cruzando a linha de data: fica sem nome no mapa (o toque ainda mostra qual é).
+  return { name, path, rings, bb, lp: best ? best.lp : [(bb[0] + bb[2]) / 2, (bb[1] + bb[3]) / 2], lw: best ? best.w : 0, area: best ? best.a / 2 : 0, ...extra };
 }
-function mapDot(ctx, lat, lon, col, r = 9, ring = '#fff') {
-  const [x, y] = mapXY(lat, lon);
-  ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fillStyle = col; ctx.fill();
-  ctx.lineWidth = 3; ctx.strokeStyle = ring; ctx.stroke();
+function mapTopo(topo) {
+  const tf = topo.transform;
+  const arcs = topo.arcs.map(a => { let x = 0, y = 0; return tf ? a.map(([dx, dy]) => [(x += dx) * tf.scale[0] + tf.translate[0], (y += dy) * tf.scale[1] + tf.translate[1]]) : a; });
+  const arc = i => i < 0 ? arcs[~i].slice().reverse() : arcs[i];
+  const ring = idx => idx.flatMap((i, k) => k ? arc(i).slice(1) : arc(i));
+  return topo.objects.countries.geometries.filter(g => g.arcs).map((g, n) => {
+    const polys = g.type === 'Polygon' ? [g.arcs.map(ring)] : g.type === 'MultiPolygon' ? g.arcs.map(p => p.map(ring)) : [];
+    return mapFeature(MAP_NAMES[g.id] || MAP_EXTRA[g.properties?.name] || g.properties?.name || '', polys, { tone: (parseInt(g.id, 10) || n * 7) % MAP_TONES.length });
+  }).filter(Boolean).sort((a, b) => b.area - a.area);
+}
+// Alguns nomes do arquivo vêm em português de Portugal (ou cortados): troca pelo jeito brasileiro.
+const MAP_ADM_FIX = { Federal: 'Distrito Federal', 'Nova Jérsia': 'Nova Jersey', 'Nova Iorque': 'Nova York', 'do Tibete': 'Tibete', Quebeque: 'Quebec', 'Novo Brunswick': 'Nova Brunswick', Deli: 'Délhi', 'Andra Pradexe': 'Andhra Pradesh', Carnataca: 'Karnataka', Siquim: 'Sikkim', Ladaque: 'Ladakh', Gujarate: 'Gujarat' };
+function mapAdmName(p) {
+  if (p.name === 'District of Columbia') return 'Washington, D.C.';
+  const n = p.name_pt || p.name || '';
+  return (MAP_ADM_FIX[n] || n).replace('Moscovo', 'Moscou');
+}
+function mapAdm(geo) {
+  return geo.features.filter(f => f.geometry).map(f => {
+    const g = f.geometry, polys = g.type === 'Polygon' ? [g.coordinates] : g.type === 'MultiPolygon' ? g.coordinates : [];
+    return mapFeature(mapAdmName(f.properties), polys, {});
+  }).filter(Boolean).sort((a, b) => b.area - a.area);
+}
+function mapGet(k) {
+  if (MapGeo[k] || MapGeo.loading[k]) return;
+  MapGeo.loading[k] = fetch(MAP_SRC[k]).then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(j => { MapGeo[k] = k === 'adm' ? mapAdm(j) : mapTopo(j); })
+    .catch(() => { if (k === 'c110') MapGeo.failed = true; })
+    .finally(() => {
+      delete MapGeo.loading[k];
+      if (k === 'c110') { $('.map-loading')?.remove(); if (MapGeo.failed && Store.room?.game?.id === 'mapa') render(); }
+      mapDraw();
+    });
+}
+// Baixa os contornos detalhados conforme o zoom.
+function mapNeed() { mapGet('c110'); if (MapRT.z >= 2) mapGet('c50'); if (MapRT.z >= 3.2) mapGet('adm'); }
+function mapClamp() {
+  const R = MapRT, cv = R.cv, ratio = cv && cv.clientWidth ? cv.clientHeight / cv.clientWidth : .5;
+  R.z = clamp(R.z, 1, 24);
+  const hw = 500 / R.z, hh = 500 * ratio / R.z;
+  R.cx = clamp(R.cx, hw, 1000 - hw);
+  R.cy = hh >= 250 ? 250 : clamp(R.cy, hh, 500 - hh);
+}
+function mapDraw() { if (!MapRT.raf) MapRT.raf = requestAnimationFrame(() => { MapRT.raf = 0; mapPaint(); }); }
+// Zoom mantendo parado o ponto (px, py) em pixels da tela, dentro do mapa.
+function mapZoomAt(f, px, py) {
+  const R = MapRT, cv = R.cv;
+  if (!cv) return;
+  const w = cv.clientWidth, h = cv.clientHeight, k = w / 1000 * R.z;
+  const bx = R.cx + (px - w / 2) / k, by = R.cy + (py - h / 2) / k;
+  R.z = clamp(R.z * f, 1, 24);
+  const k2 = w / 1000 * R.z;
+  R.cx = bx - (px - w / 2) / k2; R.cy = by - (py - h / 2) / k2;
+  if (R.z > 1.05) R.zoomed = true;
+  mapClamp(); mapNeed(); mapDraw();
+}
+function mapIn(f, x, y) {
+  if (x < f.bb[0] || x > f.bb[2] || y < f.bb[1] || y > f.bb[3]) return false;
+  let inside = false;
+  f.rings.forEach(r => {
+    if (x < r.bb[0] || x > r.bb[2] || y < r.bb[1] || y > r.bb[3]) return;
+    const p = r.pts;
+    for (let i = 0, j = p.length - 1; i < p.length; j = i++) {
+      const [xi, yi] = p[i], [xj, yj] = p[j];
+      if ((yi > y) !== (yj > y) && x < (xj - xi) * (y - yi) / (yj - yi) + xi) inside = !inside;
+    }
+  });
+  return inside;
+}
+// Nome do país (e do estado, se já baixou) num ponto do mapa.
+// Ponto na água bem perto da costa (ilhota, porto, praia): conta como o lugar mais próximo.
+function mapNear(L, x, y, max) {
+  let best = null, bd = max * max;
+  (L || []).forEach(f => {
+    if (x < f.bb[0] - max || x > f.bb[2] + max || y < f.bb[1] - max || y > f.bb[3] + max) return;
+    f.rings.forEach(r => r.pts.forEach(([px, py]) => { const d = (px - x) ** 2 + (py - y) ** 2; if (d < bd) { bd = d; best = f; } }));
+  });
+  return best;
+}
+function mapWhere(lat, lon) {
+  const [x, y] = mapXY(lat, lon), hit = L => (L || []).find(f => mapIn(f, x, y)), C = MapGeo.c50 || MapGeo.c110;
+  let c = hit(C), st = c && hit(MapGeo.adm);
+  if (!c) { c = mapNear(C, x, y, 3.5); st = c && mapNear(MapGeo.adm, x, y, 3.5); }
+  return { country: c?.name || null, text: c ? [c.name, st?.name].filter(Boolean).join(' · ') : MapGeo.c110 ? 'No meio do mar 🌊' : '' };
+}
+function mapPaint() {
+  const R = MapRT, cv = R.cv, s = Store.room, g = s?.game;
+  if (!cv || !cv.isConnected || !g || g.id !== 'mapa' || !g.data) return;
+  const dpr = Math.min(devicePixelRatio || 1, 2), W = Math.max(200, Math.round(cv.clientWidth * dpr)), H = Math.max(100, Math.round(cv.clientHeight * dpr) || Math.round(W / 2));
+  if (cv.width !== W || cv.height !== H) { cv.width = W; cv.height = H; }
+  mapClamp();
+  const ctx = cv.getContext('2d'), k = W / 1000 * R.z, ox = W / 2 - R.cx * k, oy = H / 2 - R.cy * k;
+  const S = (x, y) => [x * k + ox, y * k + oy];
+  const vx0 = -ox / k, vy0 = -oy / k, vx1 = vx0 + W / k, vy1 = vy0 + H / k;
+  const inView = bb => bb[2] >= vx0 && bb[0] <= vx1 && bb[3] >= vy0 && bb[1] <= vy1;
+  const d = g.data, q = MAP_Q[d.qi], me = Store.me?.id, reveal = g.phase === 'reveal';
+  const pin = d.guesses[me] || Games.mapa.local(g).pin;
+  // O que a etiqueta mostra: no fim da rodada, o lugar certo; antes, o seu ponto (ou onde você tocou).
+  const focus = R.tap || (reveal ? q : pin), where = focus && mapWhere(focus.lat, focus.lon);
+  R.sel = where?.country || null;
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  const sea = ctx.createLinearGradient(0, 0, 0, H);
+  sea.addColorStop(0, '#0E3A63'); sea.addColorStop(1, '#0A2440');
+  ctx.fillStyle = sea; ctx.fillRect(0, 0, W, H);
+  ctx.setTransform(k, 0, 0, k, ox, oy);
+  // Linhas de latitude e longitude (mais finas de perto).
+  const step = R.z >= 8 ? 5 : R.z >= 3 ? 10 : 30;
+  ctx.lineWidth = dpr / k; ctx.strokeStyle = 'rgba(255,255,255,.07)'; ctx.beginPath();
+  for (let lon = -180 + step; lon < 180; lon += step) { const [x] = mapXY(0, lon); if (x >= vx0 && x <= vx1) { ctx.moveTo(x, Math.max(0, vy0)); ctx.lineTo(x, Math.min(500, vy1)); } }
+  for (let lat = -90 + step; lat < 90; lat += step) { const [, y] = mapXY(lat, 0); if (y >= vy0 && y <= vy1) { ctx.moveTo(Math.max(0, vx0), y); ctx.lineTo(Math.min(1000, vx1), y); } }
+  ctx.stroke();
+  const C = (R.z >= 2 && MapGeo.c50) || MapGeo.c110 || MapGeo.c50;
+  if (C) {
+    C.forEach(f => { if (!inView(f.bb)) return; ctx.fillStyle = f.name === R.sel ? (reveal && !R.tap ? '#B45309' : '#4C9A6C') : MAP_TONES[f.tone]; ctx.fill(f.path, 'evenodd'); });
+    ctx.lineJoin = 'round';
+    if (R.z >= 3.2 && MapGeo.adm) {
+      ctx.lineWidth = .9 * dpr / k; ctx.strokeStyle = 'rgba(255,255,255,.24)'; ctx.setLineDash([4 * dpr / k, 3 * dpr / k]);
+      MapGeo.adm.forEach(f => inView(f.bb) && ctx.stroke(f.path));
+      ctx.setLineDash([]);
+    }
+    ctx.lineWidth = Math.min(1.6, .9 + R.z * .05) * dpr / k; ctx.strokeStyle = 'rgba(255,255,255,.42)';
+    C.forEach(f => inView(f.bb) && ctx.stroke(f.path));
+  }
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  // Nomes: oceanos de longe, países quando cabem e estados de perto (sem um nome por cima do outro).
+  const boxes = [];
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.lineJoin = 'round';
+  const label = (text, x, y, size, col, weight = 700, italic = false) => {
+    const h = Math.round(size * dpr);
+    ctx.font = `${italic ? 'italic ' : ''}${weight} ${h}px ${MAP_FONT}`;
+    const w = ctx.measureText(text).width, b = [x - w / 2 - 3 * dpr, y - h / 2 - 2 * dpr, x + w / 2 + 3 * dpr, y + h / 2 + 2 * dpr];
+    if (b[0] < 0 || b[2] > W || b[1] < 0 || b[3] > H || boxes.some(o => b[0] < o[2] && b[2] > o[0] && b[1] < o[3] && b[3] > o[1])) return;
+    boxes.push(b);
+    ctx.lineWidth = 3.2 * dpr; ctx.strokeStyle = 'rgba(6,20,36,.85)'; ctx.strokeText(text, x, y);
+    ctx.fillStyle = col; ctx.fillText(text, x, y);
+  };
+  if (C) C.forEach(f => {
+    const sw = f.lw * k;
+    // De muito perto, o nome do país dá lugar aos estados.
+    if (!f.name || sw < 44 * dpr || (sw > W * 1.4 && MapGeo.adm && R.z >= 4)) return;
+    const [x, y] = S(...f.lp);
+    label(f.name, x, y, clamp(sw / dpr / 9, 10, 16), '#F8FAFC', 800);
+  });
+  if (R.z >= 3.2 && MapGeo.adm) MapGeo.adm.forEach(f => {
+    const sw = f.lw * k;
+    if (!f.name || sw < 38 * dpr || !inView(f.bb)) return;
+    const [x, y] = S(...f.lp);
+    label(f.name, x, y, clamp(sw / dpr / 10, 9.5, 14), '#FDE68A', 700);
+  });
+  if (R.z < 4) MAP_SEAS.forEach(([n, lat, lon]) => { const [x, y] = S(...mapXY(lat, lon)); label(n, x, y, 10 + R.z * 1.5, 'rgba(147,197,253,.6)', 600, true); });
+  // Marcadores (tamanho fixo na tela, qualquer que seja o zoom).
+  const dot = (lat, lon, col, r, ring = '#fff') => {
+    const [x, y] = S(...mapXY(lat, lon));
+    ctx.beginPath(); ctx.arc(x, y, r * dpr, 0, Math.PI * 2); ctx.fillStyle = col; ctx.fill();
+    ctx.lineWidth = 2.5 * dpr; ctx.strokeStyle = ring; ctx.stroke();
+    return [x, y];
+  };
+  if (reveal) {
+    const [tx, ty] = S(...mapXY(q.lat, q.lon));
+    Object.entries(d.guesses).forEach(([pid, p]) => {
+      const [x, y] = S(...mapXY(p.lat, p.lon));
+      ctx.setLineDash([6 * dpr, 6 * dpr]); ctx.lineWidth = 2 * dpr; ctx.strokeStyle = 'rgba(255,255,255,.6)';
+      ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(tx, ty); ctx.stroke(); ctx.setLineDash([]);
+    });
+    Object.entries(d.guesses).forEach(([pid, p]) => {
+      const [x, y] = dot(p.lat, p.lon, s.players[pid]?.color || '#fff', pid === me ? 9 : 7, pid === me ? '#FDE047' : '#fff');
+      if (R.z >= 3 && s.players[pid]) label(s.players[pid].name, x, y - 16 * dpr, 11, '#fff', 700);
+    });
+    dot(q.lat, q.lon, '#FBBF24', 12, '#111827');
+    ctx.font = `${Math.round(30 * dpr)}px system-ui`; ctx.fillText('⭐', tx, ty - 28 * dpr);
+  } else if (pin) dot(pin.lat, pin.lon, s.players[me]?.color || '#F43F5E', 9);
+  if (R.tap && !(g.phase === 'guess' && pin === R.tap)) { const [x, y] = S(...mapXY(R.tap.lat, R.tap.lon)); ctx.font = `${Math.round(22 * dpr)}px system-ui`; ctx.fillText('📍', x, y - 10 * dpr); }
+  const info = $('#mapInfo');
+  if (info) {
+    const txt = where?.text ? (R.tap ? '👆 ' : reveal ? '⭐ ' : '📍 ') + where.text : '';
+    info.hidden = !txt; info.textContent = txt;
+  }
+  $('.map-tip')?.classList.toggle('is-off', R.zoomed);
+  cv.classList.toggle('is-zoomed', R.z > 1.01);
+}
+// Toque rápido sem arrastar: marca o ponto (na hora de jogar) ou mostra o nome do lugar tocado.
+function mapTap(px, py) {
+  const R = MapRT, cv = R.cv, g = Store.room?.game, me = Store.me?.id;
+  if (!cv || !g || g.id !== 'mapa') return;
+  const k = cv.clientWidth / 1000 * R.z, bx = R.cx + (px - cv.clientWidth / 2) / k, by = R.cy + (py - cv.clientHeight / 2) / k;
+  const pt = { lat: clamp(90 - by / 500 * 180, -90, 90), lon: clamp(bx / 1000 * 360 - 180, -180, 180) };
+  if (g.phase === 'guess' && inRoster(g, me) && !(me in g.data.guesses)) {
+    Games.mapa.local(g).pin = pt; R.tap = null;
+    Sound.play('click');
+    const b = $('[data-act="g:confirm"]');
+    if (b) { b.disabled = false; b.textContent = 'Confirmar este ponto'; }
+  } else R.tap = pt;
+  mapDraw();
+}
+function mapBind(cv) {
+  const R = MapRT;
+  const pos = e => { const r = cv.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+  const pair = () => [...R.ptr.values()].map(v => v.p);
+  cv.addEventListener('pointerdown', e => {
+    try { cv.setPointerCapture(e.pointerId); } catch {}
+    R.ptr.set(e.pointerId, { p: pos(e) });
+    if (R.ptr.size === 1) { R.moved = false; R.t0 = now(); R.p0 = pos(e); }
+    cv.classList.add('is-grab');
+  });
+  cv.addEventListener('pointermove', e => {
+    const cur = R.ptr.get(e.pointerId);
+    if (!cur) return;
+    const p = pos(e);
+    if (R.ptr.size >= 2) {
+      // Pinça: mexe e aproxima ao mesmo tempo, em volta do ponto entre os dedos.
+      const [a, b] = pair(); cur.p = p; const [a2, b2] = pair();
+      const d1 = Math.hypot(a[0] - b[0], a[1] - b[1]), d2 = Math.hypot(a2[0] - b2[0], a2[1] - b2[1]);
+      const m1 = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2], m2 = [(a2[0] + b2[0]) / 2, (a2[1] + b2[1]) / 2];
+      const k = cv.clientWidth / 1000 * R.z;
+      R.cx -= (m2[0] - m1[0]) / k; R.cy -= (m2[1] - m1[1]) / k;
+      R.moved = true;
+      if (d1 > 0) mapZoomAt(d2 / d1, m2[0], m2[1]); else { mapClamp(); mapDraw(); }
+      return;
+    }
+    if (!R.moved && Math.hypot(p[0] - R.p0[0], p[1] - R.p0[1]) < 7) return;
+    const dx = p[0] - cur.p[0], dy = p[1] - cur.p[1];
+    R.moved = true; cur.p = p;
+    const k = cv.clientWidth / 1000 * R.z;
+    R.cx -= dx / k; R.cy -= dy / k;
+    mapClamp(); mapDraw();
+  });
+  const up = e => {
+    const had = R.ptr.get(e.pointerId);
+    R.ptr.delete(e.pointerId);
+    if (!R.ptr.size) cv.classList.remove('is-grab');
+    if (had && e.type === 'pointerup' && !R.moved && !R.ptr.size && now() - R.t0 < 600) { const [x, y] = pos(e); mapTap(x, y); }
+  };
+  cv.addEventListener('pointerup', up);
+  cv.addEventListener('pointercancel', up);
+  cv.addEventListener('wheel', e => {
+    // Com o mapa inteiro na tela, rolar para baixo continua rolando a página.
+    if (R.z <= 1.001 && e.deltaY > 0) return;
+    e.preventDefault();
+    const [x, y] = pos(e);
+    mapZoomAt(Math.exp(-e.deltaY * (e.deltaMode ? .05 : .0018)), x, y);
+  }, { passive: false });
+  cv.addEventListener('dblclick', e => { const [x, y] = pos(e); mapZoomAt(2.2, x, y); });
+}
+addEventListener('resize', () => { if (MapRT.cv?.isConnected) mapDraw(); });
+function mapFoot(g, s, me) {
+  const can = inRoster(g, me), mine = g.data.guesses[me], L = Games.mapa.local(g);
+  return !can ? '<p class="hint center">Você joga na próxima rodada.</p>'
+    : mine ? '<p class="hint center">Marcado! Esperando a galera.</p>'
+    : `<button class="btn game big" data-act="g:confirm" ${L.pin ? '' : 'disabled'} style="display:flex;margin:12px auto 0">${L.pin ? 'Confirmar este ponto' : 'Toque no mapa'}</button>`;
 }
 
 Games.mapa = {
@@ -4400,56 +4772,49 @@ Games.mapa = {
   bot(g) { const q = MAP_Q[g.data.qi]; return { type: 'submit', lat: clamp(q.lat + gauss() * 9 * botNoise(), -85, 85), lon: clamp(q.lon + gauss() * 14 * botNoise(), -180, 180) }; },
   local(g) { const L = Store.local; if (!L.map || L.map.key !== `${g.round}:${g.data.qi}`) L.map = { key: `${g.round}:${g.data.qi}`, pin: null }; return L.map; },
   view(g, s, me) {
-    const d = g.data, q = MAP_Q[d.qi], can = inRoster(g, me), mine = d.guesses[me];
+    const d = g.data, q = MAP_Q[d.qi], can = inRoster(g, me), mine = d.guesses[me], reveal = g.phase === 'reveal';
     const card = `<div class="pc-card map-card"><span class="pc-emoji" aria-hidden="true">${q.e}</span><div><p class="map-ask">Onde fica?</p><p class="pc-item">${esc(q.t)}</p></div></div>`;
-    const board = `<div class="map-wrap"><canvas id="mapBoard" class="map-cv ${g.phase === 'guess' && can && !mine ? 'can-pin' : ''}" width="1000" height="500" role="img" aria-label="Mapa-múndi"></canvas>
-      ${!MapBase.rings && !MapBase.failed ? '<p class="map-loading">Carregando o mapa…</p>' : ''}</div>`;
-    if (g.phase === 'guess') {
-      const L = this.local(g);
-      const foot = !can ? '<p class="hint center">Você joga na próxima rodada.</p>'
-        : mine ? '<p class="hint center">Marcado! Esperando a galera.</p>'
-        : `<button class="btn game big" data-act="g:confirm" ${L.pin ? '' : 'disabled'} style="display:flex;margin:12px auto 0">${L.pin ? 'Confirmar este ponto' : 'Toque no mapa'}</button>`;
-      return card + board + foot + (MapBase.failed ? '<p class="hint center">Não deu para baixar o mapa. Use as linhas: o equador fica no meio.</p>' : '');
-    }
+    const board = `<div class="map-wrap"><canvas id="mapBoard" class="map-cv ${g.phase === 'guess' && can && !mine ? 'can-pin' : ''}" role="img" aria-label="Mapa-múndi: arraste para mover, use pinça, a roda do mouse ou os botões para dar zoom"></canvas>
+      <div class="map-ctl"><button type="button" data-act="g:zoom" data-d="in" aria-label="Aproximar">+</button><button type="button" data-act="g:zoom" data-d="out" aria-label="Afastar">−</button><button type="button" data-act="g:zoom" data-d="reset" aria-label="Ver o mundo todo">🌍</button>${reveal ? '<button type="button" data-act="g:zoom" data-d="target" aria-label="Ver de perto onde era">⭐</button>' : ''}</div>
+      <p class="map-info" id="mapInfo" hidden></p>
+      <p class="map-tip">Pinça, roda do mouse ou + para ver países e estados de perto</p>
+      ${!MapGeo.c110 && !MapGeo.failed ? '<p class="map-loading">Carregando o mapa…</p>' : ''}</div>`;
+    if (g.phase === 'guess') return card + board + `<div class="map-foot">${mapFoot(g, s, me)}</div>` + (MapGeo.failed ? '<p class="hint center">Não deu para baixar o mapa. Use as linhas: o equador fica no meio.</p>' : '');
     const rows = Object.entries(d.guesses).map(([pid, p]) => ({ pid, km: mapKm(p, q) })).sort((a, b) => a.km - b.km);
     return card + board + `<ul class="res-list">${rows.map(({ pid, km }) => `<li class="res-row">${avatar(s.players[pid], 'sm')}<span class="res-who"><span class="res-name">${esc(nameOf(s, pid))}</span></span>
       <span class="res-val">${mapKmText(km)}</span>${deltaBadge(g.roundDelta[pid])}</li>`).join('') || '<li class="hint">Ninguém marcou.</li>'}</ul>`;
   },
-  mount(g, s, me) {
-    const cv = $('#mapBoard');
-    if (!cv) return;
-    if (!MapBase.rings && !MapBase.failed) mapLoad();
-    const d = g.data, q = MAP_Q[d.qi], ctx = cv.getContext('2d');
-    const paint = () => {
-      ctx.drawImage(mapBaseImage(), 0, 0);
-      if (g.phase === 'reveal') {
-        const [tx, ty] = mapXY(q.lat, q.lon);
-        Object.entries(d.guesses).forEach(([pid, p]) => {
-          const [x, y] = mapXY(p.lat, p.lon);
-          ctx.setLineDash([6, 6]); ctx.lineWidth = 2; ctx.strokeStyle = 'rgba(255,255,255,.55)';
-          ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(tx, ty); ctx.stroke(); ctx.setLineDash([]);
-          mapDot(ctx, p.lat, p.lon, s.players[pid]?.color || '#fff', 8);
-        });
-        ctx.font = '34px system-ui'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-        mapDot(ctx, q.lat, q.lon, '#FBBF24', 13, '#111827'); ctx.fillText('⭐', tx, ty - 30);
-        return;
-      }
-      const mine = d.guesses[me], pin = mine || this.local(g).pin;
-      if (pin) mapDot(ctx, pin.lat, pin.lon, s.players[me]?.color || '#F43F5E', 10);
-    };
-    paint();
-    if (g.phase !== 'guess' || !inRoster(g, me) || d.guesses[me] || cv.dataset.bound) return;
-    cv.dataset.bound = '1';
-    cv.addEventListener('pointerdown', e => {
-      const r = cv.getBoundingClientRect(), x = (e.clientX - r.left) / r.width * 1000, y = (e.clientY - r.top) / r.height * 500;
-      this.local(g).pin = { lat: clamp(90 - y / 500 * 180, -90, 90), lon: clamp(x / 1000 * 360 - 180, -180, 180) };
-      Sound.play('click');
-      paint();
-      const b = $('[data-act="g:confirm"]');
-      if (b) { b.disabled = false; b.textContent = 'Confirmar este ponto'; }
-    });
+  // Enquanto a galera marca, só o rodapé muda: o mapa (e o zoom) fica como está.
+  patch(g, s, me) {
+    const f = $('.map-foot');
+    if (f) f.innerHTML = mapFoot(g, s, me);
+    MapRT.cv?.classList.toggle('can-pin', inRoster(g, me) && !(me in g.data.guesses));
+    mapDraw();
   },
-  ui: { confirm() { const p = Games.mapa.local(Store.room.game).pin; if (p) dispatch({ type: 'submit', lat: p.lat, lon: p.lon }); } },
+  mount(g, s, me) {
+    let cv = $('#mapBoard');
+    if (!cv) return;
+    const R = MapRT, key = `${s.pin}:${g.round}:${g.data.qi}`;
+    if (R.key !== key) { Object.assign(R, { key, z: 1, cx: 500, cy: 250, tap: null, sel: null, cv: null }); R.ptr.clear(); }
+    // A tela é redesenhada a cada novidade da sala: o mesmo canvas volta para o lugar, com zoom e gesto no meio.
+    if (R.cv && R.cv !== cv) { R.cv.className = cv.className + (R.z > 1.01 ? ' is-zoomed' : ''); cv.replaceWith(R.cv); cv = R.cv; }
+    else if (!R.cv) { R.cv = cv; mapBind(cv); }
+    if (g.phase === 'reveal' && !R.revealed) R.tap = null;
+    R.revealed = g.phase === 'reveal';
+    mapNeed();
+    mapPaint();
+  },
+  ui: {
+    confirm() { const p = Games.mapa.local(Store.room.game).pin; if (p) dispatch({ type: 'submit', lat: p.lat, lon: p.lon }); },
+    zoom(el) {
+      const R = MapRT, cv = R.cv, g = Store.room?.game;
+      if (!cv) return;
+      const d = el.dataset.d;
+      if (d === 'reset') { Object.assign(R, { z: 1, cx: 500, cy: 250, tap: null }); mapDraw(); return; }
+      if (d === 'target' && g) { const q = MAP_Q[g.data.qi], [x, y] = mapXY(q.lat, q.lon); Object.assign(R, { z: 6, cx: x, cy: y, tap: null, zoomed: true }); mapClamp(); mapNeed(); mapDraw(); return; }
+      mapZoomAt(d === 'in' ? 2 : .5, cv.clientWidth / 2, cv.clientHeight / 2);
+    },
+  },
 };
 
 /* ---------- 21. Lobisomem Relâmpago ---------- */
@@ -5793,7 +6158,7 @@ function hostHandle(from, a) {
       Transport.send({ kind: 'reject', to: pl.id, reason: 'Essa sala está lotada (40 pessoas, contando a plateia).' });
       return;
     } else {
-      // Até 12 jogadores; quem chega depois (ou pede) fica na plateia. O telão é só uma tela.
+      // Até o limite de jogadores da sala (30 por padrão); quem chega depois (ou pede) fica na plateia. O telão é só uma tela.
       let role = ['spectator', 'tv'].includes(pl.role) ? pl.role : 'player';
       const full = role === 'player' && seatIds(s).length >= maxP(s);
       if (full) role = 'spectator';
@@ -5803,7 +6168,8 @@ function hostHandle(from, a) {
       if (role !== 'player') np.role = role;
       s.players[pl.id] = np;
       s.order.push(pl.id);
-      pushChat(s, { sys: true, text: role === 'tv' ? 'Um telão foi conectado' : role === 'spectator' ? `${name} está assistindo${full ? ' (os 12 lugares de jogador estão ocupados)' : ''}` : `${name} entrou na sala` });
+      pushChat(s, { sys: true, text: role === 'tv' ? 'Um telão foi conectado' : role === 'spectator' ? `${name} está assistindo${full ? ' (os ${maxP(s)} lugares de jogador estão ocupados)' : ''}` : `${name} entrou na sala` });
+      if (role === 'player') botsWelcome(s, name);
       changed = true;
     }
   } else if (a.type === 'ping') {
@@ -5865,11 +6231,12 @@ function hostCommand(s, a) {
   switch (a.type) {
     case 'host:addBot': {
       if (seatIds(s).length >= maxP(s)) return false;
-      const used = new Set(Object.values(s.players).map(p => p.name));
-      const name = BOT_NAMES.find(n => !used.has(n)) || uniqueName(s, 'Bot');
+      const name = botName(s);
       const id = 'bot-' + uid(6);
       s.players[id] = mkPlayer(id, { name, avatar: pick(AVATARS), color: pick(COLORS) }, true);
       s.players[id].pers = pick(Object.keys(BOT_PERS));
+      s.players[id].ready = true;
+      if (s.screen === 'lobby' && Math.random() < .6) botSay(id, pick(botPers(s.players[id]).hello), rand(700, 1800));
       s.order.push(id);
       return true;
     }
@@ -6029,7 +6396,7 @@ function hostCommand(s, a) {
   return false;
 }
 /* ---------- Chat e reações (o host recebe, filtra e repassa) ---------- */
-const REACTS = ['😂', '🔥', '👏', '😱', '❤️', '🤯', '💀', '🤡', '😭', '🥳', '👀', '😤'];
+const REACTS = ['😂', '🔥', '👏', '😱', '❤️', '🤯', '💀', '🤡', '😭', '🥳', '👀', '😤', '🤣', '💯', '🐐', '🙏', '🫠', '🤌'];
 const BOT_CHAT = ['kkkkk', 'essa foi difícil', 'gg', 'tô ficando bom nisso', 'próxima eu ganho', 'que isso 😂', 'eita', 'quase!'];
 const ChatRT = { last: {}, lastReact: {} };
 function pushChat(s, m) {
@@ -6103,6 +6470,9 @@ function hostTick() {
   if (s.screen === 'lobby' && s.vote && voteTick(s)) changed = true;
   const g = s.game;
   botTune(s);
+  // Bots de salas antigas chamados "Bot", "Bot 2"… ganham um nome de verdade.
+  Object.values(s.players).forEach(p => { if (p.isBot && /^Bot( \d+)?$/.test(p.name)) { p.name = botName(s); changed = true; } });
+  botsAmbient(s);
   if (s.poll && now() > s.poll.until) { closePoll(s); changed = true; }
   if (goalCheck(s)) { commit(); return; }
   if (g && g.phase === 'final' && (s.settings.auto || (s.playlist || []).length)) {
@@ -6779,7 +7149,7 @@ function viewPodium(s) {
    ===================================================================== */
 // ---- Ajustes da sala
 const CFG = {
-  maxPlayers: { min: 2, max: 30, step: 1, def: 12, label: 'Limite de jogadores' },
+  maxPlayers: { min: 2, max: 30, step: 1, def: 30, label: 'Limite de jogadores' },
   rounds: { min: 1, max: 10, step: 1, def: 3, label: 'Rodadas por jogo' },
   timeMult: { min: .5, max: 2, step: .25, def: 1, label: 'Tempo das etapas', fmt: v => `${String(v).replace('.', ',')}×` },
   goal: { min: 0, max: 300, step: 10, def: 0, label: 'Meta de pontos (acaba a partida)', fmt: v => v ? `${v} pts` : 'sem meta' },
@@ -6788,6 +7158,7 @@ const CFG = {
 };
 const CFG_ENUM = {
   botLevel: { label: 'Nível dos bots', def: 'normal', opts: { facil: 'Fácil', normal: 'Normal', dificil: 'Difícil', caotico: 'Caótico' } },
+  botTalk: { label: 'Bots no chat', def: 'muito', opts: { pouco: 'Pouco', normal: 'Normal', muito: 'Muito', caos: 'Caos total' } },
   chatMode: { label: 'Chat', def: 'livre', opts: { livre: 'Livre', lento: 'Lento (1 a cada 5 s)', reacoes: 'Só reações', off: 'Desligado' } },
 };
 const cfg = (s, k) => s?.settings?.[k] ?? (CFG[k] || CFG_ENUM[k]).def;
@@ -6796,13 +7167,13 @@ const ON_BY_DEFAULT = ['helps', 'zoeira', 'joker'];
 const tglOn = (s, k) => ON_BY_DEFAULT.includes(k) ? s.settings[k] !== false : !!s.settings[k];
 const PRESETS = {
   festa: { e: '🎉', name: 'Festa rápida', desc: 'Rodadas curtas, um jogo atrás do outro e muita zoeira.',
-    v: { rush: true, auto: true, voteNext: true, helps: true, events: true, finalDouble: true, handicap: false, family: false, zoeira: true, joker: true, rounds: 2, timeMult: 1, goal: 0, helpCost: 1, eventChance: 40, botLevel: 'caotico', chatMode: 'livre' } },
+    v: { rush: true, auto: true, voteNext: true, helps: true, events: true, finalDouble: true, handicap: false, family: false, zoeira: true, joker: true, rounds: 2, timeMult: 1, goal: 0, helpCost: 1, eventChance: 40, botLevel: 'caotico', botTalk: 'caos', chatMode: 'livre' } },
   familia: { e: '👨‍👩‍👧', name: 'Família', desc: 'Sem conteúdo ousado, mais tempo e ajuda para quem fica para trás.',
-    v: { rush: false, auto: false, voteNext: false, helps: true, events: false, finalDouble: false, handicap: true, family: true, zoeira: true, joker: true, rounds: 3, timeMult: 1.5, goal: 0, helpCost: 1, eventChance: 30, botLevel: 'facil', chatMode: 'livre' } },
+    v: { rush: false, auto: false, voteNext: false, helps: true, events: false, finalDouble: false, handicap: true, family: true, zoeira: true, joker: true, rounds: 3, timeMult: 1.5, goal: 0, helpCost: 1, eventChance: 30, botLevel: 'facil', botTalk: 'normal', chatMode: 'livre' } },
   competitivo: { e: '🏆', name: 'Competitivo', desc: 'Sem ajudas, coringa nem sorte: vence quem joga melhor.',
-    v: { rush: false, auto: false, voteNext: false, helps: false, events: false, finalDouble: false, handicap: false, family: false, zoeira: false, joker: false, rounds: 5, timeMult: 1, goal: 0, helpCost: 1, eventChance: 30, botLevel: 'dificil', chatMode: 'livre' } },
+    v: { rush: false, auto: false, voteNext: false, helps: false, events: false, finalDouble: false, handicap: false, family: false, zoeira: false, joker: false, rounds: 5, timeMult: 1, goal: 0, helpCost: 1, eventChance: 30, botLevel: 'dificil', botTalk: 'pouco', chatMode: 'livre' } },
   padrao: { e: '⚙️', name: 'Padrão', desc: 'Volta tudo ao jeito normal do PlayBox.',
-    v: { rush: false, auto: false, voteNext: false, helps: true, events: false, finalDouble: false, handicap: false, family: false, zoeira: true, joker: true, rounds: 3, timeMult: 1, goal: 0, helpCost: 1, eventChance: 30, botLevel: 'normal', chatMode: 'livre' } },
+    v: { rush: false, auto: false, voteNext: false, helps: true, events: false, finalDouble: false, handicap: false, family: false, zoeira: true, joker: true, rounds: 3, timeMult: 1, goal: 0, helpCost: 1, eventChance: 30, botLevel: 'normal', botTalk: 'muito', chatMode: 'livre' } },
 };
 // Qual estilo bate com os ajustes de agora (null = personalizado).
 const presetOf = s => Object.keys(PRESETS).find(k => Object.entries(PRESETS[k].v).every(([key, val]) => (typeof val === 'boolean' ? tglOn(s, key) : cfg(s, key)) === val)) || null;
@@ -6822,7 +7193,7 @@ function customizePanelHTML(s) {
   return `<section class="panel fold ${foldOpen('cfg') ? 'is-open' : ''}" aria-labelledby="cfgTitle">${foldHead('cfg', 'cfgTitle', 'Personalizar a sala', sum)}<div class="fold-body" id="fold-cfg">
     <form class="cfg-title" data-form="title" novalidate><label for="roomTitle">Nome da sala</label><div class="cfg-inline"><input class="input" id="roomTitle" data-keep="roomTitle" maxlength="28" placeholder="Ex.: Noite dos campeões" value="${esc(s.settings.title || '')}"><button class="btn sm pill">Salvar</button></div></form>
     ${['maxPlayers', 'rounds', 'timeMult', 'goal', 'helpCost', 'eventChance'].map(k => `<div class="cfg-row"><span>${CFG[k].label}</span>${cfgStepHTML(s, k)}</div>`).join('')}
-    ${en('botLevel')}${en('chatMode')}
+    ${en('botLevel')}${en('botTalk')}${en('chatMode')}
     <div class="cfg-row"><span>Jogos fora do sorteio${off.length ? `: <b>${off.length}</b>` : ''}</span><button class="btn xs ${Store.local.offEdit ? 'primary' : ''}" data-act="offEdit">${Store.local.offEdit ? 'Pronto' : 'Escolher'}</button></div>
     ${Store.local.offEdit ? '<p class="hint">Toque nos jogos lá embaixo para tirar ou devolver ao sorteio (jogo surpresa, votação e sequência automática).</p>' : ''}
   </div></section>`;
@@ -6851,17 +7222,88 @@ const BOT_PERS = {
   fofo: { e: '🥰', win: ['eba!! 🥳', 'nem acredito que acertei', 'obrigado, galera!'], lose: ['tudo bem, o importante é se divertir 💖', 'parabéns pra quem acertou!'], start: ['boa sorte pra todo mundo!', 'que jogo legal 🤩'], hit: ['ai 😢', 'por queeeê'], mention: ['oiii! 👋', 'tô aqui! 💖'], laugh: ['hihihi', 'kkkk que fofo'] },
   nerd: { e: '🤓', win: ['estatisticamente previsível', 'calculei tudo 📊', 'elementar'], lose: ['erro de arredondamento', 'a amostra era pequena', 'vou recalcular'], start: ['probabilidade de vitória: alta', 'analisando…'], hit: ['isso viola a física', 'tomate: 94% água'], mention: ['interessante pergunta', 'segundo meus cálculos, sim'], laugh: ['risada detectada', 'kkk (irônico)'] },
 };
-const botPers = p => BOT_PERS[p?.pers] || Object.values(BOT_PERS)[(p?.id || 'x').charCodeAt((p?.id || 'x').length - 1) % 4];
+BOT_PERS.dramatico = { e: '🎭', win: ['EU NASCI PRA ISSO 😭✨', 'obrigado mãe, obrigado fãs', 'chorei de emoção'], lose: ['NÃÃÃO 😭', 'minha vida acabou', 'isso é uma tragédia grega'], start: ['que comece o espetáculo 🎭', 'o destino me chama'], hit: ['TRAIÇÃO! 😱', 'eu confiei em vocês…'], mention: ['alguém disse meu nome? ✨', 'sim, sou eu, a estrela'], laugh: ['AHAHAHAHA', 'kkkkkkkk tô passando mal'] };
+BOT_PERS.tiozao = { e: '👴', win: ['é pavê ou pacumê? ganhei 😎', 'o tiozão ainda tá no jogo', 'aprendi isso no orkut'], lose: ['no meu tempo isso era mais fácil', 'esse celular tá com defeito', 'alguém aumenta a fonte?'], start: ['já ganhei, só falta jogar', 'pera que vou pôr os óculos 👓'], hit: ['olha o respeito com os mais velhos', 'isso é tomate orgânico?'], mention: ['fala, jovem!', 'oi, tô aqui. como tira o caps lock?'], laugh: ['KKKKKKK', 'rsrsrs', 'hahaha boa'] };
+// Falas extras: no lobby, durante o jogo, no pódio, respondendo o chat e recebendo quem chega.
+const BOT_MORE = {
+  zoeiro: { idle: ['essa é moleza', '{lider} tá roubando, só pode', 'vou chutar e acertar, olha', 'alguém me passa cola?', 'tô só observando 👀', 'quem errar essa paga o lanche'], lobby: ['bora jogar logo!!', 'escolhe {jogo} aí, host', 'tô pronto faz tempo 😤', 'quem perder paga a pizza 🍕', 'host dormiu?'], podium: ['quero revanche!', '{lider} comprou o jogo', 'ano que vem eu ganho', 'foi sorte, só sorte'], reply: ['ninguém perguntou 😂', 'verdade kkkk', 'fala mais que eu tô gostando', 'isso aí', 'print!', 'mentira kkkkk'], greet: ['chegou {nome}! agora sim', '{nome} chegou pra perder kkkk', 'salve {nome}!'], hello: ['cheguei e já tô ganhando', 'quem chamou o mais brabo?'] },
+  competitivo: { idle: ['concentra', 'essa eu sei', 'tempo é ponto', 'ninguém me para hoje'], lobby: ['vamos de {jogo}', 'quanto antes começar, antes eu ganho', 'sem enrolação'], podium: ['gg. revanche?', 'vou treinar e voltar', 'respeito, {lider}'], reply: ['foco no jogo', 'hm', 'pode ser', 'depois a gente conversa'], greet: ['bem-vindo, {nome}. boa sorte, vai precisar', '{nome} chegou. mais um adversário'], hello: ['vim pra ganhar', 'aquecendo os dedos 💪'] },
+  fofo: { idle: ['tô torcendo por todo mundo 💖', 'que difícil essa!', 'vamos que vamos!', 'vocês são demais 🥰'], lobby: ['que bom que todo mundo veio 🥰', '{jogo} é tão legal!', 'tô muito animado!'], podium: ['parabéns {lider}!! 🏆', 'foi muito divertido 💖', 'bora de novo?'], reply: ['concordo 💖', 'aaa que fofo', 'hihi', 'verdade!', 'amei 🥰'], greet: ['oiii {nome}!! 💖', 'bem-vindo, {nome}! 🥰', '{nome} chegou! eba!'], hello: ['oiii gente!! 👋', 'que sala linda 🥰'] },
+  nerd: { idle: ['calculando probabilidades…', 'curiosidade: o polvo tem três corações', 'hipótese: {lider} vai ganhar', 'processando… 87%'], lobby: ['sugestão estatística: {jogo}', 'amostra de jogadores: suficiente', 'iniciando protocolo de diversão'], podium: ['resultado dentro do esperado', '{lider}: outlier detectado', 'dados registrados 📊'], reply: ['correto', 'tecnicamente sim', 'fonte?', 'interessante', 'discordo, mas respeito'], greet: ['novo jogador detectado: {nome}', 'olá, {nome}. inicializando amizade'], hello: ['sistema online 🤓', 'conectado com 100% de sinal'] },
+  dramatico: { idle: ['não aguento essa pressão 😰', 'o suspense me mata', 'meu coração tá a mil', 'é agora ou nunca'], lobby: ['que comece o show!', '{jogo}?? eu AMO', 'já tô nervoso'], podium: ['que noite inesquecível 😭', '{lider}, você é uma lenda', 'vou lembrar disso pra sempre'], reply: ['EU SABIA', 'não acredito 😱', 'MEU DEUS', 'isso muda tudo'], greet: ['{nome}!!! finalmente 😭✨', '{nome} chegou, a festa começou'], hello: ['cheguei, podem aplaudir 👏', 'a estrela chegou ✨'] },
+  tiozao: { idle: ['sabe o que o pato disse pra pata? vem quá', 'tô pensando… devagar, mas pensando', 'alguém sabe a senha do wi-fi?', 'pera que tô sem óculos'], lobby: ['bora jogar {jogo}, tem bolo?', 'manda o código no grupo da família', 'tô pronto, só achar o botão'], podium: ['parabéns {lider}, vai pro pavê', 'no meu tempo eu ganhava', 'foi bom, foi bom'], reply: ['é verdade esse bilhete', 'kkkk boa, jovem', 'não entendi, mas concordo', 'manda áudio'], greet: ['olha quem chegou, {nome}! cresceu, hein', 'bem-vindo, {nome}! já comeu?'], hello: ['boa noite a todos 🌹', 'como que mexe nisso aqui?'] },
+};
+Object.entries(BOT_MORE).forEach(([k, v]) => Object.assign(BOT_PERS[k], v));
+BOT_PERS.zoeiro.win.push('passei o rodo 🧹', 'alguém anota a placa?');
+BOT_PERS.zoeiro.lose.push('tava de olho fechado', 'foi o lag, juro');
+BOT_PERS.competitivo.win.push('isso aqui é treino');
+BOT_PERS.fofo.win.push('acertei!! 💖');
+BOT_PERS.nerd.lose.push('anomalia nos dados');
+const botPers = p => BOT_PERS[p?.pers] || Object.values(BOT_PERS)[(p?.id || 'x').charCodeAt((p?.id || 'x').length - 1) % Object.keys(BOT_PERS).length];
+// Quanto os bots falam: muda a frequência e o máximo de mensagens deles em poucos segundos.
+const BOT_TALK = { pouco: { m: .4, cap: 1 }, normal: { m: 1, cap: 2 }, muito: { m: 2, cap: 4 }, caos: { m: 3.5, cap: 7 } };
+const botTalk = s => BOT_TALK[cfg(s, 'botTalk')] || BOT_TALK.muito;
+const BotChatRT = { said: [], nextTalk: 0, nextReact: 0 };
+// Troca {lider}, {nome} e {jogo} nas falas.
+function botFill(s, text, self) {
+  const ids = playerIds(s).filter(id => s.players[id] && id !== self);
+  const lead = ids.slice().sort((a, b) => s.players[b].score - s.players[a].score)[0];
+  const humans = ids.filter(id => !s.players[id].isBot);
+  return text.replace('{lider}', lead ? s.players[lead].name : 'alguém').replace('{nome}', s.players[pick(humans.length ? humans : ids)]?.name || 'galera')
+    .replace('{jogo}', Games[pick(GAME_ORDER.filter(id => gameOn(s, id)))]?.name || 'qualquer um');
+}
+// Bots puxam assunto sozinhos e soltam reações e zoeira o tempo todo (o host roda isso a cada tique).
+function botsAmbient(s) {
+  const bots = Object.values(s.players).filter(p => p.isBot);
+  if (!bots.length || cfg(s, 'chatMode') === 'off' || s.paused || s.game?.paused) return;
+  const T = botTalk(s), at = now(), g = s.game;
+  if (!BotChatRT.nextTalk) BotChatRT.nextTalk = at + rand(3000, 7000) / T.m;
+  if (at >= BotChatRT.nextTalk) {
+    BotChatRT.nextTalk = at + rand(7000, 15000) / T.m;
+    const b = pick(bots), P = botPers(b);
+    const pool = s.screen === 'lobby' ? P.lobby : s.screen === 'podium' || g?.phase === 'final' ? P.podium : g && g.phase !== 'reveal' && inRoster(g, b.id) ? P.idle : null;
+    if (pool) botSay(b.id, pick(pool));
+  }
+  if (!BotChatRT.nextReact) BotChatRT.nextReact = at + rand(2000, 5000) / T.m;
+  if (at >= BotChatRT.nextReact) {
+    BotChatRT.nextReact = at + rand(2500, 7000) / T.m;
+    const b = pick(bots);
+    hostReact(s, b.id, pick(REACTS));
+    if (s.settings.zoeira !== false && s.screen === 'game' && Math.random() < .1 * T.m) {
+      const tgt = pick(playerIds(s).filter(id => id !== b.id && s.players[id]));
+      const r = Math.random();
+      if (r < .45) hostFx(s, b.id, { t: 'emote', e: pick(EMOTES) });
+      else if (r < .75 && tgt) hostFx(s, b.id, { t: 'throw', e: pick(THROWS), to: tgt });
+      else if (r < .9) hostFx(s, b.id, { t: pick(['horn', 'confetti', 'flash', 'bomb']) });
+      else hostFx(s, b.id, { t: 'shout', text: pick(['VALENDO!', 'BORA!!!', 'É AGORA', 'SEGURA!', 'NINGUÉM ME PARA']) });
+    }
+  }
+}
+// Quem acaba de entrar ganha boas-vindas dos bots.
+function botsWelcome(s, name) {
+  const bots = Object.values(s.players).filter(p => p.isBot);
+  if (!bots.length) return;
+  const n = Math.min(bots.length, botTalk(s).m >= 2 ? 2 : 1);
+  bots.sort(() => Math.random() - .5).slice(0, n).forEach((b, i) => {
+    if (Math.random() < .5 * botTalk(s).m) botSay(b.id, pick(botPers(b).greet).replace('{nome}', name), rand(900, 2200) + i * 1400);
+    else setTimeout(() => Store.room?.players[b.id] && hostReact(Store.room, b.id, pick(['👋', '🥳', '🔥', '❤️'])), rand(600, 1800));
+  });
+}
 function botSay(id, text, delay = 0) {
   setTimeout(() => {
     const room = Store.room, p = room?.players[id];
     if (!p || !isHost() || ['off', 'reacoes'].includes(cfg(room, 'chatMode'))) return;
-    pushChat(room, { pid: id, name: p.name, text }); commit();
+    const T = botTalk(room);
+    BotChatRT.said = BotChatRT.said.filter(x => now() - x < 8000);
+    if (BotChatRT.said.length >= T.cap) return;
+    BotChatRT.said.push(now());
+    pushChat(room, { pid: id, name: p.name, text: botFill(room, text, id) }); commit();
   }, delay);
 }
 function botsGreet(s) {
   const bots = (s.game?.roster || []).filter(id => s.players[id]?.isBot);
-  if (bots.length && Math.random() < (BotIQ.lv.chaos ? .8 : .35)) { const id = pick(bots); botSay(id, pick(botPers(s.players[id]).start), rand(800, 2500)); }
+  const m = botTalk(s).m;
+  bots.sort(() => Math.random() - .5).slice(0, m >= 2 ? 2 : 1).forEach((id, i) => { if (Math.random() < Math.min(.95, (BotIQ.lv.chaos ? .8 : .45) * m)) botSay(id, pick(botPers(s.players[id]).start), rand(800, 2500) + i * 1500); });
 }
 // Bots leem o chat: respondem quando são citados e riem junto.
 function botsHear(s, pid, text) {
@@ -6869,17 +7311,24 @@ function botsHear(s, pid, text) {
   const k = norm(text), bots = Object.values(s.players).filter(p => p.isBot);
   bots.forEach(b => { if (k.includes(norm(b.name).split(' ')[0]) && Math.random() < .85) botSay(b.id, pick(botPers(b).mention), rand(1200, 3000)); });
   if (/k{3,}|haha|rs{2,}/.test(k) && bots.length && Math.random() < .4) { const b = pick(bots); Math.random() < .5 ? botSay(b.id, pick(botPers(b).laugh), rand(800, 2200)) : setTimeout(() => Store.room && hostReact(Store.room, b.id, '😂'), rand(500, 1800)); }
+  const m = botTalk(s).m, b0 = bots.length && pick(bots), who = s.players[pid]?.name || 'galera';
+  if (b0 && /\b(oi+|ola|eae|eai|e ai|salve|opa|bom dia|boa tarde|boa noite|fala galera)\b/.test(k) && Math.random() < .6 * m) botSay(b0.id, pick(['oi {nome}!', 'eae {nome} 👋', 'salve!', 'oii 👋', 'fala, {nome}!']).replace('{nome}', who), rand(900, 2200));
+  else if (b0 && /\bgg\b/.test(k) && Math.random() < .55 * m) botSay(b0.id, pick(['gg', 'gg wp', 'ggzão', 'GG 💖', 'gg, revanche?']), rand(700, 1800));
+  else if (b0 && /roubad|hack|bug|trapa/.test(k) && Math.random() < .55 * m) botSay(b0.id, pick(['chora mais 😂', 'aceita que dói menos', 'foi justo, vai', 'quem? eu? 😇']), rand(900, 2000));
+  else if (b0 && k.includes('?') && Math.random() < .4 * m) botSay(b0.id, pick(['sim', 'não', 'talvez 🤔', 'com certeza', 'claro que não kkkk', 'pergunta pro {lider}', 'depende']), rand(1000, 2600));
+  else if (b0 && Math.random() < .18 * m) botSay(b0.id, pick(botPers(b0).reply), rand(1200, 3000));
+  if (bots.length && Math.random() < .25 * m) setTimeout(() => { const b = pick(bots); Store.room?.players[b.id] && hostReact(Store.room, b.id, pick(['😂', '👀', '🔥', '💯', '🤣'])); }, rand(400, 1600));
   if (/\bbots?\b/.test(k) && bots.length && Math.random() < .5) { const b = pick(bots); botSay(b.id, pick(['bot é a sua vó', 'tô te ouvindo, hein', 'respeita os bots 🤖', 'sou mais humano que muita gente']), rand(1000, 2500)); }
 }
 function botsReact(s) {
   if (!isHost() || !s.game) return;
   const g = s.game, deltas = g.roundDelta || {}, best = Math.max(0, ...Object.values(deltas)), chaos = BotIQ.lv.chaos ? 2 : 1, zoeira = s.settings.zoeira !== false;
-  const winner = Object.keys(deltas).find(x => deltas[x] === best && best > 0);
+  const winner = Object.keys(deltas).find(x => deltas[x] === best && best > 0), m = botTalk(s).m;
   g.roster.filter(id => s.players[id]?.isBot).forEach(id => {
     const d = deltas[id] || 0, P = botPers(s.players[id]), won = d > 0 && d === best;
-    if (Math.random() < .55 * chaos) setTimeout(() => { if (Store.room?.players[id]) hostReact(Store.room, id, won ? pick(['🥳', '🔥', '😎']) : d > 0 ? pick(REACTS) : pick(['😭', '💀', '😱', '🤡'])); }, rand(500, 2600));
-    if ((won || d <= 0) && Math.random() < .28 * chaos) botSay(id, pick(P[won ? 'win' : 'lose']), rand(1200, 4000));
-    if (winner && winner !== id && Math.random() < .2) setTimeout(() => { const r = Store.room; if (r?.game === g && g.phase === 'reveal') giveKudos(r, id, winner) && commit(); }, rand(1500, 5000));
+    if (Math.random() < Math.min(.95, .4 * chaos * m)) setTimeout(() => { if (Store.room?.players[id]) hostReact(Store.room, id, won ? pick(['🥳', '🔥', '😎']) : d > 0 ? pick(REACTS) : pick(['😭', '💀', '😱', '🤡'])); }, rand(500, 2600));
+    if ((won || d <= 0) && Math.random() < Math.min(.9, .2 * chaos * m)) botSay(id, pick(P[won ? 'win' : 'lose']), rand(1200, 4000));
+    if (winner && winner !== id && Math.random() < Math.min(.8, .15 * m)) setTimeout(() => { const r = Store.room; if (r?.game === g && g.phase === 'reveal') giveKudos(r, id, winner) && commit(); }, rand(1500, 5000));
     // O zoeiro (ou qualquer bot no modo caótico) joga coisas em quem venceu a rodada.
     if (zoeira && winner && winner !== id && (s.players[id].pers === 'zoeiro' || BotIQ.lv.chaos) && Math.random() < .3 * chaos)
       setTimeout(() => Store.room && hostFx(Store.room, id, { t: 'throw', e: pick(THROWS), to: winner }), rand(1500, 3500));
@@ -6897,7 +7346,8 @@ const THROWS = ['🍅', '🥚', '🎈', '💐', '🧻', '🥧'];
 const EMOTES = ['💃', '🕺', '🤸', '🙇', '👋', '😎'];
 const CHAT_QUICK = ['KKKKKK', 'GG', 'Roubado!', 'Não acredito 😱', 'Eu sabia!', 'Bora!', 'F'];
 const FxRT = { last: {}, hype: [], lastRain: 0 };
-const FX_GAP = { throw: 1200, horn: 6000, shout: 8000, emote: 1500 };
+const FX_GAP = { throw: 1200, horn: 6000, shout: 8000, emote: 1500, confetti: 3000, flash: 5000, bomb: 5000, spin: 8000 };
+const CHAOS_FX = [['confetti', '🎊', 'Confete'], ['flash', '⚡', 'Raio'], ['bomb', '💣', 'Bomba'], ['spin', '🌀', 'Girar a tela']];
 function hostFx(s, pid, a) {
   const p = s?.players[pid];
   if (!p || p.role === 'tv' || cfg(s, 'chatMode') === 'off' || !FX_GAP[a.t]) return;
@@ -6908,6 +7358,7 @@ function hostFx(s, pid, a) {
   if (a.t === 'throw') { if (!THROWS.includes(a.e) || !s.players[a.to] || a.to === pid) return; msg = { t: 'throw', e: a.e, to: a.to }; }
   else if (a.t === 'horn') msg = { t: 'horn' };
   else if (a.t === 'emote') { if (!EMOTES.includes(a.e)) return; msg = { t: 'emote', e: a.e }; }
+  else if (CHAOS_FX.some(x => x[0] === a.t)) msg = { t: a.t };
   else { let text = String(a.text || '').replace(/\s+/g, ' ').trim().slice(0, 40); if (!text) return; if (s.settings.family) text = familyClean(text); msg = { t: 'shout', text }; }
   FxRT.last[key] = now();
   Transport.send({ kind: 'fx', pid, ...msg });
@@ -6925,7 +7376,7 @@ function hostFx(s, pid, a) {
 function hypeCheck(s, e, pid) {
   FxRT.hype = FxRT.hype.filter(x => now() - x.t < 6000);
   FxRT.hype.push({ t: now(), e });
-  if (FxRT.hype.length < 10 || now() - FxRT.lastRain < 20000) return;
+  if (FxRT.hype.length < 8 || now() - FxRT.lastRain < 12000) return;
   FxRT.lastRain = now();
   const c = {}; FxRT.hype.forEach(x => add(c, x.e, 1));
   const top = Object.entries(c).sort((a, b) => b[1] - a[1])[0][0];
@@ -6947,6 +7398,8 @@ function runFx(m) {
   const s = Store.room, layer = $('#fxLayer');
   if (!s || !layer) return;
   if (m.pid === Store.me?.id && m.echo) return;
+  // Sala cheia: com muita coisa voando ao mesmo tempo, as próximas ficam de fora (o grito sempre aparece).
+  if (layer.childElementCount > 24 && m.t !== 'shout') return;
   const p = s.players[m.pid];
   if (m.t === 'throw') return throwFx(m.e, m.pid, m.to);
   if (m.t === 'kudos') { spawnFx('💖', s.players[m.to]); if (m.to === Store.me?.id) buzz(40); return; }
@@ -6965,6 +7418,35 @@ function runFx(m) {
     layer.appendChild(el); Sound.play('react');
     return setTimeout(() => el.remove(), 1700);
   }
+  if (m.t === 'confetti') { fxTag(p, 'soltou confete 🎊'); Sound.play('fanfare'); return fxConfetti(layer); }
+  if (m.t === 'flash') {
+    fxTag(p, 'mandou um raio ⚡'); Sound.play('boom'); buzz(60);
+    const el = document.createElement('div'); el.className = 'fx-flash'; el.innerHTML = '<span>⚡</span>';
+    el.firstChild.style.left = rand(20, 80).toFixed(0) + '%';
+    layer.appendChild(el); setTimeout(() => el.remove(), 900);
+    document.body.classList.remove('fx-shake'); void document.body.offsetWidth; document.body.classList.add('fx-shake');
+    return setTimeout(() => document.body.classList.remove('fx-shake'), 650);
+  }
+  if (m.t === 'bomb') {
+    fxTag(p, 'jogou uma bomba 💣'); Sound.play('whoosh');
+    const W = innerWidth, H = innerHeight, x = rand(W * .25, W * .75), y = rand(H * .35, H * .6);
+    const el = document.createElement('span'); el.className = 'fx-proj'; el.textContent = '💣'; layer.appendChild(el);
+    const anim = el.animate([{ transform: `translate(${x}px,-60px) rotate(0)` }, { transform: `translate(${x}px,${y}px) rotate(540deg)` }], { duration: 750, easing: 'cubic-bezier(.55,0,1,.45)', fill: 'forwards' });
+    anim.onfinish = () => {
+      el.remove(); Sound.play('boom'); buzz([80, 40, 120]);
+      const boom = document.createElement('div'); boom.className = 'fx-boom'; boom.style.left = x + 'px'; boom.style.top = y + 'px';
+      boom.innerHTML = '<i></i><i></i><span>💥</span>';
+      layer.appendChild(boom); setTimeout(() => boom.remove(), 1200);
+      document.body.classList.remove('fx-shake', 'fx-quake'); void document.body.offsetWidth; document.body.classList.add('fx-quake');
+      setTimeout(() => document.body.classList.remove('fx-quake'), 900);
+    };
+    return;
+  }
+  if (m.t === 'spin') {
+    fxTag(p, 'girou a tela de todo mundo 🌀'); Sound.play('whoosh');
+    document.body.classList.remove('fx-spin'); void document.body.offsetWidth; document.body.classList.add('fx-spin');
+    return setTimeout(() => document.body.classList.remove('fx-spin'), 1300);
+  }
   if (m.t === 'shout') {
     const el = document.createElement('div');
     el.className = 'fx-shout';
@@ -6974,11 +7456,12 @@ function runFx(m) {
   }
   if (m.t === 'rain') {
     Sound.play('fanfare');
-    for (let i = 0; i < 30; i++) {
+    const box = document.createElement('div'); box.className = 'fx-box'; layer.appendChild(box); setTimeout(() => box.remove(), 5000);
+    for (let i = 0; i < 36; i++) {
       const el = document.createElement('span');
       el.className = 'fx-rain'; el.textContent = m.e;
       el.style.left = rand(0, 98).toFixed(1) + '%'; el.style.animationDelay = rand(0, 1.4).toFixed(2) + 's'; el.style.animationDuration = rand(1.8, 3.2).toFixed(2) + 's'; el.style.fontSize = rand(22, 46).toFixed(0) + 'px';
-      layer.appendChild(el); setTimeout(() => el.remove(), 5000);
+      box.appendChild(el);
     }
   }
 }
@@ -7011,7 +7494,8 @@ function reactTrayHTML(reacts) {
   const proj = Store.local.proj || '🍅';
   return `<div class="tray-row">${reacts}</div><p class="tray-sep">Arremessar <small>toque no avatar de alguém</small></p>
     <div class="tray-row">${THROWS.map(e => `<button type="button" class="${proj === e ? 'on' : ''}" data-act="proj" data-v="${e}" aria-label="Escolher ${e} para arremessar">${e}</button>`).join('')}</div>
-    <p class="tray-sep">Zoeira</p><div class="tray-row"><button type="button" data-act="horn" aria-label="Buzina">📯</button>${EMOTES.map(e => `<button type="button" data-act="emote" data-v="${e}" aria-label="Dancinha ${e}">${e}</button>`).join('')}</div>`;
+    <p class="tray-sep">Zoeira</p><div class="tray-row"><button type="button" data-act="horn" aria-label="Buzina">📯</button>${EMOTES.map(e => `<button type="button" data-act="emote" data-v="${e}" aria-label="Dancinha ${e}">${e}</button>`).join('')}</div>
+    <p class="tray-sep">Caos <small>aparece para todo mundo</small></p><div class="tray-row">${CHAOS_FX.map(([k, e, l]) => `<button type="button" class="tray-chaos" data-act="zfx" data-v="${k}" aria-label="${l}" title="${l}">${e}</button>`).join('')}</div>`;
 }
 
 // ---- Chat: comandos, enquetes, menções e figurinhas
@@ -7055,8 +7539,10 @@ function chatItem(s, m) {
   if (m.poll) return `<li class="chat-poll">${pollHTML(s, m)}</li>`;
   if (m.sys) return `<li class="chat-sys ${m.act ? 'is-act' : ''}">${esc(m.text)}</li>`;
   const txt = m.text || '', big = !m.hid && txt.length > 0 && txt.length <= 16 && !/[\p{L}\p{N}]/u.test(txt);
+  const letters = txt.replace(/[^\p{L}]/gu, ''), loud = !m.hid && letters.length >= 4 && letters === letters.toUpperCase() && letters !== letters.toLowerCase();
+  const lol = !m.hid && /k{4,}|(ha){3,}|(rs){3,}/i.test(txt), fresh = m.n > (Chat.fresh ?? Infinity);
   const body = m.hid ? '🤐 Mensagem escondida: parecia a resposta da rodada.' : esc(txt).replace(/@([\p{L}\p{N}_]+)/gu, '<b class="at">@$1</b>');
-  return `<li class="chat-msg ${m.pid === Store.me.id ? 'me' : ''} ${mentionsMe(s, m) ? 'is-mention' : ''}">${avatar(s.players[m.pid] || { color: '#6B7280', avatar: '👤' }, 'sm')}
+  return `<li class="chat-msg ${m.pid === Store.me.id ? 'me' : ''} ${mentionsMe(s, m) ? 'is-mention' : ''} ${fresh ? 'is-new' : ''} ${loud ? 'is-loud' : ''} ${lol ? 'is-lol' : ''}">${avatar(s.players[m.pid] || { color: '#6B7280', avatar: '👤' }, 'sm')}
       <div class="chat-bubble"><b>${esc(m.name)}</b><p class="${m.hid ? 'hid' : ''} ${big ? 'big' : ''}">${body}</p></div></li>`;
 }
 
@@ -7133,7 +7619,8 @@ function renderChat() {
         <form class="chat-form" data-form="chat" novalidate><label class="sr-only" for="chatIn">Mensagem</label>
           <input class="input" id="chatIn" maxlength="140" autocomplete="off" placeholder="Mensagem, @nome ou /comando…">
           <button class="btn primary chat-send" aria-label="Enviar mensagem">${icon('send')}</button></form>
-      </section>`;
+      </section>
+      <div class="chat-peek" id="chatPeek" aria-hidden="true"></div>`;
     Chat.built = true;
     applyChatSize();
     bindChatGrip();
@@ -7141,7 +7628,9 @@ function renderChat() {
   root.dataset.mode = cfg(s, 'chatMode');
   const msgs = s.chat || [], maxN = msgs.length ? msgs[msgs.length - 1].n : 0, me = Store.me.id;
   if (Chat.lastN === null) Chat.lastN = Chat.seen = maxN;   // ao entrar, o histórico não conta como novo
+  Chat.fresh = maxN > Chat.lastN ? Chat.lastN : Infinity;
   if (maxN > Chat.lastN) {
+    if (!Chat.open) msgs.filter(m => m.n > Chat.lastN && !m.sys && !m.hid && !m.poll && m.pid !== me).slice(-2).forEach(m => chatPeek(s, m));
     if (msgs.some(m => m.n > Chat.lastN && !m.sys && m.pid !== me)) Sound.play('pop');
     if (msgs.some(m => m.n > Chat.lastN && !m.sys && mentionsMe(s, m))) { buzz([60, 40, 60]); Sound.play('alarm'); }
     Chat.lastN = maxN;
@@ -7154,6 +7643,19 @@ function renderChat() {
   const unread = msgs.filter(m => m.n > Chat.seen && !m.sys && m.pid !== me).length, badge = $('#chatBadge');
   badge.hidden = !unread;
   badge.textContent = unread > 9 ? '9+' : unread;
+}
+// Com o chat fechado, a mensagem nova aparece num balãozinho ao lado dos botões.
+function chatPeek(s, m) {
+  const box = $('#chatPeek');
+  if (!box || matchMedia('(prefers-reduced-motion: reduce)').matches && box.childElementCount) return;
+  const el = document.createElement('div');
+  el.className = 'peek';
+  const txt = m.text.length > 70 ? m.text.slice(0, 68) + '…' : m.text;
+  el.innerHTML = `${avatar(s.players[m.pid] || { color: '#6B7280', avatar: '👤' }, 'sm')}<span><b>${esc(m.name)}</b>${esc(txt)}</span>`;
+  box.appendChild(el);
+  while (box.childElementCount > 2) box.firstChild.remove();
+  setTimeout(() => el.classList.add('out'), 3000);
+  setTimeout(() => el.remove(), 3400);
 }
 // Tamanho do chat: arraste a alça (canto no computador, barrinha de cima no celular). Fica salvo neste aparelho.
 const ChatSize = {
@@ -7214,18 +7716,74 @@ function bindChatGrip() {
   });
 }
 addEventListener('resize', () => applyChatSize());
+const FxCombo = { e: null, n: 0, t: 0, to: null };
 function spawnFx(e, p) {
   const layer = $('#fxLayer');
-  if (!layer || layer.childElementCount > 24) return;
-  const el = document.createElement('div');
+  if (!layer) return;
+  fxCombo(e, layer);
+  if (layer.childElementCount > 24) return;
+  const el = document.createElement('div'), x = rand(8, 88);
   el.className = 'fx';
-  el.style.setProperty('--x', rand(8, 88).toFixed(1) + '%');
-  el.style.setProperty('--dx', rand(-70, 70).toFixed(0) + 'px');
-  el.style.setProperty('--r', rand(-25, 25).toFixed(0) + 'deg');
+  el.style.setProperty('--x', x.toFixed(1) + '%');
+  el.style.setProperty('--dx', rand(-90, 90).toFixed(0) + 'px');
+  el.style.setProperty('--r', rand(-35, 35).toFixed(0) + 'deg');
+  el.style.setProperty('--s', rand(.8, 1.5).toFixed(2));
   el.innerHTML = `<span class="fx-e">${e}</span>${p ? `<span class="fx-n">${esc(p.name)}</span>` : ''}`;
-  layer.appendChild(el);
+  // Faíscas: cópias pequenas do emoji espirrando para os lados.
+  const burst = document.createElement('div');
+  burst.className = 'fx-burst'; burst.style.left = x.toFixed(1) + '%';
+  for (let i = 0; i < 6; i++) {
+    const b = document.createElement('span'); b.textContent = e;
+    b.style.setProperty('--bx', rand(-110, 110).toFixed(0) + 'px'); b.style.setProperty('--by', rand(-190, -70).toFixed(0) + 'px'); b.style.setProperty('--br', rand(-200, 200).toFixed(0) + 'deg');
+    burst.appendChild(b);
+  }
+  layer.append(el, burst);
   Sound.play('react');
   setTimeout(() => el.remove(), 2700);
+  setTimeout(() => burst.remove(), 1000);
+}
+// Muita gente mandando o mesmo emoji seguido vira COMBO no meio da tela.
+function fxCombo(e, layer) {
+  const at = now();
+  if (FxCombo.e === e && at - FxCombo.t < 2200) FxCombo.n++; else { FxCombo.e = e; FxCombo.n = 1; }
+  FxCombo.t = at;
+  if (FxCombo.n < 4) return;
+  let el = $('#fxCombo');
+  if (!el) { el = document.createElement('div'); el.id = 'fxCombo'; el.className = 'fx-combo'; layer.appendChild(el); }
+  el.innerHTML = `<span>${e}</span><b>COMBO x${FxCombo.n}</b>`;
+  el.style.setProperty('--k', Math.min(1 + FxCombo.n * .07, 2.2).toFixed(2));
+  el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump');
+  if (FxCombo.n % 5 === 0) { Sound.play('points'); buzz(30); }
+  clearTimeout(FxCombo.to);
+  FxCombo.to = setTimeout(() => el.remove(), 1800);
+}
+// Etiqueta de quem soltou o efeito (confete, raio, bomba, giro).
+function fxTag(p, text) {
+  const layer = $('#fxLayer');
+  if (!layer || !p) return;
+  const el = document.createElement('div');
+  el.className = 'fx-tag'; el.innerHTML = `${avatar(p, 'sm')}<span><b>${esc(p.name)}</b> ${text}</span>`;
+  layer.appendChild(el);
+  setTimeout(() => el.remove(), 2200);
+}
+function fxConfetti(layer) {
+  const box = document.createElement('div'), W = innerWidth, H = innerHeight;
+  box.className = 'fx-box';
+  const cols = ['#F43F5E', '#FBBF24', '#22C55E', '#3B82F6', '#A855F7', '#EC4899', '#14B8A6', '#fff'];
+  for (let i = 0; i < 80; i++) {
+    const left = i % 2 === 0, el = document.createElement('i');
+    el.className = 'fx-conf'; el.style.background = pick(cols);
+    if (Math.random() < .3) el.style.borderRadius = '50%';
+    box.appendChild(el);
+    const x0 = left ? -10 : W + 10, dx = (left ? 1 : -1) * rand(W * .2, W * .75), up = rand(H * .45, H * .9), dur = rand(1600, 2600);
+    el.animate([
+      { transform: `translate(${x0}px,${H + 10}px) rotate(0)` },
+      { transform: `translate(${x0 + dx * .7}px,${H - up}px) rotate(${rand(200, 500)}deg)`, offset: .45 },
+      { transform: `translate(${x0 + dx}px,${H + 40}px) rotate(${rand(600, 1100)}deg)` },
+    ], { duration: dur, easing: 'cubic-bezier(.2,.6,.4,1)', delay: rand(0, 250), fill: 'both' });
+  }
+  layer.appendChild(box);
+  setTimeout(() => box.remove(), 3000);
 }
 // Tutorial rápido: aparece na primeira vez que a pessoa entra numa sala e volta pelo "Como jogar".
 const Tour = {
@@ -7615,6 +8173,14 @@ const Actions = {
   horn() {
     if (Store.room?.settings.zoeira === false || now() - (Actions.lastHorn || 0) < 6000) return;
     Actions.lastHorn = now(); runFx({ pid: Store.me.id, t: 'horn' }); dispatch({ type: 'fx', t: 'horn' });
+  },
+  zfx(el) {
+    const k = el.dataset.v, s = Store.room;
+    if (!s || s.settings.zoeira === false || myRole() === 'tv' || !FX_GAP[k] || now() - ((Actions.lastZfx || {})[k] || 0) < FX_GAP[k]) return;
+    (Actions.lastZfx = Actions.lastZfx || {})[k] = now();
+    el.classList.remove('is-cool'); void el.offsetWidth; el.classList.add('is-cool');
+    el.style.setProperty('--cd', FX_GAP[k] + 'ms');
+    runFx({ pid: Store.me.id, t: k }); dispatch({ type: 'fx', t: k });
   },
   emote(el) {
     if (now() - (Actions.lastEmote || 0) < 1500) return;
