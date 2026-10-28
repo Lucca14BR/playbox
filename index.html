@@ -620,6 +620,96 @@ button.tl-main:hover{border-color:color-mix(in srgb,var(--g) 45%,var(--line))}
 .ty-track i{display:block;height:100%;border-radius:inherit;background:var(--g);transition:width .35s ease}
 .ty-lane.is-done .ty-track i{background:var(--ok)}
 .ty-pos{text-align:right;color:var(--g)}
+/* Zoeira: bandeja de reações, arremessos, buzina, grito, chuva */
+/* As colunas do lobby podem encolher: a fileira de filtros rola em vez de alargar a página */
+.lobby-left,.lobby-right,.lobby-grid .panel{min-width:0}
+.cat-chips{max-width:100%}
+body .react-wrap{align-items:flex-end}
+#reactTray{align-items:stretch;gap:2px;width:min(88vw,272px);max-height:62vh;overflow-y:auto;border-radius:20px;padding:8px}
+#reactTray[hidden]{display:none}
+.tray-row{display:flex;flex-wrap:wrap;gap:2px}
+.tray-row button.on{background:color-mix(in srgb,var(--accent,#6366F1) 35%,transparent);border-radius:10px}
+.tray-sep{margin:6px 4px 2px;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.tray-sep small{font-weight:600;text-transform:none;letter-spacing:0;margin-left:4px}
+.throw-tgt{display:inline-grid;cursor:pointer;border-radius:50%;transition:transform .12s}
+.throw-tgt:hover{transform:scale(1.08) rotate(-4deg)}
+.fx-proj{position:fixed;left:0;top:0;margin:-20px 0 0 -20px;font-size:40px;line-height:1;will-change:transform;filter:drop-shadow(0 6px 8px rgba(0,0,0,.35))}
+.fx-hit{position:fixed;transform:translate(-50%,-50%);font-size:54px;animation:fxHit .9s ease-out forwards}
+@keyframes fxHit{0%{transform:translate(-50%,-50%) scale(.3)}30%{transform:translate(-50%,-50%) scale(1.3)}100%{transform:translate(-50%,-50%) scale(1.6);opacity:0}}
+.fx-splat{position:fixed;inset:0;display:grid;place-content:center;justify-items:center;gap:10px;background:radial-gradient(circle,rgba(220,38,38,.45),rgba(220,38,38,.12) 60%,transparent);animation:fxSplat 1.8s ease forwards}
+.fx-splat.is-nice{background:radial-gradient(circle,rgba(236,72,153,.4),rgba(236,72,153,.1) 60%,transparent)}
+.fx-splat span{font-size:min(40vw,220px);line-height:1;animation:fxHit2 .5s cubic-bezier(.2,1.6,.4,1)}
+.fx-splat b{padding:8px 16px;border-radius:999px;background:rgba(0,0,0,.6);color:#fff;font-size:18px}
+@keyframes fxSplat{0%,70%{opacity:1}100%{opacity:0}}
+@keyframes fxHit2{from{transform:scale(.2) rotate(-30deg)}to{transform:none}}
+.fx-emote{position:fixed;transform:translate(-50%,-110%);font-size:44px;animation:fxEmote 1.7s ease forwards}
+@keyframes fxEmote{0%{transform:translate(-50%,-60%) scale(.3)}20%{transform:translate(-50%,-120%) scale(1.2) rotate(-12deg)}40%{transform:translate(-50%,-120%) rotate(12deg)}60%{transform:translate(-50%,-125%) rotate(-12deg)}80%{opacity:1;transform:translate(-50%,-130%) rotate(8deg)}100%{opacity:0;transform:translate(-50%,-160%)}}
+.fx-shout{position:fixed;left:50%;top:22%;display:flex;align-items:center;gap:14px;max-width:92vw;padding:14px 22px;border-radius:22px;background:linear-gradient(120deg,#F43F5E,#F97316);color:#fff;box-shadow:0 20px 50px -10px rgba(244,63,94,.6);transform:translateX(-50%);animation:fxShout 2.8s cubic-bezier(.2,1.4,.4,1) forwards}
+.fx-shout span{display:grid;font-size:clamp(1.3rem,5vw,2.2rem);font-weight:900;line-height:1.1;text-transform:uppercase;word-break:break-word}
+.fx-shout small{font-size:12px;font-weight:700;text-transform:none;opacity:.85}
+@keyframes fxShout{0%{transform:translateX(-50%) scale(.3) rotate(-6deg);opacity:0}12%{transform:translateX(-50%) scale(1.08) rotate(2deg);opacity:1}20%{transform:translateX(-50%) scale(1) rotate(0)}85%{opacity:1}100%{opacity:0;transform:translateX(-50%) translateY(-30px)}}
+.fx-rain{position:fixed;top:-60px;animation:fxRain linear forwards}
+@keyframes fxRain{to{transform:translateY(calc(100vh + 120px)) rotate(540deg)}}
+body.fx-shake #app{animation:fxShake .6s}
+@keyframes fxShake{10%,90%{transform:translateX(-3px)}20%,80%{transform:translateX(6px)}30%,50%,70%{transform:translateX(-10px) rotate(-.5deg)}40%,60%{transform:translateX(10px) rotate(.5deg)}}
+/* Chat: enquete, menções, figurinhas, respostas rápidas, modos */
+.chat-poll{padding:10px;border-radius:14px;background:rgba(255,255,255,.05);border:1px solid var(--line);display:grid;gap:6px}
+.poll-q{margin:0;display:grid;gap:2px}
+.poll-q small{font-size:11px;color:var(--muted)}
+.poll-opt{position:relative;display:flex;justify-content:space-between;gap:8px;padding:8px 10px;border-radius:10px;border:1px solid var(--line);overflow:hidden;font-size:13px;font-weight:600;text-align:left;background:linear-gradient(90deg,color-mix(in srgb,var(--accent,#6366F1) 30%,transparent) var(--w),transparent var(--w))}
+.poll-opt.on{border-color:var(--accent,#6366F1)}
+.poll-opt:disabled{opacity:.8;cursor:default}
+.chat-msg.is-mention .chat-bubble{box-shadow:0 0 0 2px #FBBF24}
+.chat-bubble .at{color:#FBBF24}
+.chat-bubble p.big{font-size:2.2rem;line-height:1.15;background:none}
+.chat-sys.is-act{font-style:italic;color:var(--ink)}
+.chat-quick{display:flex;gap:6px;overflow-x:auto;padding:0 10px 8px;scrollbar-width:none}
+.chat-quick::-webkit-scrollbar{display:none}
+.chat-quick button{flex:none;padding:5px 11px;border-radius:999px;border:1px solid var(--line);font-size:12px;font-weight:700;background:rgba(255,255,255,.04)}
+#chatRoot[data-mode="reacoes"] .chat-form,#chatRoot[data-mode="reacoes"] .chat-quick,#chatRoot[data-mode="off"] .chat-form,#chatRoot[data-mode="off"] .chat-quick,#chatRoot[data-mode="off"] .react-wrap,#chatRoot[data-mode="off"] .chat-reacts{display:none}
+/* Personalizar a sala */
+.cfg-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;border-top:1px solid var(--line);font-size:14px;font-weight:600}
+.cfg-row.is-col{flex-direction:column;align-items:stretch}
+.cfg-step{display:inline-flex;align-items:center;gap:4px;padding:3px;border-radius:999px;border:1px solid var(--line);background:var(--bg-2)}
+.cfg-step button{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;font-size:18px;font-weight:700}
+.cfg-step button:hover:not(:disabled){background:rgba(255,255,255,.08)}
+.cfg-step button:disabled{opacity:.3}
+.cfg-step b{min-width:64px;text-align:center;font-size:13px}
+.cfg-title{display:grid;gap:6px;margin-bottom:8px}
+.cfg-title label{font-size:13px;font-weight:700}
+.cfg-inline{display:flex;gap:8px}
+.cfg-inline .input{flex:1;min-width:0}
+.room-title{margin:0 0 4px;text-align:center;font-size:clamp(1.4rem,5vw,2rem);font-weight:800;letter-spacing:-.02em;background:linear-gradient(90deg,#A5B4FC,#F0ABFC);-webkit-background-clip:text;background-clip:text;color:transparent}
+.game-card.is-off{opacity:.45}
+.gc-off{font-size:11px;font-weight:700;color:var(--muted)}
+.gc-sug{position:absolute;top:8px;right:8px;padding:2px 7px;border-radius:999px;background:#FBBF24;color:#111;font-size:11px;font-weight:800}
+.game-card{position:relative}
+.game-card.is-sug{box-shadow:0 0 0 2px #FBBF24}
+.sug-bar{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-bottom:10px}
+/* Jogadores: pronto, coringa, frase de vitória, GG, esquenta */
+.ready-btn.is-on{background:var(--ok);border-color:var(--ok);color:#06210F}
+.joker-btn{display:flex;flex-direction:column;align-items:center;margin:0 auto 10px;padding:8px 16px;border-radius:16px;border:1px dashed #FBBF24;background:rgba(251,191,36,.1);font-weight:800;font-size:14px;transition:transform .12s,background .15s}
+.joker-btn:hover{transform:translateY(-1px);background:rgba(251,191,36,.18)}
+.joker-btn small{font-weight:600;font-size:11px;color:var(--muted)}
+.joker-pill{width:max-content;max-width:100%;margin:0 auto 10px;padding:6px 14px;border-radius:999px;background:rgba(251,191,36,.18);border:1px solid rgba(251,191,36,.5);font-size:13px;font-weight:700;text-align:center}
+.sp-joker{position:absolute;top:-4px;left:-4px;font-size:16px}
+.sp{position:relative}
+.cry-bubble{display:flex;align-items:center;gap:10px;width:max-content;max-width:100%;margin:12px auto 0;padding:10px 16px;border-radius:18px 18px 18px 4px;background:linear-gradient(120deg,rgba(99,102,241,.3),rgba(236,72,153,.3));border:1px solid rgba(236,72,153,.4);font-size:15px;animation:evIn .5s cubic-bezier(.2,1.4,.4,1)}
+.kudos{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px;margin-top:12px}
+.kudos > span{font-size:12px;font-weight:800;color:var(--muted);margin-right:4px}
+.kudos button{border-radius:50%;transition:transform .12s}
+.kudos button:hover{transform:scale(1.12)}
+.cry-field{display:grid;gap:4px;grid-column:1 / -1;margin-top:6px}
+.cry-field label{font-size:12px;font-weight:700;color:var(--muted)}
+.cry-field label small{font-weight:500;margin-left:4px}
+.cry-field .input{min-height:40px;padding:8px 12px;font-size:14px}
+.warm-btn{display:grid;justify-items:center;width:100%;padding:18px;border-radius:20px;font-size:2.6rem;line-height:1;background:linear-gradient(140deg,#F97316,#EF4444);color:#fff;box-shadow:0 14px 30px -12px #F97316;user-select:none;-webkit-user-select:none;touch-action:manipulation;transition:transform .06s}
+.warm-btn:active{transform:scale(.95)}
+.warm-btn small{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;margin-top:6px}
+.warm-top{display:grid;gap:4px;list-style:none;padding:0;margin:10px 0 0}
+.warm-top li{display:flex;align-items:center;gap:8px;font-size:13px}
+.warm-top li b{margin-left:auto}
+.warm-pop{position:fixed;font-size:22px;pointer-events:none;animation:fxHit .6s ease-out forwards;z-index:40}
 /* Palavra Proibida */
 .tb-card{max-width:360px;margin:0 auto 12px;padding:16px 18px;border-radius:20px;background:var(--bg-2);border:2px solid var(--g);text-align:center}
 .tb-word{margin:0;font-size:clamp(1.6rem,6vw,2.1rem);font-weight:800;letter-spacing:-.02em;text-transform:uppercase}
@@ -1680,17 +1770,21 @@ function drawItem(g, list) {
 
 function engineStart(s, gameId, rounds) {
   s.screen = 'game';
-  s.vote = null;
+  s.vote = null; s.suggest = {};
+  Object.values(s.players).forEach(p => { delete p.ready; });
   // Alguns jogos longos (como o Lobisomem) limitam o número de rodadas.
   s.game = { id: gameId, round: 0, total: Games[gameId].rounds ? Math.min(Games[gameId].rounds, rounds) : rounds, phase: null, phaseStart: 0, deadline: null, dur: 0, data: {}, earned: {}, roundDelta: {}, used: [], roster: [] };
   engineNextRound(s);
+  botsGreet(s);
 }
 function engineNextRound(s) {
   const g = s.game;
   g.round++; g.roundDelta = {};
   if (g.round > g.total) { g.phase = 'final'; g.deadline = null; return; }
   g.roster = rosterOf(s);
+  botTune(s);
   roundSetup(s, g);
+  botJokers(s, g);
   g.bets = {}; g.applause = {}; delete g.betResult; delete g.conquest;
   const mod = Games[g.id];
   mod.init(g, s);
@@ -1707,6 +1801,7 @@ function enginePhase(s, name) {
   HostRT.allInAt = null;
   ph.enter && ph.enter(g, s);
   if (g.deadline && rushOn(s, ph)) { g.dur *= RUSH; g.deadline = g.phaseStart + g.dur * 1000; }
+  if (g.deadline && ph.rush !== false && cfg(s, 'timeMult') !== 1) { g.dur *= cfg(s, 'timeMult'); g.deadline = g.phaseStart + g.dur * 1000; }
   if (name === 'reveal') {
     if (modeOf(s) === 'apostas') settleBets(s);
     roundRevealExtras(s);
@@ -1795,9 +1890,9 @@ Games.mane = {
   bot(g, s, pid) {
     const q = MANE_Q[g.data.qi];
     if (g.phase === 'answer') {
-      if (q.y) return { type: 'submit', value: Math.round(q.a + gauss() * 9) };
-      let f = Math.exp(gauss() * 0.45);
-      if (Math.random() < .2) f *= Math.random() < .5 ? 3.5 : 0.3;
+      if (q.y) return { type: 'submit', value: Math.round(q.a + gauss() * 9 * botNoise()) };
+      let f = Math.exp(gauss() * 0.45 * botNoise());
+      if (Math.random() < .2 * botNoise()) f *= Math.random() < .5 ? 3.5 : 0.3;
       return { type: 'submit', value: Math.max(0, q.a < 20 ? Math.round(q.a * f) || 1 : Math.round(q.a * f)) };
     }
     if (g.phase === 'vote') {
@@ -1805,7 +1900,7 @@ Games.mane = {
       if (!t.length) return null;
       const vals = Object.values(g.data.guesses).sort((a, b) => a - b), med = vals[Math.floor(vals.length / 2)];
       const far = [...t].sort((a, b) => Math.abs(g.data.guesses[b] - med) - Math.abs(g.data.guesses[a] - med));
-      return { type: 'vote', target: Math.random() < .7 ? far[0] : pick(t) };
+      return { type: 'vote', target: Math.random() < botP(.7) ? far[0] : pick(t) };
     }
     return null;
   },
@@ -1958,7 +2053,7 @@ Games.impostor = {
       if (!cands.length) return null;
       const known = W.k.map(norm);
       const sus = cands.filter(id => !(id in d.clues) || !known.includes(norm(d.clues[id])));
-      const pool = pid !== d.impostor && sus.length && Math.random() < .75 ? sus : cands;
+      const pool = pid !== d.impostor && sus.length && Math.random() < botP(.75) ? sus : cands;
       return { type: 'vote', target: pick(pool) };
     }
     return null;
@@ -2039,7 +2134,7 @@ Games.geo = {
   done(g, pid) { return g.phase === 'answer' && pid in g.data.answers; },
   bot(g) {
     const right = GEO_Q[g.data.qi].o[0];
-    return { type: 'submit', choice: Math.random() < .65 ? right : pick(g.data.opts.filter(o => o !== right)) };
+    return { type: 'submit', choice: Math.random() < botP(.65) ? right : pick(g.data.opts.filter(o => o !== right)) };
   },
   view(g, s, me) {
     const q = GEO_Q[g.data.qi], right = q.o[0], mine = g.data.answers[me], reveal = g.phase === 'reveal';
@@ -2216,7 +2311,7 @@ Games.fato = {
     g.data.answers[pid] = { v: !!a.value, t: now() - g.phaseStart }; return true;
   },
   done(g, pid) { return g.phase === 'answer' && pid in g.data.answers; },
-  bot(g) { const q = FATO_Q[g.data.qi]; return { type: 'submit', value: Math.random() < .7 ? q.a : !q.a }; },
+  bot(g) { const q = FATO_Q[g.data.qi]; return { type: 'submit', value: Math.random() < botP(.7) ? q.a : !q.a }; },
   view(g, s, me) {
     const q = FATO_Q[g.data.qi], mine = g.data.answers[me], can = inRoster(g, me);
     const P = `<blockquote class="ff-quote">“${esc(q.t)}”</blockquote>`;
@@ -2494,7 +2589,7 @@ Games.desenho = {
   bot(g, s, pid) {
     const d = g.data;
     if (g.phase === 'pick' && pid === d.drawer) return { type: 'choose', word: pick(d.choices) };
-    if (g.phase === 'draw' && pid !== d.drawer) return { type: 'guess', text: Math.random() < .6 ? d.word : pick(DRAW_WORDS.filter(w => w !== d.word)) };
+    if (g.phase === 'draw' && pid !== d.drawer) return { type: 'guess', text: Math.random() < botP(.6) ? d.word : pick(DRAW_WORDS.filter(w => w !== d.word)) };
     return null;
   },
   view(g, s, me) {
@@ -2586,7 +2681,7 @@ function termoTry(g, pid, word) {
   return true;
 }
 function termoBotPlan(answer) {
-  const solve = Math.random() < .8, n = solve ? 2 + Math.floor(Math.random() * 5) : 6;
+  const solve = Math.random() < botP(.8), n = solve ? 2 + Math.floor(Math.random() * (BotIQ.lv.shift > .1 ? 3 : 5)) : 6;
   const pool = shuffle(TERMO_WORDS.filter(w => w !== answer));
   const words = pool.slice(0, n - 1);
   words.push(solve ? answer : pool[n - 1]);
@@ -2839,7 +2934,7 @@ Games.emoji = {
     return true;
   },
   done(g, pid) { return g.phase === 'guess' && pid in g.data.solved; },
-  bot(g) { return Math.random() < .6 ? { type: 'guess', text: EMOJI_Q[g.data.qi].t } : null; },
+  bot(g) { return Math.random() < botP(.6) ? { type: 'guess', text: EMOJI_Q[g.data.qi].t } : null; },
   view(g, s, me) {
     const d = g.data, q = EMOJI_Q[d.qi], can = inRoster(g, me), got = me in d.solved;
     const card = `<div class="emj-card" role="img" aria-label="Charada de emojis">${q.e}</div><div class="emj-meta"><span class="tag">${q.c}</span></div>`;
@@ -3232,7 +3327,7 @@ Games.mentira = {
     if (g.phase === 'pick') {
       const ok = d.opts.map((o, i) => o.by.includes(pid) ? -1 : i).filter(i => i >= 0);
       const truth = d.opts.findIndex(o => o.truth);
-      return { type: 'submit', choice: Math.random() < .45 ? truth : pick(ok) };
+      return { type: 'submit', choice: Math.random() < botP(.45) ? truth : pick(ok) };
     }
     return null;
   },
@@ -3420,7 +3515,7 @@ Games.preco = {
   },
   done(g, pid) { return g.phase === 'guess' && pid in g.data.guesses; },
   bot(g) {
-    const q = g.data.q, v = q.v * Math.exp(gauss() * .35);
+    const q = g.data.q, v = q.v * Math.exp(gauss() * .35 * botNoise());
     return { type: 'submit', value: v >= 100 ? Math.round(v) : Math.round(v * 100) / 100 };
   },
   view(g, s, me) {
@@ -3571,7 +3666,7 @@ Games.digita = {
     const text = TYPE_Q[drawItem(g, TYPE_Q)];
     g.data = { text, prog: {}, fin: {}, order: [], bots: {} };
     // Bots digitam entre 3,5 e 6,5 letras por segundo.
-    g.roster.forEach(id => { if (s.players[id]?.isBot) g.data.bots[id] = { cps: 3.5 + Math.random() * 3 }; });
+    g.roster.forEach(id => { if (s.players[id]?.isBot) g.data.bots[id] = { cps: (3.5 + Math.random() * 3) * botSpeed() }; });
   },
   phases: {
     ready: { label: 'Preparar…', dur: 4, hideTimer: true, next: 'race' },
@@ -3769,7 +3864,7 @@ Games.proibida = {
   bot(g, s, pid) {
     const d = g.data;
     if (pid === d.giver || !d.clues.length) return null;
-    return { type: 'guess', text: Math.random() < .55 ? d.card.w : pick(TABOO_Q.filter(c => c.w !== d.card.w)).w };
+    return { type: 'guess', text: Math.random() < botP(.55) ? d.card.w : pick(TABOO_Q.filter(c => c.w !== d.card.w)).w };
   },
   feedHTML(g, s) {
     const d = g.data;
@@ -4134,7 +4229,7 @@ Games.mapa = {
     g.data.guesses[pid] = { lat: Math.round(lat * 100) / 100, lon: Math.round(lon * 100) / 100 }; return true;
   },
   done(g, pid) { return g.phase === 'guess' && pid in g.data.guesses; },
-  bot(g) { const q = MAP_Q[g.data.qi]; return { type: 'submit', lat: clamp(q.lat + gauss() * 9, -85, 85), lon: clamp(q.lon + gauss() * 14, -180, 180) }; },
+  bot(g) { const q = MAP_Q[g.data.qi]; return { type: 'submit', lat: clamp(q.lat + gauss() * 9 * botNoise(), -85, 85), lon: clamp(q.lon + gauss() * 14 * botNoise(), -180, 180) }; },
   local(g) { const L = Store.local; if (!L.map || L.map.key !== `${g.round}:${g.data.qi}`) L.map = { key: `${g.round}:${g.data.qi}`, pin: null }; return L.map; },
   view(g, s, me) {
     const d = g.data, q = MAP_Q[d.qi], can = inRoster(g, me), mine = d.guesses[me];
@@ -4465,7 +4560,7 @@ Games.mimica = {
   bot(g, s, pid) {
     const d = g.data;
     if (g.phase === 'pick' && pid === d.teller) return { type: 'choose', i: pick(d.opts) };
-    if (g.phase === 'tell' && pid !== d.teller && d.seq.length) return { type: 'guess', text: Math.random() < .6 ? EMOJI_Q[d.qi].t : pick(EMOJI_Q).t };
+    if (g.phase === 'tell' && pid !== d.teller && d.seq.length) return { type: 'guess', text: Math.random() < botP(.6) ? EMOJI_Q[d.qi].t : pick(EMOJI_Q).t };
     return null;
   },
   seqHTML(d) { return `<div class="mm-seq" id="mmSeq" aria-label="Emojis">${d.seq.length ? d.seq.map(e => `<span>${e}</span>`).join('') : '<small>Os emojis aparecem aqui…</small>'}</div>`; },
@@ -4595,7 +4690,7 @@ Games.detalhe = {
       it.d = k === 'swap' ? { e: pick(SPOT_EMO.filter(e => e !== it.e)) } : k === 'gone' ? { gone: 1 } : k === 'big' ? { z: Math.round(it.z * 1.6) } : { x: clamp(it.x + (Math.random() < .5 ? -90 : 90), 60, 940) };
     });
     g.data = { items, found: {}, done: [], bots: {} };
-    g.roster.forEach(id => { if (s.players[id]?.isBot) g.data.bots[id] = Array.from({ length: SPOT_N }, () => 6000 + Math.random() * 48000).sort((a, b) => a - b); });
+    g.roster.forEach(id => { if (s.players[id]?.isBot) g.data.bots[id] = Array.from({ length: SPOT_N }, () => (6000 + Math.random() * 48000) / botSpeed()).sort((a, b) => a - b); });
   },
   phases: {
     find: { label: 'Ache as diferenças', dur: 60, next: 'reveal', allIn: (g, s) => active(g, s).every(id => (g.data.found[id] || []).length >= SPOT_N) },
@@ -4693,7 +4788,7 @@ Games.ritmo = {
     let ch = false;
     g.roster.forEach(id => {
       if (!s.players[id]?.isBot || id in d.scores) return;
-      const skill = .45 + Math.random() * .5, beats = d.n - d.rests.length, perfect = Math.round(beats * skill * .6);
+      const skill = clamp(.45 + Math.random() * .5 + BotIQ.lv.shift, .1, .98), beats = d.n - d.rests.length, perfect = Math.round(beats * skill * .6);
       d.scores[id] = { pts: Math.round(beats * 3 * skill), perfect, miss: Math.floor(Math.random() * 3) }; ch = true;
     });
     return ch;
@@ -5047,7 +5142,7 @@ function narrateCues(s, cur, p) {
   }
   if (cur.phase !== p.phase && cur.phase === 'reveal') {
     const e = Object.entries(g.roundDelta || {}).filter(([id, n]) => n > 0 && s.players[id]).sort((a, b) => b[1] - a[1])[0];
-    const won = e ? `${s.players[e[0]].name} levou ${plural(e[1], 'ponto', 'pontos')}!` : '';
+    const won = e ? `${s.players[e[0]].name} levou ${plural(e[1], 'ponto', 'pontos')}!${s.players[e[0]].cry ? ` ${s.players[e[0]].name} diz: ${s.players[e[0]].cry}` : ''}` : '';
     if (won || g.evNote) Narrator.say([won, g.evNote].filter(Boolean).join(' '));
   } else if (cur.phase !== p.phase && inRoster(g, Store.me.id)) buzz(35);
   if (cur.score > p.score) buzz(25);
@@ -5144,7 +5239,7 @@ function helpPlace(s, pid) {
   const lo = Math.min(...sc), hi = Math.max(...sc);
   return { last: hi > lo && mine === lo, lead: hi > lo && mine === hi };
 }
-const helpCost = (s, pid) => s.settings.handicap && helpPlace(s, pid).last ? 0 : HELP_COST;
+const helpCost = (s, pid) => s.settings.handicap && helpPlace(s, pid).last ? 0 : cfg(s, 'helpCost');
 
 // Modo família: palavrão no chat vira estrelinha.
 const BAD_WORDS = ['porra', 'caralh', 'merda', 'puta', 'fod', 'fdp', 'buceta', 'viado', 'arrombad', 'cacete', 'bosta', 'piranha', 'vagabund', 'desgraca', 'pqp', 'vsf', 'tnc', 'krl', 'otario', 'idiota', 'imbecil', 'babaca'];
@@ -5162,8 +5257,8 @@ const EVENTS = {
 };
 function roundSetup(s, g) {
   g.mult = s.settings.finalDouble && g.total > 1 && g.round === g.total ? 2 : 1;
-  g.ev = null; g.evNote = null; g.evBottom = null;
-  if (s.settings.events && Math.random() < .3) {
+  g.ev = null; g.evNote = null; g.evBottom = null; g.jokers = {}; g.kudos = {};
+  if (s.settings.events && Math.random() < cfg(s, 'eventChance') / 100) {
     const k = pick(Object.keys(EVENTS));
     g.ev = { k, ...EVENTS[k] };
     if (k === 'invertido') { const ids = playerIds(s).filter(id => s.players[id]).sort((a, b) => s.players[a].score - s.players[b].score); g.evBottom = ids.slice(0, Math.ceil(ids.length / 2)); }
@@ -5174,6 +5269,7 @@ function scoreMult(g, pid) {
   let m = g.mult || 1;
   if (g.ev?.k === 'dobro') m *= 2;
   if (g.ev?.k === 'invertido' && (g.evBottom || []).includes(pid)) m *= 2;
+  if ((g.jokers || {})[pid]) m *= 2;
   return m;
 }
 function roundRevealExtras(s) {
@@ -5419,7 +5515,7 @@ function modeRevealHTML(s, g) {
 
 /* ---------- Votação do próximo jogo ---------- */
 function openVote(s) {
-  const ok = GAME_ORDER.filter(id => rosterOf(s).length >= Games[id].min);
+  const ok = GAME_ORDER.filter(id => gameOn(s, id) && rosterOf(s).length >= Games[id].min);
   const fresh = ok.filter(id => !s.match.played.includes(id));
   const options = shuffle(fresh.length >= 3 ? fresh : ok).slice(0, 3);
   if (!options.length) return false;
@@ -5499,7 +5595,7 @@ function commit() {
   render();
 }
 function mkPlayer(id, pr, isBot) {
-  return { id, name: pr.name, avatar: pr.avatar, color: pr.color, score: 0, isBot, connected: true, lastSeen: now() };
+  return { id, name: pr.name, avatar: pr.avatar, color: pr.color, cry: String(pr.cry || '').slice(0, 40), score: 0, isBot, connected: true, lastSeen: now() };
 }
 function uniqueName(s, name) {
   const taken = new Set(Object.values(s.players).map(p => norm(p.name)));
@@ -5530,10 +5626,11 @@ function hostHandle(from, a) {
     } else {
       // Até 12 jogadores; quem chega depois (ou pede) fica na plateia. O telão é só uma tela.
       let role = ['spectator', 'tv'].includes(pl.role) ? pl.role : 'player';
-      const full = role === 'player' && seatIds(s).length >= MAX_PLAYERS;
+      const full = role === 'player' && seatIds(s).length >= maxP(s);
       if (full) role = 'spectator';
       const name = uniqueName(s, cleanName(pl.name) || (role === 'tv' ? 'Telão' : 'Jogador'));
       const np = mkPlayer(pl.id, { name, avatar: role === 'tv' ? '📺' : AVATARS.includes(pl.avatar) ? pl.avatar : pick(AVATARS), color: COLORS.includes(pl.color) ? pl.color : pick(COLORS) }, false);
+      np.cry = String(pl.cry || '').replace(/\s+/g, ' ').trim().slice(0, 40);
       if (role !== 'player') np.role = role;
       s.players[pl.id] = np;
       s.order.push(pl.id);
@@ -5566,6 +5663,25 @@ function hostHandle(from, a) {
       spawnFx('👏', p);
       changed = true;
     }
+  } else if (a.type === 'fx') {
+    hostFx(s, from, a);
+  } else if (a.type === 'pollVote') {
+    if (s.poll && Number.isInteger(a.i) && a.i >= 0 && a.i < s.poll.opts.length) { s.poll.votes[from] = a.i; changed = true; }
+  } else if (a.type === 'lobbyReady') {
+    if (s.screen === 'lobby') { p.ready = !p.ready; changed = true; }
+  } else if (a.type === 'suggest') {
+    if (s.screen === 'lobby' && Games[a.game] && from !== s.hostId) {
+      const sg = s.suggest || (s.suggest = {}), had = (sg[a.game] || []).includes(from);
+      Object.values(sg).forEach(l => { const j = l.indexOf(from); if (j >= 0) l.splice(j, 1); });
+      if (!had) (sg[a.game] = sg[a.game] || []).push(from);
+      changed = true;
+    }
+  } else if (a.type === 'warm') {
+    if (s.screen === 'lobby') { (s.warm = s.warm || {})[from] = (s.warm[from] || 0) + clamp(a.n | 0, 0, 25); changed = true; }
+  } else if (a.type === 'joker') {
+    changed = useJoker(s, from) || changed;
+  } else if (a.type === 'kudos') {
+    changed = giveKudos(s, from, a.to) || changed;
   } else if (a.type.startsWith('host:')) {
     if (from === s.hostId) changed = hostCommand(s, a) || changed;
   } else if (s.game && s.game.phase && s.game.phase !== 'final' && !s.game.paused) {
@@ -5579,11 +5695,12 @@ function hostHandle(from, a) {
 function hostCommand(s, a) {
   switch (a.type) {
     case 'host:addBot': {
-      if (seatIds(s).length >= MAX_PLAYERS) return false;
+      if (seatIds(s).length >= maxP(s)) return false;
       const used = new Set(Object.values(s.players).map(p => p.name));
       const name = BOT_NAMES.find(n => !used.has(n)) || uniqueName(s, 'Bot');
       const id = 'bot-' + uid(6);
       s.players[id] = mkPlayer(id, { name, avatar: pick(AVATARS), color: pick(COLORS) }, true);
+      s.players[id].pers = pick(Object.keys(BOT_PERS));
       s.order.push(id);
       return true;
     }
@@ -5618,6 +5735,21 @@ function hostCommand(s, a) {
       markPlayed(s);
       s.game = null; s.screen = 'podium';
       return true;
+    case 'host:set': {
+      const c = CFG[a.key], e = CFG_ENUM[a.key];
+      if (c) { const v = Math.round(clamp(+a.v || 0, c.min, c.max) / c.step) * c.step; s.settings[a.key] = +v.toFixed(2); return true; }
+      if (e) { if (!(a.v in e.opts)) return false; s.settings[a.key] = a.v; return true; }
+      if (a.key === 'title') { s.settings.title = String(a.v || '').replace(/\s+/g, ' ').trim().slice(0, 28); return true; }
+      return false;
+    }
+    case 'host:gameOff': {
+      if (!Games[a.game]) return false;
+      const off = new Set(s.settings.off || []);
+      if (off.has(a.game)) off.delete(a.game); else off.add(a.game);
+      if (off.size >= GAME_ORDER.length) return false;
+      s.settings.off = [...off];
+      return true;
+    }
     case 'host:plAdd':
       if (!Games[a.game]) return false;
       s.playlist = [...(s.playlist || []), a.game].slice(0, 20);
@@ -5646,9 +5778,9 @@ function hostCommand(s, a) {
       s.settings.theme = a.theme;
       return true;
     case 'host:toggle':
-      if (!['rush', 'auto', 'locked', 'voteNext', 'hostPlays', 'helps', 'ctrl', 'handicap', 'family', 'finalDouble', 'events'].includes(a.key)) return false;
+      if (!['rush', 'auto', 'locked', 'voteNext', 'hostPlays', 'helps', 'ctrl', 'handicap', 'family', 'finalDouble', 'events', 'zoeira', 'joker'].includes(a.key)) return false;
       // Estes começam ligados mesmo em salas antigas (sem o campo).
-      if (['hostPlays', 'helps'].includes(a.key)) s.settings[a.key] = s.settings[a.key] === false;
+      if (['hostPlays', 'helps', 'zoeira', 'joker'].includes(a.key)) s.settings[a.key] = s.settings[a.key] === false;
       else s.settings[a.key] = !s.settings[a.key];
       return true;
     case 'host:mode':
@@ -5667,7 +5799,7 @@ function hostCommand(s, a) {
     case 'host:role': {
       const p = s.players[a.id];
       if (!p || a.id === s.hostId || p.role === 'tv' || !['player', 'spectator'].includes(a.role)) return false;
-      if (a.role === 'player') { if (seatIds(s).length >= MAX_PLAYERS) return false; delete p.role; }
+      if (a.role === 'player') { if (seatIds(s).length >= maxP(s)) return false; delete p.role; }
       else p.role = 'spectator';
       return true;
     }
@@ -5680,7 +5812,7 @@ function hostCommand(s, a) {
       s.vote = null;
       return true;
     case 'host:random': {
-      const ok = GAME_ORDER.filter(id => rosterOf(s).length >= Games[id].min);
+      const ok = GAME_ORDER.filter(id => gameOn(s, id) && rosterOf(s).length >= Games[id].min);
       const fresh = ok.filter(id => !s.match.played.includes(id) && id !== s.game?.id);
       const id = pick(fresh.length ? fresh : ok);
       if (!id) return false;
@@ -5715,13 +5847,13 @@ function hostCommand(s, a) {
     }
     case 'host:newMatch':
       Object.values(s.players).forEach(p => { p.score = 0; });
-      s.match.played = []; s.match.byGame = {}; s.match.stats = {}; s.match.moments = []; s.match.id = uid(6); s.terr = null; s.vote = null; s.game = null; s.screen = 'lobby';
+      s.match.played = []; s.match.byGame = {}; s.match.stats = {}; s.match.moments = []; s.match.jokers = {}; s.warm = {}; s.match.id = uid(6); s.terr = null; s.vote = null; s.game = null; s.screen = 'lobby';
       return true;
   }
   return false;
 }
 /* ---------- Chat e reações (o host recebe, filtra e repassa) ---------- */
-const REACTS = ['😂', '🔥', '👏', '😱', '❤️', '🤯'];
+const REACTS = ['😂', '🔥', '👏', '😱', '❤️', '🤯', '💀', '🤡', '😭', '🥳', '👀', '😤'];
 const BOT_CHAT = ['kkkkk', 'essa foi difícil', 'gg', 'tô ficando bom nisso', 'próxima eu ganho', 'que isso 😂', 'eita', 'quase!'];
 const ChatRT = { last: {}, lastReact: {} };
 function pushChat(s, m) {
@@ -5738,32 +5870,24 @@ function chatLeaks(s, text) {
   return (mod.secret(g, s) || []).map(x => norm(x).replace(/[^a-z0-9]/g, '')).some(x => x.length >= 3 && flat.includes(x));
 }
 function hostChat(s, pid, raw) {
-  const text = String(raw || '').replace(/\s+/g, ' ').trim().slice(0, 140);
-  if (!text || now() - (ChatRT.last[pid] || 0) < 600) return false;
+  const text = String(raw || '').replace(/\s+/g, ' ').trim().slice(0, 140), mode = cfg(s, 'chatMode');
+  if (!text || now() - (ChatRT.last[pid] || 0) < (mode === 'lento' ? 5000 : 600)) return false;
+  if ((mode === 'off' || mode === 'reacoes') && pid !== s.hostId) return false;
   ChatRT.last[pid] = now();
+  if (text[0] === '/') return chatCommand(s, pid, text);
   const hid = chatLeaks(s, text);
   pushChat(s, { pid, name: s.players[pid].name, text: hid ? '' : s.settings.family ? familyClean(text) : text, hid });
+  if (!hid) botsHear(s, pid, text);
   return true;
 }
 function hostReact(s, pid, e) {
   // Margem menor que a do aparelho (350 ms) para absorver atrasos da rede.
-  if (!REACTS.includes(e) || now() - (ChatRT.lastReact[pid] || 0) < 200) return;
+  if (!REACTS.includes(e) || cfg(s, 'chatMode') === 'off' || now() - (ChatRT.lastReact[pid] || 0) < 200) return;
   ChatRT.lastReact[pid] = now();
   Transport.send({ kind: 'fx', pid, e });
   if (pid !== Store.me?.id) spawnFx(e, s.players[pid]);
+  hypeCheck(s, e, pid);
 }
-// Bots reagem aos resultados (e de vez em quando comentam no chat).
-function botsReact(s) {
-  if (!isHost() || !s.game) return;
-  s.game.roster.filter(id => s.players[id]?.isBot).forEach(id => {
-    if (Math.random() < .45) setTimeout(() => { if (Store.room?.players[id]) hostReact(Store.room, id, pick(REACTS)); }, rand(500, 2600));
-    if (Math.random() < .12) setTimeout(() => {
-      const room = Store.room, p = room?.players[id];
-      if (p && isHost()) { pushChat(room, { pid: id, name: p.name, text: pick(BOT_CHAT) }); commit(); }
-    }, rand(1500, 4500));
-  });
-}
-
 // Depois de uma pausa, empurra para frente todos os horários marcados da partida.
 function shiftTimers(g, d) {
   if (g.deadline) g.deadline += d;
@@ -5783,7 +5907,7 @@ function autoNext(s) {
     const id = s.playlist.shift();
     if (Games[id] && rosterOf(s).length >= Games[id].min) { engineStart(s, id, s.settings.rounds); s.game.queued = true; return; }
   }
-  const ok = GAME_ORDER.filter(id => rosterOf(s).length >= Games[id].min && !s.match.played.includes(id));
+  const ok = GAME_ORDER.filter(id => gameOn(s, id) && rosterOf(s).length >= Games[id].min && !s.match.played.includes(id));
   if (!ok.length) { s.game = null; s.screen = 'podium'; return; }
   if (s.settings.voteNext) { s.game = null; s.screen = 'lobby'; openVote(s); return; }
   engineStart(s, pick(ok), s.settings.rounds);
@@ -5802,6 +5926,9 @@ function hostTick() {
   }
   if (s.screen === 'lobby' && s.vote && voteTick(s)) changed = true;
   const g = s.game;
+  botTune(s);
+  if (s.poll && now() > s.poll.until) { closePoll(s); changed = true; }
+  if (goalCheck(s)) { commit(); return; }
   if (g && g.phase === 'final' && (s.settings.auto || (s.playlist || []).length)) {
     if (!g.autoAt) { g.autoAt = now() + 9000; changed = true; }
     else if (now() >= g.autoAt) { autoNext(s); changed = true; }
@@ -5813,7 +5940,7 @@ function hostTick() {
         if (!s.players[id]?.isBot) continue;
         const key = `${g.pkey}:${id}`;
         if (HostRT.botDone.has(key)) continue;
-        if (!HostRT.botAt[key]) { HostRT.botAt[key] = now() + rand(ph.bot[0], ph.bot[1]) * 1000 * (rushOn(s, ph) ? RUSH : 1); continue; }
+        if (!HostRT.botAt[key]) { HostRT.botAt[key] = now() + rand(ph.bot[0], ph.bot[1]) * 1000 * (rushOn(s, ph) ? RUSH : 1) * (ph.rush !== false ? cfg(s, 'timeMult') : 1) / botSpeed(); continue; }
         if (now() < HostRT.botAt[key]) continue;
         HostRT.botDone.add(key); delete HostRT.botAt[key];
         if (ph.betting) { if (placeBet(s, id, botBet(g, s, id))) changed = true; }
@@ -5869,7 +5996,8 @@ function onMessage(msg) {
     if (Store.hostLost) Store.hostLost = false;
     render();
   } else if (msg.kind === 'fx') {
-    if (msg.pid !== me.id) spawnFx(msg.e, Store.room?.players[msg.pid]);
+    if (msg.t) runFx({ ...msg, echo: msg.t !== 'rain' });
+    else if (msg.pid !== me.id) spawnFx(msg.e, Store.room?.players[msg.pid]);
   } else if (msg.kind === 'beat') {
     lastHostSignal = now();
     if (Store.hostLost) { Store.hostLost = false; render(); }
@@ -6177,6 +6305,7 @@ function viewHome() {
           <div class="emoji-grid" role="radiogroup" aria-label="Avatar">${AVATARS.map(a => `<button type="button" class="emo ${a === pr.avatar ? 'on' : ''}" data-act="avatar" data-v="${a}" role="radio" aria-checked="${a === pr.avatar}">${a}</button>`).join('')}</div>
         </div>
         <p class="err" id="nickErr" role="alert"></p>
+        <div class="cry-field"><label for="cry">Frase de vitória <small>aparece quando você vence uma rodada</small></label><input class="input" id="cry" data-keep="cry" maxlength="40" autocomplete="off" placeholder="Ex.: É tetra!!" value="${esc(pr.cry || '')}"></div>
       </section>
 
       <div class="tabs" role="tablist" aria-label="Como você quer jogar">${tabBtn('join', 'Entrar na sala')}${tabBtn('create', 'Criar sala')}</div>
@@ -6221,12 +6350,12 @@ function viewLobby(s) {
   const rows = list.map(id => {
     const p = s.players[id], on = p.connected || p.isBot, t = mode === 'equipes' ? s.teams?.[id] : null;
     const tags = `${id === s.hostId ? '<span class="tag tag-host">Host</span>' : ''}${id === s.hostId && set.hostPlays === false ? '<span class="tag">Só apresenta</span>' : ''}${p.isBot ? '<span class="tag">Bot</span>' : ''}${on ? '' : '<span class="tag">Sem sinal</span>'}${id === me ? '<span class="tag tag-me">Você</span>' : ''}${t ? `<span class="tag team-tag team-${t}">${TEAMS[t].short}</span>` : ''}`;
-    return `<li class="pl-row ${on ? '' : 'off'}">${avatar(p, 'sm')}<span class="pl-name">${esc(p.name)}${tags}</span>
+    return `<li class="pl-row ${on ? '' : 'off'}" data-pid="${id}"><span class="throw-tgt" data-act="throwAt" data-id="${id}" title="Toque para arremessar">${avatar(p, 'sm')}</span><span class="pl-name">${esc(p.name)}${tags}${p.ready ? '<span class="tag tag-good">Pronto</span>' : ''}</span>
       ${host ? `<span class="pl-adj"><button data-act="score" data-id="${id}" data-d="-1" aria-label="Tirar 1 ponto de ${esc(p.name)}" ${p.score ? '' : 'disabled'}>−</button><span class="pl-pts">${p.score} pts</span><button data-act="score" data-id="${id}" data-d="1" aria-label="Dar 1 ponto para ${esc(p.name)}">+</button></span>`
         : `<span class="pl-pts">${p.score} pts</span>`}<span class="crown" ${id === leader ? `title="${scored ? 'Na liderança' : 'Host da sala'}"` : ''}>${id === leader ? icon('crown') : ''}</span>
       ${host && id !== s.hostId ? `<span class="pl-tools"><button class="pl-role" data-act="role" data-id="${id}" data-role="spectator" aria-label="Mandar ${esc(p.name)} para a plateia" title="Mandar para a plateia">${icon('eye')}</button><button class="pl-kick" data-act="kick" data-id="${id}" aria-label="Remover ${esc(p.name)} da sala">×</button></span>` : ''}</li>`;
   }).join('');
-  const waiting = ids.length < MAX_PLAYERS && !set.locked ? `<li class="pl-row waiting"><span class="wait-dot">${icon('user')}</span><span>Aguardando<span class="dots"></span></span><span></span><span class="ring"></span></li>` : '';
+  const waiting = ids.length < maxP(s) && !set.locked ? `<li class="pl-row waiting"><span class="wait-dot">${icon('user')}</span><span>Aguardando<span class="dots"></span></span><span></span><span class="ring"></span></li>` : '';
   const n = rosterOf(s).length;
   const gcat = GAME_CATS[Store.local.gcat] ? Store.local.gcat : 'all';
   const catChips = `<div class="cat-chips" role="group" aria-label="Filtrar jogos por categoria">${[['all', 'Todos', GAME_ORDER.length], ...Object.entries(GAME_CATS).map(([k, label]) => [k, label, GAME_ORDER.filter(id => Games[id].cat === k).length])]
@@ -6235,8 +6364,10 @@ function viewLobby(s) {
     const m = Games[id], lacking = n < m.min, played = s.match.played.includes(id);
     const inner = `<span class="gc-icon">${gameIcon(m)}</span><span class="gc-name">${m.name}</span>
       <span class="gc-tag">${lacking ? `Precisa de ${m.min} jogadores` : m.tag}</span>${played ? `<span class="gc-done" title="Já jogado nesta partida">${icon('check')}</span>` : ''}`;
-    return host ? `<button class="game-card" style="${gameVars(m)}" data-act="startGame" data-game="${id}" ${lacking ? 'disabled' : ''}>${inner}</button>`
-      : `<div class="game-card" style="${gameVars(m)}">${inner}</div>`;
+    const sug = (s.suggest || {})[id] || [], off = !gameOn(s, id);
+    const inner2 = inner + (sug.length ? `<span class="gc-sug" title="Sugestões da galera">💡${sug.length}</span>` : '') + (off ? '<span class="gc-off">fora do sorteio</span>' : '');
+    return host ? `<button class="game-card ${off ? 'is-off' : ''}" style="${gameVars(m)}" data-act="startGame" data-game="${id}" ${lacking && !Store.local.offEdit ? 'disabled' : ''}>${inner2}</button>`
+      : `<button class="game-card ${off ? 'is-off' : ''} ${sug.includes(me) ? 'is-sug' : ''}" style="${gameVars(m)}" data-act="suggest" data-game="${id}" aria-pressed="${sug.includes(me)}" ${lacking ? 'disabled' : ''}>${inner2}</button>`;
   }).join('');
   const toggle = (key, ic, title, desc, on = !!set[key], act = 'toggle') => `<button class="tgl" role="switch" aria-checked="${on}" data-act="${act}" data-k="${key}">
     <span class="tgl-ic">${icon(ic)}</span><span class="tgl-txt"><b>${title}</b><small>${desc}</small></span><span class="tgl-sw" aria-hidden="true"><i></i></span></button>`;
@@ -6254,16 +6385,18 @@ function viewLobby(s) {
     ${toggle('finalDouble', 'crown', 'Rodada final em dobro', 'A última rodada de cada jogo vale pontos em dobro.')}
     ${toggle('handicap', 'target', 'Handicap', 'Quem está em último usa ajudas de graça; o líder fica sem ajudas.')}
     ${toggle('family', 'users', 'Modo família', 'Esconde palavrões do chat e tira as perguntas mais ousadas.')}
-    ${toggle('tv', 'tv', 'Modo telão nesta tela', 'Deixa tudo grande, para mostrar na TV. Só neste aparelho.', !!Store.local.tvView, 'tvView')}</div></section>${contentPanelHTML(s)}`
+    ${toggle('zoeira', 'smile', 'Zoeira liberada', 'Arremessos, buzina e grito aparecem na tela de todo mundo.', set.zoeira !== false)}
+    ${toggle('joker', 'coin', 'Coringa', 'Cada jogador pode dobrar os pontos de uma rodada por partida.', set.joker !== false)}
+    ${toggle('tv', 'tv', 'Modo telão nesta tela', 'Deixa tudo grande, para mostrar na TV. Só neste aparelho.', !!Store.local.tvView, 'tvView')}</div></section>${customizePanelHTML(s)}${contentPanelHTML(s)}`
     : `<p class="set-chips"><span class="tag">${icon(MODES[mode].icon)}${MODES[mode].name}</span>${set.rush ? `<span class="tag tag-rush">${icon('bolt')}Modo Rush</span>` : ''}${set.auto ? '<span class="tag">Jogos em sequência</span>' : ''}${set.locked ? '<span class="tag">Sala trancada</span>' : ''}</p>`;
   const audPanel = aud.length || myRole() === 'spectator' ? `<section class="panel" aria-labelledby="auTitle"><h2 class="panel-title" id="auTitle">Plateia (${aud.length})</h2>
     ${myRole() === 'spectator' ? '<p class="hint">Você está na plateia: assiste, conversa, reage e dá o prêmio do público no fim de cada rodada.</p>' : ''}
     <ul class="aud-list">${aud.map(id => { const p = s.players[id];
       return `<li class="aud-row">${avatar(p, 'sm')}<span>${esc(p.name)}</span>${icon(p.role === 'tv' ? 'tv' : 'eye')}
-        ${host && p.role !== 'tv' ? `<button class="btn xs" data-act="role" data-id="${id}" data-role="player" ${ids.length >= MAX_PLAYERS ? 'disabled' : ''}>Pôr para jogar</button>` : ''}</li>`; }).join('')}</ul></section>` : '';
+        ${host && p.role !== 'tv' ? `<button class="btn xs" data-act="role" data-id="${id}" data-role="player" ${ids.length >= maxP(s) ? 'disabled' : ''}>Pôr para jogar</button>` : ''}</li>`; }).join('')}</ul></section>` : '';
   return `<section class="screen lobby">
     ${voteHTML(s)}
-    <p class="lobby-caption">Sala criada por <b>${esc(nameOf(s, s.hostId))}</b></p>
+    ${set.title ? `<h1 class="room-title">${esc(set.title)}</h1>` : ''}<p class="lobby-caption">Sala criada por <b>${esc(nameOf(s, s.hostId))}</b></p>
     <div class="lobby-grid">
       <div class="lobby-left">
         <section class="panel pin-block" aria-label="PIN da sala">
@@ -6273,8 +6406,8 @@ function viewLobby(s) {
           ${netStatusHTML()}
         </section>
         <section class="panel" aria-labelledby="plTitle">
-          <div class="panel-head"><h2 class="panel-title" id="plTitle">Jogadores (${ids.length}/${MAX_PLAYERS})</h2>
-            ${host ? `<button class="btn xs" data-act="addBot" ${ids.length >= MAX_PLAYERS ? 'disabled' : ''}>${icon('plus')}Bot</button>` : ''}</div>
+          <div class="panel-head"><h2 class="panel-title" id="plTitle">Jogadores (${ids.length}/${maxP(s)})${ids.some(id => s.players[id].ready) ? ` · ${ids.filter(id => s.players[id].ready).length} prontos` : ''}</h2>
+            <span class="row">${plays(s, me) ? `<button class="btn xs ready-btn ${s.players[me]?.ready ? 'is-on' : ''}" data-act="lobbyReady">${s.players[me]?.ready ? 'Pronto ✓' : 'Estou pronto'}</button>` : ''}${host ? `<button class="btn xs" data-act="addBot" ${ids.length >= maxP(s) ? 'disabled' : ''}>${icon('plus')}Bot</button>` : ''}</span></div>
           <ul class="pl-list">${rows}${waiting}</ul>
         </section>
         ${mode === 'equipes' ? teamsHTML(s, host) : ''}
@@ -6282,13 +6415,14 @@ function viewLobby(s) {
         ${settingsPanel}
       </div>
       <div class="lobby-right">
-        ${myRole() !== 'tv' ? devicePanelHTML() : ''}
+        ${myRole() !== 'tv' ? devicePanelHTML() + warmPanelHTML(s) : ''}
         ${mode === 'territorio' ? terrPanelHTML(s) : ''}
         <section class="panel" aria-labelledby="gmTitle">
           <div class="gp-head">
             <div><h2 class="panel-title" id="gmTitle">${host ? 'Escolha um jogo' : 'O host escolhe o jogo'}</h2><p class="hint">Rodadas por jogo</p></div>
-            ${host ? `<div class="seg" role="group" aria-label="Rodadas por jogo">${[3, 5, 7].map(k => `<button data-act="rounds" data-n="${k}" aria-pressed="${set.rounds === k}">${k}</button>`).join('')}</div>` : `<span class="seg-static">${set.rounds}</span>`}
+            ${host ? cfgStepHTML(s, 'rounds') : `<span class="seg-static">${set.rounds}</span>`}
           </div>
+          ${suggestBarHTML(s, host)}
           ${host ? `<div class="lobby-actions"><button class="btn primary pill" data-act="random">${icon('shuffle')}Jogo surpresa</button><button class="btn pill" data-act="openVote" ${s.vote ? 'disabled' : ''}>${icon('vote')}Galera vota</button></div>` : ''}
           ${playlistHTML(s, host)}${catChips}<div class="game-grid is-12">${cards}</div>
           ${host ? `<div class="lobby-foot"><p class="hint">${scored ? 'O placar soma todos os jogos desta partida.' : 'Os pontos de cada jogo vão para um placar geral.'}</p>
@@ -6341,11 +6475,13 @@ function viewGame(s) {
         <div><h1 class="sh-name">${mod.name}</h1><p class="sh-sub">${ph.label}</p></div></header>
       ${firstStep && g.surprise ? `<p class="surprise-pill">${icon('shuffle')}Jogo surpresa!</p>` : ''}
       ${firstStep && g.voted ? `<p class="surprise-pill">${icon('vote')}A galera escolheu!</p>` : ''}
-      ${eventPillsHTML(g)}
+      ${eventPillsHTML(g)}${jokerHTML(s, g, me)}
       ${firstStep ? `<p class="sh-how">${esc(mod.how)}</p>` : ''}
       <div class="stage-body">${body}</div>
       ${modeRevealHTML(s, g)}
+      ${cryHTML(s, g)}
       ${watcher && role === 'spectator' && reveal ? applauseHTML(s, g, me) : ''}
+      ${!watcher && reveal ? kudosHTML(s, g, me) : ''}
       ${stripHTML(s, g, mod)}
       ${g.paused ? `<div class="pause-veil" role="status"><span class="pv-ic">${icon('pause')}</span><b>Jogo pausado</b>
         <span>${host ? 'Toque em Continuar quando a galera estiver pronta.' : 'O host pausou o jogo. Já, já continua.'}</span></div>` : ''}
@@ -6367,7 +6503,7 @@ function stripHTML(s, g, mod) {
     const stat = delta ? `<span class="sp-stat delta ${delta < 0 ? 'neg' : ''}">${delta > 0 ? '+' : ''}${delta}</span>`
       : done ? `<span class="sp-stat is-ok" title="Já jogou">${icon('check')}</span>`
       : `<span class="sp-stat ${inR ? 'is-wait' : 'is-out'}" title="${inR ? 'Ainda pensando' : 'Entra na próxima rodada'}"></span>`;
-    return `<li class="sp ${p.connected || p.isBot ? '' : 'off'} ${id === Store.me.id ? 'me' : ''} ${team && team[id] ? 'team-' + team[id] : ''}">${avatar(p, 'md')}
+    return `<li class="sp ${p.connected || p.isBot ? '' : 'off'} ${id === Store.me.id ? 'me' : ''} ${team && team[id] ? 'team-' + team[id] : ''}" data-pid="${id}"><span class="throw-tgt" data-act="throwAt" data-id="${id}" title="Toque para arremessar">${avatar(p, 'md')}</span>${(g.jokers || {})[id] ? '<span class="sp-joker" title="Coringa: pontos em dobro">🃏</span>' : ''}
       <span class="sp-name">${esc(p.name)}</span><span class="sp-pts">${p.score} pts</span>${stat}</li>`;
   }).join('')}</ul>`;
 }
@@ -6436,12 +6572,318 @@ function viewPodium(s) {
   </section>`;
 }
 
+/* =====================================================================
+   Zoeira e personalização: arremessos, buzina, grito, chuva de emojis,
+   comandos e enquetes no chat, bots com nível e personalidade, ajustes
+   finos da sala e coisas para quem não é host (pronto, sugestão,
+   coringa, GG, frase de vitória e esquenta)
+   ===================================================================== */
+// ---- Ajustes da sala
+const CFG = {
+  maxPlayers: { min: 2, max: 20, step: 1, def: 12, label: 'Limite de jogadores' },
+  rounds: { min: 1, max: 10, step: 1, def: 3, label: 'Rodadas por jogo' },
+  timeMult: { min: .5, max: 2, step: .25, def: 1, label: 'Tempo das etapas', fmt: v => `${String(v).replace('.', ',')}×` },
+  goal: { min: 0, max: 300, step: 10, def: 0, label: 'Meta de pontos (acaba a partida)', fmt: v => v ? `${v} pts` : 'sem meta' },
+  helpCost: { min: 1, max: 3, step: 1, def: 1, label: 'Custo das ajudas', fmt: v => plural(v, 'ponto', 'pontos') },
+  eventChance: { min: 10, max: 80, step: 10, def: 30, label: 'Chance de evento surpresa', fmt: v => `${v}%` },
+};
+const CFG_ENUM = {
+  botLevel: { label: 'Nível dos bots', def: 'normal', opts: { facil: 'Fácil', normal: 'Normal', dificil: 'Difícil', caotico: 'Caótico' } },
+  chatMode: { label: 'Chat', def: 'livre', opts: { livre: 'Livre', lento: 'Lento (1 a cada 5 s)', reacoes: 'Só reações', off: 'Desligado' } },
+};
+const cfg = (s, k) => s?.settings?.[k] ?? (CFG[k] || CFG_ENUM[k]).def;
+const maxP = s => cfg(s, 'maxPlayers');
+const gameOn = (s, id) => !(s.settings.off || []).includes(id);
+const cfgStepHTML = (s, k) => { const c = CFG[k], v = cfg(s, k); return `<div class="cfg-step"><button data-act="cfg" data-k="${k}" data-d="-1" ${v <= c.min ? 'disabled' : ''} aria-label="Diminuir ${c.label}">−</button><b>${c.fmt ? c.fmt(v) : v}</b><button data-act="cfg" data-k="${k}" data-d="1" ${v >= c.max ? 'disabled' : ''} aria-label="Aumentar ${c.label}">+</button></div>`; };
+function customizePanelHTML(s) {
+  const off = s.settings.off || [];
+  const en = k => { const e = CFG_ENUM[k], v = cfg(s, k); return `<div class="cfg-row is-col"><span>${e.label}</span><div class="cat-chips wrap">${Object.entries(e.opts).map(([o, l]) => `<button class="cat-chip" data-act="cfgSet" data-k="${k}" data-v="${o}" aria-pressed="${v === o}">${l}</button>`).join('')}</div></div>`; };
+  return `<section class="panel" aria-labelledby="cfgTitle"><h2 class="panel-title" id="cfgTitle">Personalizar a sala</h2>
+    <form class="cfg-title" data-form="title" novalidate><label for="roomTitle">Nome da sala</label><div class="cfg-inline"><input class="input" id="roomTitle" data-keep="roomTitle" maxlength="28" placeholder="Ex.: Noite dos campeões" value="${esc(s.settings.title || '')}"><button class="btn sm pill">Salvar</button></div></form>
+    ${['maxPlayers', 'rounds', 'timeMult', 'goal', 'helpCost', 'eventChance'].map(k => `<div class="cfg-row"><span>${CFG[k].label}</span>${cfgStepHTML(s, k)}</div>`).join('')}
+    ${en('botLevel')}${en('chatMode')}
+    <div class="cfg-row"><span>Jogos fora do sorteio${off.length ? `: <b>${off.length}</b>` : ''}</span><button class="btn xs ${Store.local.offEdit ? 'primary' : ''}" data-act="offEdit">${Store.local.offEdit ? 'Pronto' : 'Escolher'}</button></div>
+    ${Store.local.offEdit ? '<p class="hint">Toque nos jogos lá embaixo para tirar ou devolver ao sorteio (jogo surpresa, votação e sequência automática).</p>' : ''}
+  </section>`;
+}
+function goalCheck(s) {
+  const goal = cfg(s, 'goal'), g = s.game;
+  if (!goal || !g || g.phase !== 'final') return false;
+  const top = playerIds(s).filter(id => s.players[id]).sort((a, b) => s.players[b].score - s.players[a].score)[0];
+  if (!top || s.players[top].score < goal) return false;
+  markPlayed(s);
+  s.game = null; s.screen = 'podium';
+  pushChat(s, { sys: true, text: `🏁 ${s.players[top].name} bateu a meta de ${goal} pontos!` });
+  return true;
+}
+
+// ---- Bots: nível de esperteza e personalidade
+const BOT_LV = { facil: { shift: -.3, noise: 1.8, speed: .7 }, normal: { shift: 0, noise: 1, speed: 1 }, dificil: { shift: .25, noise: .45, speed: 1.45 }, caotico: { shift: 0, noise: 2.6, speed: 1.2, chaos: true } };
+const BotIQ = { lv: BOT_LV.normal };
+function botTune(s) { BotIQ.lv = BOT_LV[cfg(s, 'botLevel')] || BOT_LV.normal; }
+const botP = base => BotIQ.lv.chaos ? .15 + Math.random() * .75 : clamp(base + BotIQ.lv.shift, .05, .97);
+const botNoise = () => BotIQ.lv.noise;
+const botSpeed = () => BotIQ.lv.speed;
+const BOT_PERS = {
+  zoeiro: { e: '🤡', win: ['ESSA FOI FÁCIL KKKK', 'chora não, galera', 'sou o terror dessa sala 😎'], lose: ['roubado!!!', 'o jogo tá bugado, juro', 'próxima eu amasso'], start: ['bora, que hoje eu tô inspirado', 'preparem os lencinhos'], hit: ['ah é? toma!', 'quem jogou isso?? 😤'], mention: ['falou comigo? 👀', 'eu sou lenda, pode falar', 'fala baixo que eu tô concentrado'], laugh: ['KKKKKKK', 'morri 💀'] },
+  competitivo: { e: '🏆', win: ['mais um pro currículo', 'pontos garantidos 💪', 'tô no topo, se acostumem'], lose: ['isso não vai ficar assim', 'só estou aquecendo', 'anotei isso'], start: ['foco total', 'valendo!'], hit: ['não me distrai!', 'isso não me abala'], mention: ['tô ocupado ganhando', 'depois do pódio eu respondo'], laugh: ['ri agora, chora depois', 'hm'] },
+  fofo: { e: '🥰', win: ['eba!! 🥳', 'nem acredito que acertei', 'obrigado, galera!'], lose: ['tudo bem, o importante é se divertir 💖', 'parabéns pra quem acertou!'], start: ['boa sorte pra todo mundo!', 'que jogo legal 🤩'], hit: ['ai 😢', 'por queeeê'], mention: ['oiii! 👋', 'tô aqui! 💖'], laugh: ['hihihi', 'kkkk que fofo'] },
+  nerd: { e: '🤓', win: ['estatisticamente previsível', 'calculei tudo 📊', 'elementar'], lose: ['erro de arredondamento', 'a amostra era pequena', 'vou recalcular'], start: ['probabilidade de vitória: alta', 'analisando…'], hit: ['isso viola a física', 'tomate: 94% água'], mention: ['interessante pergunta', 'segundo meus cálculos, sim'], laugh: ['risada detectada', 'kkk (irônico)'] },
+};
+const botPers = p => BOT_PERS[p?.pers] || Object.values(BOT_PERS)[(p?.id || 'x').charCodeAt((p?.id || 'x').length - 1) % 4];
+function botSay(id, text, delay = 0) {
+  setTimeout(() => {
+    const room = Store.room, p = room?.players[id];
+    if (!p || !isHost() || ['off', 'reacoes'].includes(cfg(room, 'chatMode'))) return;
+    pushChat(room, { pid: id, name: p.name, text }); commit();
+  }, delay);
+}
+function botsGreet(s) {
+  const bots = (s.game?.roster || []).filter(id => s.players[id]?.isBot);
+  if (bots.length && Math.random() < (BotIQ.lv.chaos ? .8 : .35)) { const id = pick(bots); botSay(id, pick(botPers(s.players[id]).start), rand(800, 2500)); }
+}
+// Bots leem o chat: respondem quando são citados e riem junto.
+function botsHear(s, pid, text) {
+  if (s.players[pid]?.isBot) return;
+  const k = norm(text), bots = Object.values(s.players).filter(p => p.isBot);
+  bots.forEach(b => { if (k.includes(norm(b.name).split(' ')[0]) && Math.random() < .85) botSay(b.id, pick(botPers(b).mention), rand(1200, 3000)); });
+  if (/k{3,}|haha|rs{2,}/.test(k) && bots.length && Math.random() < .4) { const b = pick(bots); Math.random() < .5 ? botSay(b.id, pick(botPers(b).laugh), rand(800, 2200)) : setTimeout(() => Store.room && hostReact(Store.room, b.id, '😂'), rand(500, 1800)); }
+  if (/\bbots?\b/.test(k) && bots.length && Math.random() < .5) { const b = pick(bots); botSay(b.id, pick(['bot é a sua vó', 'tô te ouvindo, hein', 'respeita os bots 🤖', 'sou mais humano que muita gente']), rand(1000, 2500)); }
+}
+function botsReact(s) {
+  if (!isHost() || !s.game) return;
+  const g = s.game, deltas = g.roundDelta || {}, best = Math.max(0, ...Object.values(deltas)), chaos = BotIQ.lv.chaos ? 2 : 1, zoeira = s.settings.zoeira !== false;
+  const winner = Object.keys(deltas).find(x => deltas[x] === best && best > 0);
+  g.roster.filter(id => s.players[id]?.isBot).forEach(id => {
+    const d = deltas[id] || 0, P = botPers(s.players[id]), won = d > 0 && d === best;
+    if (Math.random() < .55 * chaos) setTimeout(() => { if (Store.room?.players[id]) hostReact(Store.room, id, won ? pick(['🥳', '🔥', '😎']) : d > 0 ? pick(REACTS) : pick(['😭', '💀', '😱', '🤡'])); }, rand(500, 2600));
+    if ((won || d <= 0) && Math.random() < .28 * chaos) botSay(id, pick(P[won ? 'win' : 'lose']), rand(1200, 4000));
+    if (winner && winner !== id && Math.random() < .2) setTimeout(() => { const r = Store.room; if (r?.game === g && g.phase === 'reveal') giveKudos(r, id, winner) && commit(); }, rand(1500, 5000));
+    // O zoeiro (ou qualquer bot no modo caótico) joga coisas em quem venceu a rodada.
+    if (zoeira && winner && winner !== id && (s.players[id].pers === 'zoeiro' || BotIQ.lv.chaos) && Math.random() < .3 * chaos)
+      setTimeout(() => Store.room && hostFx(Store.room, id, { t: 'throw', e: pick(THROWS), to: winner }), rand(1500, 3500));
+  });
+}
+function botJokers(s, g) {
+  if (s.settings.joker === false) return;
+  g.roster.filter(id => s.players[id]?.isBot && !(s.match.jokers || {})[id]).forEach(id => {
+    if (Math.random() < (g.round === g.total ? .35 : .1)) { (s.match.jokers = s.match.jokers || {})[id] = `${g.id}:${g.round}`; (g.jokers = g.jokers || {})[id] = 1; }
+  });
+}
+
+// ---- Zoeira: arremessos, buzina, dancinha, grito, chuva de emojis e GG
+const THROWS = ['🍅', '🥚', '🎈', '💐', '🧻', '🥧'];
+const EMOTES = ['💃', '🕺', '🤸', '🙇', '👋', '😎'];
+const CHAT_QUICK = ['KKKKKK', 'GG', 'Roubado!', 'Não acredito 😱', 'Eu sabia!', 'Bora!', 'F'];
+const FxRT = { last: {}, hype: [], lastRain: 0 };
+const FX_GAP = { throw: 1200, horn: 6000, shout: 8000, emote: 1500 };
+function hostFx(s, pid, a) {
+  const p = s?.players[pid];
+  if (!p || p.role === 'tv' || cfg(s, 'chatMode') === 'off' || !FX_GAP[a.t]) return;
+  if (a.t !== 'emote' && s.settings.zoeira === false) return;
+  const key = pid + ':' + a.t;
+  if (now() - (FxRT.last[key] || 0) < FX_GAP[a.t] * .8) return;
+  let msg;
+  if (a.t === 'throw') { if (!THROWS.includes(a.e) || !s.players[a.to] || a.to === pid) return; msg = { t: 'throw', e: a.e, to: a.to }; }
+  else if (a.t === 'horn') msg = { t: 'horn' };
+  else if (a.t === 'emote') { if (!EMOTES.includes(a.e)) return; msg = { t: 'emote', e: a.e }; }
+  else { let text = String(a.text || '').replace(/\s+/g, ' ').trim().slice(0, 40); if (!text) return; if (s.settings.family) text = familyClean(text); msg = { t: 'shout', text }; }
+  FxRT.last[key] = now();
+  Transport.send({ kind: 'fx', pid, ...msg });
+  if (pid !== Store.me?.id) runFx({ pid, ...msg });
+  if (a.t === 'throw') {
+    matchStat(s, pid, 'throws');
+    const tgt = s.players[a.to];
+    if (tgt.isBot && !p.isBot && Math.random() < .55) {
+      setTimeout(() => Store.room && hostFx(Store.room, a.to, { t: 'throw', e: pick(THROWS), to: pid }), rand(1200, 2500));
+      if (Math.random() < .5) botSay(a.to, pick(botPers(tgt).hit), 900);
+    }
+  }
+}
+// Muita reação em pouco tempo vira chuva de emojis para todo mundo.
+function hypeCheck(s, e, pid) {
+  FxRT.hype = FxRT.hype.filter(x => now() - x.t < 6000);
+  FxRT.hype.push({ t: now(), e });
+  if (FxRT.hype.length < 10 || now() - FxRT.lastRain < 20000) return;
+  FxRT.lastRain = now();
+  const c = {}; FxRT.hype.forEach(x => add(c, x.e, 1));
+  const top = Object.entries(c).sort((a, b) => b[1] - a[1])[0][0];
+  FxRT.hype = [];
+  Transport.send({ kind: 'fx', pid, t: 'rain', e: top });
+  runFx({ pid, t: 'rain', e: top });
+}
+function giveKudos(s, from, to) {
+  const g = s.game;
+  if (!g || g.phase !== 'reveal' || from === to || !inRoster(g, to) || !s.players[from] || (g.kudos || {})[from]) return false;
+  (g.kudos = g.kudos || {})[from] = to;
+  matchStat(s, to, 'kudos');
+  Transport.send({ kind: 'fx', pid: from, t: 'kudos', to });
+  if (from !== Store.me?.id) runFx({ pid: from, t: 'kudos', to });
+  return true;
+}
+const fxAnchor = pid => { const el = pid && $(`[data-pid="${pid}"] .av, [data-pid="${pid}"]`); if (!el || !el.offsetParent) return null; const r = el.getBoundingClientRect(); return r.width ? { x: r.left + r.width / 2, y: r.top + r.height / 2 } : null; };
+function runFx(m) {
+  const s = Store.room, layer = $('#fxLayer');
+  if (!s || !layer) return;
+  if (m.pid === Store.me?.id && m.echo) return;
+  const p = s.players[m.pid];
+  if (m.t === 'throw') return throwFx(m.e, m.pid, m.to);
+  if (m.t === 'kudos') { spawnFx('💖', s.players[m.to]); if (m.to === Store.me?.id) buzz(40); return; }
+  if (m.t === 'horn') {
+    Sound.play('horn'); buzz([120, 60, 120]);
+    document.body.classList.remove('fx-shake'); void document.body.offsetWidth; document.body.classList.add('fx-shake');
+    setTimeout(() => document.body.classList.remove('fx-shake'), 650);
+    return spawnFx('📯', p);
+  }
+  if (m.t === 'emote') {
+    const at = fxAnchor(m.pid);
+    if (!at) return spawnFx(m.e, p);
+    const el = document.createElement('div');
+    el.className = 'fx-emote'; el.textContent = m.e;
+    el.style.left = at.x + 'px'; el.style.top = at.y + 'px';
+    layer.appendChild(el); Sound.play('react');
+    return setTimeout(() => el.remove(), 1700);
+  }
+  if (m.t === 'shout') {
+    const el = document.createElement('div');
+    el.className = 'fx-shout';
+    el.innerHTML = `${p ? avatar(p, 'md') : ''}<span><small>${esc(p?.name || '')} gritou:</small>${esc(m.text)}</span>`;
+    layer.appendChild(el); Sound.play('shout'); buzz(80);
+    return setTimeout(() => el.remove(), 2800);
+  }
+  if (m.t === 'rain') {
+    Sound.play('fanfare');
+    for (let i = 0; i < 30; i++) {
+      const el = document.createElement('span');
+      el.className = 'fx-rain'; el.textContent = m.e;
+      el.style.left = rand(0, 98).toFixed(1) + '%'; el.style.animationDelay = rand(0, 1.4).toFixed(2) + 's'; el.style.animationDuration = rand(1.8, 3.2).toFixed(2) + 's'; el.style.fontSize = rand(22, 46).toFixed(0) + 'px';
+      layer.appendChild(el); setTimeout(() => el.remove(), 5000);
+    }
+  }
+}
+function throwFx(e, from, to) {
+  const layer = $('#fxLayer'), W = innerWidth, H = innerHeight;
+  const a = fxAnchor(from) || { x: rand(.1, .9) * W, y: H - 40 }, b = fxAnchor(to) || { x: W / 2, y: H * .4 };
+  const el = document.createElement('span');
+  el.className = 'fx-proj'; el.textContent = e;
+  layer.appendChild(el);
+  Sound.play('whoosh');
+  const mx = (a.x + b.x) / 2, my = Math.min(a.y, b.y) - 140;
+  const anim = el.animate([{ transform: `translate(${a.x}px,${a.y}px) rotate(0)` }, { transform: `translate(${mx}px,${my}px) rotate(300deg) scale(1.3)` }, { transform: `translate(${b.x}px,${b.y}px) rotate(720deg)` }], { duration: 750, easing: 'cubic-bezier(.3,.6,.5,1)' });
+  anim.onfinish = () => {
+    el.remove();
+    const hit = document.createElement('span');
+    hit.className = 'fx-hit'; hit.textContent = { '🍅': '💥', '🥚': '🍳', '🎈': '🎉', '💐': '💖', '🧻': '🌀', '🥧': '💥' }[e] || '💥';
+    hit.style.left = b.x + 'px'; hit.style.top = b.y + 'px';
+    layer.appendChild(hit); setTimeout(() => hit.remove(), 900);
+    Sound.play(e === '💐' || e === '🎈' ? 'pop' : 'splat');
+    if (to === Store.me?.id) {
+      const sp = document.createElement('div');
+      sp.className = 'fx-splat' + (e === '💐' || e === '🎈' ? ' is-nice' : '');
+      sp.innerHTML = `<span>${e}</span><b>${esc(Store.room?.players[from]?.name || 'Alguém')} ${e === '💐' ? 'te mandou flores' : e === '🎈' ? 'te mandou um balão' : 'acertou você!'}</b>`;
+      layer.appendChild(sp); buzz([90, 40, 160]);
+      setTimeout(() => sp.remove(), 1800);
+    }
+  };
+}
+function reactTrayHTML(reacts) {
+  const proj = Store.local.proj || '🍅';
+  return `<div class="tray-row">${reacts}</div><p class="tray-sep">Arremessar <small>toque no avatar de alguém</small></p>
+    <div class="tray-row">${THROWS.map(e => `<button type="button" class="${proj === e ? 'on' : ''}" data-act="proj" data-v="${e}" aria-label="Escolher ${e} para arremessar">${e}</button>`).join('')}</div>
+    <p class="tray-sep">Zoeira</p><div class="tray-row"><button type="button" data-act="horn" aria-label="Buzina">📯</button>${EMOTES.map(e => `<button type="button" data-act="emote" data-v="${e}" aria-label="Dancinha ${e}">${e}</button>`).join('')}</div>`;
+}
+
+// ---- Chat: comandos, enquetes, menções e figurinhas
+function chatCommand(s, pid, text) {
+  const name = s.players[pid].name, parts = text.slice(1).split(' '), c = norm(parts[0]), arg = parts.slice(1).join(' ').trim();
+  const clean = t => s.settings.family ? familyClean(t) : t;
+  if (c === 'dado') pushChat(s, { sys: true, text: `🎲 ${name} rolou o dado: ${1 + Math.floor(Math.random() * 6)}` });
+  else if (c === 'moeda') pushChat(s, { sys: true, text: `🪙 ${name} jogou a moeda: deu ${pick(['cara', 'coroa'])}` });
+  else if (c === 'sorteio') { const ids = playerIds(s).filter(id => s.players[id]); pushChat(s, { sys: true, text: `🎯 Sorteio de ${name}: ${ids.length ? s.players[pick(ids)].name : 'ninguém'}!` }); }
+  else if (c === 'me' && arg) pushChat(s, { sys: true, act: true, text: `${name} ${clean(arg.slice(0, 100))}` });
+  else if (c === 'grito' && arg) { hostFx(s, pid, { t: 'shout', text: arg }); return false; }
+  else if (c === 'frase') { s.players[pid].cry = clean(arg.slice(0, 40)); pushChat(s, { sys: true, text: arg ? `🏆 ${name} tem nova frase de vitória: “${s.players[pid].cry}”` : `${name} tirou a frase de vitória` }); }
+  else if (c === 'enquete' && arg) {
+    if (s.poll) { pushChat(s, { sys: true, text: 'Já tem uma enquete rolando. Espere ela acabar.' }); return true; }
+    const qi = arg.indexOf('?'), q = clean(qi >= 0 ? arg.slice(0, qi + 1) : arg).slice(0, 80);
+    let opts = qi >= 0 ? arg.slice(qi + 1).split(/[,;/]/).map(x => clean(x.trim()).slice(0, 24)).filter(Boolean) : [];
+    if (opts.length < 2) opts = ['Sim', 'Não'];
+    s.poll = { id: uid(5), by: pid, q, opts: opts.slice(0, 4), votes: {}, until: now() + 40000 };
+    pushChat(s, { poll: s.poll.id, pid, name });
+    Object.values(s.players).filter(p => p.isBot).forEach(b => setTimeout(() => { const r = Store.room; if (r?.poll && r.poll.id === s.poll?.id) { r.poll.votes[b.id] = Math.floor(Math.random() * r.poll.opts.length); commit(); } }, rand(2000, 15000)));
+  }
+  else pushChat(s, { sys: true, text: 'Comandos: /dado · /moeda · /sorteio · /grito texto · /me ação · /frase sua frase de vitória · /enquete Pergunta? opção 1, opção 2' });
+  return true;
+}
+function closePoll(s) {
+  const p = s.poll, c = p.opts.map((_, i) => Object.values(p.votes).filter(v => v === i).length), max = Math.max(...c);
+  const msg = (s.chat || []).find(m => m.poll === p.id);
+  if (msg) msg.closed = { q: p.q, opts: p.opts, c };
+  pushChat(s, { sys: true, text: max ? `📊 “${p.q}” → ${p.opts.filter((_, i) => c[i] === max).join(' e ')} (${plural(max, 'voto', 'votos')})` : `📊 “${p.q}” acabou sem votos` });
+  s.poll = null;
+}
+function pollHTML(s, m) {
+  const p = s.poll && s.poll.id === m.poll ? s.poll : null, data = p || m.closed;
+  if (!data) return '<p class="hint">Enquete encerrada.</p>';
+  const c = p ? p.opts.map((_, i) => Object.values(p.votes).filter(v => v === i).length) : data.c, tot = Math.max(1, c.reduce((a, b) => a + b, 0));
+  const mine = p ? p.votes[Store.me.id] : undefined;
+  return `<p class="poll-q">📊 <b>${esc(data.q)}</b><small>${esc(m.name || '')}${p ? ' · vote!' : ' · encerrada'}</small></p>${data.opts.map((o, i) => `<button class="poll-opt ${mine === i ? 'on' : ''}" ${p ? `data-act="pollVote" data-i="${i}"` : 'disabled'} style="--w:${(c[i] / tot * 100).toFixed(0)}%"><span>${esc(o)}</span><b>${c[i]}</b></button>`).join('')}`;
+}
+const mentionsMe = (s, m) => { const n = norm(s.players[Store.me.id]?.name || '').split(' ')[0]; return !!n && !!m.text && m.pid !== Store.me.id && norm(m.text).includes('@' + n); };
+function chatItem(s, m) {
+  if (m.poll) return `<li class="chat-poll">${pollHTML(s, m)}</li>`;
+  if (m.sys) return `<li class="chat-sys ${m.act ? 'is-act' : ''}">${esc(m.text)}</li>`;
+  const txt = m.text || '', big = !m.hid && txt.length > 0 && txt.length <= 16 && !/[\p{L}\p{N}]/u.test(txt);
+  const body = m.hid ? '🤐 Mensagem escondida: parecia a resposta da rodada.' : esc(txt).replace(/@([\p{L}\p{N}_]+)/gu, '<b class="at">@$1</b>');
+  return `<li class="chat-msg ${m.pid === Store.me.id ? 'me' : ''} ${mentionsMe(s, m) ? 'is-mention' : ''}">${avatar(s.players[m.pid] || { color: '#6B7280', avatar: '👤' }, 'sm')}
+      <div class="chat-bubble"><b>${esc(m.name)}</b><p class="${m.hid ? 'hid' : ''} ${big ? 'big' : ''}">${body}</p></div></li>`;
+}
+
+// ---- Coisas para os jogadores
+const jokerWindow = g => !!g.phase && g.phase !== 'final' && (g.phase === Games[g.id].first || !!Games[g.id].phases[g.phase]?.betting);
+function useJoker(s, pid) {
+  const g = s.game;
+  if (s.settings.joker === false || !g || !inRoster(g, pid) || !jokerWindow(g) || (s.match.jokers || {})[pid]) return false;
+  (s.match.jokers = s.match.jokers || {})[pid] = `${g.id}:${g.round}`;
+  (g.jokers = g.jokers || {})[pid] = 1;
+  pushChat(s, { sys: true, text: `🃏 ${s.players[pid].name} usou o coringa: pontos em dobro nesta rodada!` });
+  return true;
+}
+function jokerHTML(s, g, me) {
+  if (s.settings.joker === false || !inRoster(g, me) || g.phase === 'reveal') return '';
+  if ((g.jokers || {})[me]) return '<p class="joker-pill">🃏 Coringa ativo: seus pontos valem dobro nesta rodada</p>';
+  if ((s.match.jokers || {})[me] || !jokerWindow(g)) return '';
+  return '<button class="joker-btn" data-act="joker">🃏 Usar coringa <small>pontos x2 nesta rodada · 1 por partida</small></button>';
+}
+function cryHTML(s, g) {
+  if (g.phase !== 'reveal') return '';
+  const e = Object.entries(g.roundDelta || {}).filter(([id, n]) => n > 0 && s.players[id]), best = Math.max(0, ...e.map(x => x[1])), top = e.filter(x => x[1] === best);
+  const p = top.length === 1 ? s.players[top[0][0]] : null;
+  return p?.cry ? `<p class="cry-bubble">${avatar(p, 'sm')}<span><b>${esc(p.name)}:</b> “${esc(p.cry)}”</span></p>` : '';
+}
+function kudosHTML(s, g, me) {
+  if (!inRoster(g, me)) return '';
+  const given = (g.kudos || {})[me];
+  if (given) return `<p class="hint center kudos-done">Você deu GG para ${esc(nameOf(s, given))} 💖</p>`;
+  const others = g.roster.filter(id => id !== me && s.players[id]);
+  return others.length ? `<div class="kudos"><span>Dar GG 💖</span>${others.map(id => `<button data-act="kudos" data-id="${id}" aria-label="Dar GG para ${esc(nameOf(s, id))}" title="${esc(nameOf(s, id))}">${avatar(s.players[id], 'sm')}</button>`).join('')}</div>` : '';
+}
+function warmPanelHTML(s) {
+  const w = s.warm || {}, top = Object.entries(w).filter(([id]) => s.players[id]).sort((a, b) => b[1] - a[1]).slice(0, 5), total = Object.values(w).reduce((a, b) => a + b, 0);
+  return `<section class="panel warm" aria-labelledby="wmTitle"><div class="cust-head"><h2 class="panel-title" id="wmTitle">Esquenta</h2><span class="tag">🔥 ${total} toques</span></div>
+    <p class="hint">Enquanto o jogo não começa, toque o mais rápido que puder.</p>
+    <button class="warm-btn" data-act="warm" aria-label="Esquentar">🔥<small>toca aqui!</small></button>
+    ${top.length ? `<ol class="warm-top">${top.map(([id, n]) => `<li>${avatar(s.players[id], 'sm')}<span>${esc(s.players[id].name)}</span><b>${n}</b></li>`).join('')}</ol>` : ''}</section>`;
+}
+function suggestBarHTML(s, host) {
+  const sg = Object.entries(s.suggest || {}).filter(([id, l]) => Games[id] && l.length).sort((a, b) => b[1].length - a[1].length).slice(0, 4);
+  if (host) return sg.length ? `<div class="sug-bar"><span class="hint">Sugestões da galera:</span>${sg.map(([id, l]) => `<button class="cat-chip" data-act="startGame" data-game="${id}">💡 ${Games[id].name}<small>${l.length}</small></button>`).join('')}</div>` : '';
+  return '<p class="hint">Toque num jogo para sugerir ao host. Ele vê as sugestões da galera.</p>';
+}
+MEDALS.push({ k: 'kudos', e: '💖', name: 'Mais querido', desc: 'recebeu mais GGs' }, { k: 'throws', e: '🍅', name: 'Atirador de elite', desc: 'mais arremessos' });
+
 /* ---------- Chat ao vivo e reações flutuantes ---------- */
 const Chat = { open: false, seen: 0, lastN: null, built: false };
-const chatItem = (s, m) => m.sys
-  ? `<li class="chat-sys">${esc(m.text)}</li>`
-  : `<li class="chat-msg ${m.pid === Store.me.id ? 'me' : ''}">${avatar(s.players[m.pid] || { color: '#6B7280', avatar: '👤' }, 'sm')}
-      <div class="chat-bubble"><b>${esc(m.name)}</b><p class="${m.hid ? 'hid' : ''}">${m.hid ? '🤐 Mensagem escondida: parecia a resposta da rodada.' : esc(m.text)}</p></div></li>`;
 function renderChat() {
   const root = $('#chatRoot'), s = Store.room;
   document.body.classList.toggle('in-room', !!(s && Store.me));
@@ -6459,23 +6901,25 @@ function renderChat() {
   if (!Chat.built) {
     const reacts = REACTS.map(e => `<button type="button" data-act="react" data-v="${e}" aria-label="Reagir com ${e}">${e}</button>`).join('');
     root.innerHTML = `
-      <div class="react-wrap"><div class="react-tray" id="reactTray" hidden>${reacts}</div>
+      <div class="react-wrap"><div class="react-tray" id="reactTray" hidden>${reactTrayHTML(reacts)}</div>
         <button class="fab fab-react" data-act="reactTray" aria-label="Reações" aria-expanded="false">${icon('smile')}</button></div>
       <button class="fab fab-chat" data-act="chat" aria-label="Abrir o chat" aria-expanded="false">${icon('chat')}<span class="fab-badge" id="chatBadge" hidden></span></button>
       <section class="chat-panel" id="chatPanel" hidden aria-label="Chat da sala">
         <header class="chat-head"><b>Chat da sala</b><button class="icon-btn" data-act="chat" aria-label="Fechar o chat">${icon('close')}</button></header>
         <ul class="chat-list" id="chatList"></ul>
-        <div class="chat-reacts">${reacts}</div>
+        <div class="chat-reacts">${reacts}</div><div class="chat-quick">${CHAT_QUICK.map(q => `<button type="button" data-act="quick" data-v="${q}">${q}</button>`).join('')}</div>
         <form class="chat-form" data-form="chat" novalidate><label class="sr-only" for="chatIn">Mensagem</label>
-          <input class="input" id="chatIn" maxlength="140" autocomplete="off" placeholder="Mande uma mensagem…">
+          <input class="input" id="chatIn" maxlength="140" autocomplete="off" placeholder="Mensagem, @nome ou /comando…">
           <button class="btn primary chat-send" aria-label="Enviar mensagem">${icon('send')}</button></form>
       </section>`;
     Chat.built = true;
   }
+  root.dataset.mode = cfg(s, 'chatMode');
   const msgs = s.chat || [], maxN = msgs.length ? msgs[msgs.length - 1].n : 0, me = Store.me.id;
   if (Chat.lastN === null) Chat.lastN = Chat.seen = maxN;   // ao entrar, o histórico não conta como novo
   if (maxN > Chat.lastN) {
     if (msgs.some(m => m.n > Chat.lastN && !m.sys && m.pid !== me)) Sound.play('pop');
+    if (msgs.some(m => m.n > Chat.lastN && !m.sys && mentionsMe(s, m))) { buzz([60, 40, 60]); Sound.play('alarm'); }
     Chat.lastN = maxN;
   }
   if (Chat.open) Chat.seen = maxN;
@@ -6589,6 +7033,10 @@ const SFX = {
   resume: S => { S.tone(440, .1, { type: 'triangle', vol: .1 }); S.tone(660, .16, { type: 'triangle', vol: .1, at: .09 }); },
   pop: S => { S.tone(784, .05, { vol: .08 }); S.tone(1175, .08, { vol: .07, at: .045 }); },
   react: S => S.tone(1400, .06, { type: 'triangle', vol: .045, slide: 2100 }),
+  horn: S => [233, 294, 349].forEach(f => S.tone(f, .7, { type: 'sawtooth', vol: .07 })),
+  splat: S => { S.noise(.3, { vol: .35, from: 1400, to: 160 }); S.tone(140, .2, { vol: .12, slide: 70 }); },
+  whoosh: S => S.noise(.35, { vol: .12, from: 300, to: 2400 }),
+  shout: S => [440, 554, 659].forEach((f, i) => S.tone(f, .12, { type: 'square', vol: .06, at: i * .07 })),
   fanfare: S => [523, 659, 784, 1046, 784, 1046].forEach((f, i) => S.tone(f, i === 5 ? .45 : .13, { type: 'triangle', vol: .14, at: i * .12 })),
 };
 ['pointerdown', 'keydown'].forEach(ev => document.addEventListener(ev, () => Sound.unlock(), { passive: true, capture: true }));
@@ -6690,8 +7138,10 @@ function profileOrError() {
     $('#nick')?.focus();
     return null;
   }
+  const cryEl = $('#cry');
+  if (cryEl) pr.cry = cryEl.value.replace(/\s+/g, ' ').trim().slice(0, 40);
   pr.name = name; saveProfile();
-  return { name, avatar: pr.avatar, color: pr.color };
+  return { name, avatar: pr.avatar, color: pr.color, cry: pr.cry || '' };
 }
 
 const Actions = {
@@ -6802,7 +7252,7 @@ const Actions = {
   score(el) { dispatch({ type: 'host:score', id: el.dataset.id, d: +el.dataset.d }); },
   kick(el) { dispatch({ type: 'host:kick', id: el.dataset.id }); },
   rounds(el) { dispatch({ type: 'host:rounds', n: +el.dataset.n }); },
-  startGame(el) { if (Store.local.plEdit) { dispatch({ type: 'host:plAdd', game: el.dataset.game }); return; } PlayBox.startGame(el.dataset.game); },
+  startGame(el) { if (Store.local.offEdit) { dispatch({ type: 'host:gameOff', game: el.dataset.game }); return; } if (Store.local.plEdit) { dispatch({ type: 'host:plAdd', game: el.dataset.game }); return; } PlayBox.startGame(el.dataset.game); },
   next() { PlayBox.nextRound(); },
   restart() { dispatch({ type: 'host:restart' }); },
   toLobby() {
@@ -6826,6 +7276,39 @@ const Actions = {
   narr() { Narrator.toggle(); render(); },
   vib() { try { localStorage.setItem('playbox:vib', vibOn() ? 'off' : 'on'); } catch {} buzz(60); render(); },
   podiumPng() { shareCanvas(podiumImage(Store.room), 'playbox-podio.png'); },
+  throwAt(el) {
+    const s = Store.room, id = el.dataset.id;
+    if (!s || id === Store.me.id || s.settings.zoeira === false || myRole() === 'tv' || cfg(s, 'chatMode') === 'off' || now() - (Actions.lastThrow || 0) < 1200) return;
+    Actions.lastThrow = now();
+    const e = Store.local.proj || '🍅';
+    runFx({ pid: Store.me.id, t: 'throw', e, to: id });
+    dispatch({ type: 'fx', t: 'throw', e, to: id });
+  },
+  proj(el) { Store.local.proj = el.dataset.v; $$('[data-act="proj"]').forEach(b => b.classList.toggle('on', b.dataset.v === Store.local.proj)); },
+  horn() {
+    if (Store.room?.settings.zoeira === false || now() - (Actions.lastHorn || 0) < 6000) return;
+    Actions.lastHorn = now(); runFx({ pid: Store.me.id, t: 'horn' }); dispatch({ type: 'fx', t: 'horn' });
+  },
+  emote(el) {
+    if (now() - (Actions.lastEmote || 0) < 1500) return;
+    Actions.lastEmote = now(); runFx({ pid: Store.me.id, t: 'emote', e: el.dataset.v }); dispatch({ type: 'fx', t: 'emote', e: el.dataset.v });
+  },
+  quick(el) { dispatch({ type: 'chat', text: el.dataset.v }); },
+  pollVote(el) { dispatch({ type: 'pollVote', i: +el.dataset.i }); },
+  lobbyReady() { dispatch({ type: 'lobbyReady' }); },
+  suggest(el) { dispatch({ type: 'suggest', game: el.dataset.game }); },
+  warm(el, e) {
+    Store.local.warmN = (Store.local.warmN || 0) + 1;
+    const pop = document.createElement('span'); pop.className = 'warm-pop'; pop.textContent = '🔥';
+    pop.style.left = (e?.clientX || innerWidth / 2) - 10 + 'px'; pop.style.top = (e?.clientY || innerHeight / 2) - 20 + 'px';
+    document.body.appendChild(pop); setTimeout(() => pop.remove(), 650);
+    if (!Store.local.warmT) Store.local.warmT = setTimeout(() => { const n = Store.local.warmN; Store.local.warmN = 0; Store.local.warmT = null; if (n) dispatch({ type: 'warm', n }); }, 900);
+  },
+  joker() { dispatch({ type: 'joker' }); },
+  kudos(el) { const to = el.dataset.id; runFx({ pid: Store.me.id, t: 'kudos', to }); dispatch({ type: 'kudos', to }); },
+  cfg(el) { const k = el.dataset.k; dispatch({ type: 'host:set', key: k, v: cfg(Store.room, k) + CFG[k].step * +el.dataset.d }); },
+  cfgSet(el) { dispatch({ type: 'host:set', key: el.dataset.k, v: el.dataset.v }); },
+  offEdit() { Store.local.offEdit = !Store.local.offEdit; Store.local.plEdit = false; render(); },
   ready() { dispatch({ type: 'ready' }); },
   flip() {
     const g = Store.room.game, key = `${g.round}`;
@@ -6873,6 +7356,7 @@ const Forms = {
     dispatch({ type: 'chat', text });
     input.focus();
   },
+  title() { dispatch({ type: 'host:set', key: 'title', v: $('#roomTitle').value }); },
   custom() {
     Store.local.custOpen = false;
     dispatch({ type: 'host:custom', words: $('#cuWords').value, facts: $('#cuFacts').value, prices: $('#cuPrices').value, only: $('#cuOnly').checked });
