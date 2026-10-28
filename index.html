@@ -1228,6 +1228,26 @@ body.in-room #app{padding-bottom:120px}
 .chat-form{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;padding:10px 12px 12px}
 .chat-form .input{min-height:46px}
 .chat-send{width:46px;min-height:46px;padding:0;border-radius:14px}
+/* Chat maior e com tamanho ajustável */
+#chatPanel{height:var(--ch,min(80dvh,640px))}
+#chatPanel.is-max{top:max(8px,env(safe-area-inset-top));height:auto}
+#chatPanel.is-resizing{animation:none;user-select:none;-webkit-user-select:none}
+@media (min-width:720px){
+  #chatPanel{width:var(--cw,440px);height:var(--ch,min(76dvh,660px))}
+  #chatPanel.is-max{top:auto;width:min(94vw,960px);height:calc(100dvh - 110px)}
+  #chatPanel .chat-head{padding-left:34px}
+}
+.chat-head-tools{display:flex;gap:6px}
+.chat-grip{position:absolute;z-index:2;top:4px;left:50%;transform:translateX(-50%);display:grid;place-items:center;width:64px;height:18px;border-radius:999px;cursor:ns-resize;touch-action:none}
+.chat-grip i{display:block;width:40px;height:5px;border-radius:999px;background:var(--line-2)}
+.chat-grip:hover i,.chat-grip:focus-visible i{background:var(--muted)}
+@media (min-width:720px){
+  .chat-grip{top:6px;left:6px;transform:none;width:26px;height:26px;border-radius:8px;cursor:nwse-resize}
+  .chat-grip i{width:12px;height:12px;border-radius:0;background:none;border-top:2px solid var(--muted);border-left:2px solid var(--muted);box-shadow:inset 4px 4px 0 -2px transparent}
+}
+#chatPanel .chat-head{padding-top:16px}
+#chatPanel .chat-bubble p{font-size:.97rem}
+#chatPanel .chat-list{padding:16px}
 #fxLayer{position:fixed;inset:0;pointer-events:none;z-index:33;overflow:hidden}
 .fx{position:absolute;left:var(--x);bottom:-60px;display:grid;justify-items:center;animation:fxUp 2.6s cubic-bezier(.2,.7,.3,1) forwards}
 .fx-e{font-size:2.6rem;line-height:1;filter:drop-shadow(0 6px 12px rgba(0,0,0,.5))}
@@ -1236,6 +1256,26 @@ body.in-room #app{padding-bottom:120px}
 .modal{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:16px;background:rgba(5,5,8,.75);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);animation:screenIn .2s ease}
 .modal-card{display:grid;justify-items:center;gap:12px;width:min(380px,100%);padding:24px;border-radius:24px;background:var(--surface-solid);border:1px solid var(--line-2);text-align:center}
 .modal-card h2{font-size:1.25rem;font-weight:800}
+/* Tutorial rápido */
+.tour-link{font-size:.86rem;padding:4px 2px}
+.home-hero .tour-link{margin-top:10px}
+.tour-card{position:relative;width:min(440px,100%);gap:14px;padding:28px 24px 22px;touch-action:pan-y;user-select:none;-webkit-user-select:none}
+.tour-x{position:absolute;top:10px;right:10px}
+.tour-slide{display:grid;justify-items:center;gap:10px;min-height:236px;align-content:start;animation:tourIn .28s ease}
+.tour-slide.is-back{animation-name:tourBack}
+@keyframes tourIn{from{opacity:0;transform:translateX(24px)}}
+@keyframes tourBack{from{opacity:0;transform:translateX(-24px)}}
+.tour-e{display:grid;place-items:center;width:84px;height:84px;border-radius:26px;font-size:46px;background:radial-gradient(circle at 30% 25%,rgba(165,180,252,.28),rgba(99,102,241,.12));border:1px solid var(--line-2);animation:tourPop .45s cubic-bezier(.3,1.6,.5,1)}
+@keyframes tourPop{from{transform:scale(.6) rotate(-8deg)}}
+.tour-p{color:var(--muted);line-height:1.55;font-size:.98rem}
+.tour-p b{color:var(--ink)}
+.tour-dots{display:flex;gap:4px}
+.tour-dots button{width:22px;height:22px;display:grid;place-items:center;border-radius:50%}
+.tour-dots button::after{content:"";width:8px;height:8px;border-radius:999px;background:var(--line-2);transition:width .2s,background .2s}
+.tour-dots button.on::after{width:20px;background:var(--accent,#818CF8)}
+.tour-nav{display:flex;gap:10px;width:100%}
+.tour-nav .btn{flex:1}
+@media (prefers-reduced-motion:reduce){.tour-slide,.tour-e{animation:none}}
 .qr-box{width:min(260px,70vw);padding:10px;border-radius:18px;background:#fff}
 .qr-box svg{display:block;width:100%;height:auto}
 .qr-pin{color:var(--muted)}
@@ -1264,6 +1304,14 @@ body.in-room #app{padding-bottom:120px}
 .mode-card[aria-pressed="true"] .mode-ic{background:var(--primary);color:#fff}
 .mode-ic .ic{width:17px;height:17px}
 .mode-card b{font-size:.92rem}
+.preset-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:10px}
+.preset-card{display:grid;gap:3px;align-content:start;padding:12px;border-radius:16px;background:var(--bg-2);border:1px solid var(--line);text-align:left;transition:border-color .15s,background .15s,transform .12s}
+.preset-card:hover{border-color:var(--line-2)}
+.preset-card:active{transform:scale(.97)}
+.preset-card[aria-pressed="true"]{border-color:var(--primary);background:rgba(99,102,241,.12)}
+.preset-e{font-size:1.5rem;line-height:1.2}
+.preset-card b{font-size:.92rem}
+.preset-card small{font-size:.74rem;color:var(--muted);line-height:1.35}
 .mode-card small{font-size:.74rem;color:var(--muted);line-height:1.35}
 .set-sub{margin-top:10px}
 .lobby-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
@@ -1496,7 +1544,7 @@ function parseNum(v) {
 const AVATARS = ['🦊','🐸','🐼','🦄','🐙','🐯','🦖','🐧','🌵','🍕','👾','🤖','🦉','🐝','🍩','🐳'];
 const COLORS = ['#6366F1','#3B82F6','#EC4899','#FF5F57','#FBBF24','#14B8A6','#A3E635','#A78BFA'];
 const BOT_NAMES = ['Zé Bolacha','Dona Byte','Tchuca 3000','Lulu Pixel','Sr. Algoritmo','Biscoito.exe','Nina Nuvem','Chip Chopp','Tia Turbo','Bóris Bug'];
-const MAX_PLAYERS = 30;
+const MAX_PLAYERS = 12;
 
 const MANE_Q = [
   { t: 'Quantos degraus tem a Torre Eiffel, do chão até o topo?', a: 1665, u: 'degraus' },
@@ -5741,8 +5789,8 @@ function hostHandle(from, a) {
     else if (s.settings.locked) {
       Transport.send({ kind: 'reject', to: pl.id, reason: 'O host trancou esta sala. Peça para liberar a entrada e tente de novo.' });
       return;
-    } else if (Object.keys(s.players).length >= 60) {
-      Transport.send({ kind: 'reject', to: pl.id, reason: 'Essa sala está lotada (60 pessoas, contando a plateia).' });
+    } else if (Object.keys(s.players).length >= 40) {
+      Transport.send({ kind: 'reject', to: pl.id, reason: 'Essa sala está lotada (40 pessoas, contando a plateia).' });
       return;
     } else {
       // Até 12 jogadores; quem chega depois (ou pede) fica na plateia. O telão é só uma tela.
@@ -5755,7 +5803,7 @@ function hostHandle(from, a) {
       if (role !== 'player') np.role = role;
       s.players[pl.id] = np;
       s.order.push(pl.id);
-      pushChat(s, { sys: true, text: role === 'tv' ? 'Um telão foi conectado' : role === 'spectator' ? `${name} está assistindo${full ? ' (os 30 lugares de jogador estão ocupados)' : ''}` : `${name} entrou na sala` });
+      pushChat(s, { sys: true, text: role === 'tv' ? 'Um telão foi conectado' : role === 'spectator' ? `${name} está assistindo${full ? ' (os 12 lugares de jogador estão ocupados)' : ''}` : `${name} entrou na sala` });
       changed = true;
     }
   } else if (a.type === 'ping') {
@@ -5894,6 +5942,13 @@ function hostCommand(s, a) {
     case 'host:custom':
       s.custom = parseCustom(a);
       return true;
+    case 'host:preset': {
+      const p = PRESETS[a.key];
+      if (!p) return false;
+      Object.assign(s.settings, p.v);
+      pushChat(s, { sys: true, text: `${p.e} Sala no estilo ${p.name}: ${p.desc}` });
+      return true;
+    }
     case 'host:theme':
       if (!THEMES[a.theme]) return false;
       s.settings.theme = a.theme;
@@ -6274,6 +6329,7 @@ function render() {
     // Pausar ou continuar não conta como tela nova: sem animação de entrada e sem voltar ao topo.
     const same = sig.replace(/:p$/, '') === lastSig.replace(/:p$/, '');
     lastSig = sig;
+    if (sig === 'lobby' && myRole() !== 'tv' && !Tour.seen()) setTimeout(() => { if (!Tour.seen() && !$('#modalRoot').innerHTML && Store.room?.screen === 'lobby') Tour.open(); }, 700);
     if (!same) { $('.screen', app)?.classList.add('enter'); window.scrollTo({ top: 0 }); }
     const af = $('[data-autofocus]', app);
     if (af && !af.disabled && matchMedia('(pointer:fine)').matches) af.focus({ preventScroll: true });
@@ -6394,6 +6450,8 @@ const ICONS = {
   music: '<path d="M9 18V5.5l11-2V16"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="17.5" cy="16" r="2.5"/>',
   dare: '<path d="M12 3c1 3.5 5 5 5 10a5 5 0 0 1-10 0c0-2.4 1.2-3.8 2.5-5 .3 1.6 1 2.6 2 3 0-3 0-5.3.5-8z"/>',
   download: '<path d="M12 4v11M7.5 10.5L12 15l4.5-4.5"/><path d="M5 19.5h14"/>',
+  expand: '<path d="M14 4h6v6M10 20H4v-6M20 4l-7 7M4 20l7-7"/>',
+  shrink: '<path d="M20 10h-6V4M4 14h6v6M14 10l7-7M10 14l-7 7"/>',
   bulb: '<path d="M9.5 18h5M10.5 21h3"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.7.5 1.1 1.3 1.1 2.1v.1h5v-.1c0-.8.4-1.6 1.1-2.1A6 6 0 0 0 12 3z"/>',
   trash: '<path d="M4 7h16M10 11v6M14 11v6"/><path d="M6 7l1 13h10l1-13M9 7V4h6v3"/>',
   backspace: '<path d="M21 5H9l-6 7 6 7h12z"/><path d="M17 9.5l-5 5M12 9.5l5 5"/>',
@@ -6428,6 +6486,7 @@ function viewHome() {
     <div class="home-hero">
       <h1 class="hero-title"><span>Abra a caixa.</span><span class="accent">Chame a galera.</span></h1>
       <p class="lede">${invite ? `Você foi chamado para a sala ${invite}. Escolha um apelido e entre.` : GAME_ORDER.length + ' jogos. 1 sala. Quem será o maior? Crie uma sala ou entre com o código que um amigo te passou.'}</p>
+      <button type="button" class="linkish tour-link" data-act="tour">${icon('question')}Como jogar?</button>
     </div>
     <div class="home-art"><img class="logo-art" src="${LOGO_SRC}" width="320" height="320" alt="Logo do PlayBox: uma caixa de presente abrindo com controle, estrela e emoji"></div>
 
@@ -6512,7 +6571,7 @@ function viewLobby(s) {
     <span class="tgl-ic">${icon(ic)}</span><span class="tgl-txt"><b>${title}</b><small>${desc}</small></span><span class="tgl-sw" aria-hidden="true"><i></i></span></button>`;
   const modeCards = Object.entries(MODES).map(([k, m]) => `<button class="mode-card" data-act="mode" data-k="${k}" aria-pressed="${mode === k}"><span class="mode-ic">${icon(m.icon)}</span><b>${m.name}</b><small>${m.desc}</small></button>`).join('');
   const setSummary = [MODES[mode].name, set.rush && 'Rush', set.auto && 'sequência', set.events && 'eventos', set.zoeira === false && 'sem zoeira', set.locked && 'trancada'].filter(Boolean).join(' · ');
-  const settingsPanel = host ? `<section class="panel fold ${foldOpen('set') ? 'is-open' : ''}" aria-labelledby="setTitle">${foldHead('set', 'setTitle', 'Ajustes da partida', setSummary)}<div class="fold-body" id="fold-set">
+  const settingsPanel = host ? `${presetPanelHTML(s)}<section class="panel fold ${foldOpen('set') ? 'is-open' : ''}" aria-labelledby="setTitle">${foldHead('set', 'setTitle', 'Ajustes da partida', setSummary)}<div class="fold-body" id="fold-set">
     <p class="hint set-sub">Modo de jogo</p><div class="mode-grid">${modeCards}</div>
     <div class="tgl-list">${toggle('rush', 'bolt', 'Modo Rush', 'Tempos e transições quase pela metade.')}
     ${toggle('auto', 'shuffle', 'Jogos em sequência', 'Quando um jogo acaba, o próximo começa sozinho.')}
@@ -6528,7 +6587,7 @@ function viewLobby(s) {
     ${toggle('zoeira', 'smile', 'Zoeira liberada', 'Arremessos, buzina e grito aparecem na tela de todo mundo.', set.zoeira !== false)}
     ${toggle('joker', 'coin', 'Coringa', 'Cada jogador pode dobrar os pontos de uma rodada por partida.', set.joker !== false)}
     ${toggle('tv', 'tv', 'Modo telão nesta tela', 'Deixa tudo grande, para mostrar na TV. Só neste aparelho.', !!Store.local.tvView, 'tvView')}</div></div></section>${customizePanelHTML(s)}${contentPanelHTML(s)}`
-    : `<p class="set-chips"><span class="tag">${icon(MODES[mode].icon)}${MODES[mode].name}</span>${set.rush ? `<span class="tag tag-rush">${icon('bolt')}Modo Rush</span>` : ''}${set.auto ? '<span class="tag">Jogos em sequência</span>' : ''}${set.locked ? '<span class="tag">Sala trancada</span>' : ''}</p>`;
+    : `<p class="set-chips"><span class="tag">${icon(MODES[mode].icon)}${MODES[mode].name}</span>${presetOf(s) && presetOf(s) !== 'padrao' ? `<span class="tag">${PRESETS[presetOf(s)].e} ${PRESETS[presetOf(s)].name}</span>` : ''}${set.rush ? `<span class="tag tag-rush">${icon('bolt')}Modo Rush</span>` : ''}${set.auto ? '<span class="tag">Jogos em sequência</span>' : ''}${set.locked ? '<span class="tag">Sala trancada</span>' : ''}</p>`;
   const audPanel = aud.length || myRole() === 'spectator' ? `<section class="panel" aria-labelledby="auTitle"><h2 class="panel-title" id="auTitle">Plateia (${aud.length})</h2>
     ${myRole() === 'spectator' ? '<p class="hint">Você está na plateia: assiste, conversa, reage e dá o prêmio do público no fim de cada rodada.</p>' : ''}
     <ul class="aud-list">${aud.map(id => { const p = s.players[id];
@@ -6536,7 +6595,7 @@ function viewLobby(s) {
         ${host && p.role !== 'tv' ? `<button class="btn xs" data-act="role" data-id="${id}" data-role="player" ${ids.length >= maxP(s) ? 'disabled' : ''}>Pôr para jogar</button>` : ''}</li>`; }).join('')}</ul></section>` : '';
   return `<section class="screen lobby">
     ${voteHTML(s)}
-    ${set.title ? `<h1 class="room-title">${esc(set.title)}</h1>` : ''}<p class="lobby-caption">Sala criada por <b>${esc(nameOf(s, s.hostId))}</b></p>
+    ${set.title ? `<h1 class="room-title">${esc(set.title)}</h1>` : ''}<p class="lobby-caption">Sala criada por <b>${esc(nameOf(s, s.hostId))}</b> · <button type="button" class="linkish tour-link" data-act="tour">${icon('question')}Como jogar</button></p>
     <div class="lobby-grid">
       <div class="lobby-left">
         <section class="panel pin-block" aria-label="PIN da sala">
@@ -6720,7 +6779,7 @@ function viewPodium(s) {
    ===================================================================== */
 // ---- Ajustes da sala
 const CFG = {
-  maxPlayers: { min: 2, max: 30, step: 1, def: 30, label: 'Limite de jogadores' },
+  maxPlayers: { min: 2, max: 30, step: 1, def: 12, label: 'Limite de jogadores' },
   rounds: { min: 1, max: 10, step: 1, def: 3, label: 'Rodadas por jogo' },
   timeMult: { min: .5, max: 2, step: .25, def: 1, label: 'Tempo das etapas', fmt: v => `${String(v).replace('.', ',')}×` },
   goal: { min: 0, max: 300, step: 10, def: 0, label: 'Meta de pontos (acaba a partida)', fmt: v => v ? `${v} pts` : 'sem meta' },
@@ -6732,6 +6791,27 @@ const CFG_ENUM = {
   chatMode: { label: 'Chat', def: 'livre', opts: { livre: 'Livre', lento: 'Lento (1 a cada 5 s)', reacoes: 'Só reações', off: 'Desligado' } },
 };
 const cfg = (s, k) => s?.settings?.[k] ?? (CFG[k] || CFG_ENUM[k]).def;
+// ---- Estilos prontos de sala: um toque muda vários ajustes de uma vez (o host ainda pode mexer em cada um depois)
+const ON_BY_DEFAULT = ['helps', 'zoeira', 'joker'];
+const tglOn = (s, k) => ON_BY_DEFAULT.includes(k) ? s.settings[k] !== false : !!s.settings[k];
+const PRESETS = {
+  festa: { e: '🎉', name: 'Festa rápida', desc: 'Rodadas curtas, um jogo atrás do outro e muita zoeira.',
+    v: { rush: true, auto: true, voteNext: true, helps: true, events: true, finalDouble: true, handicap: false, family: false, zoeira: true, joker: true, rounds: 2, timeMult: 1, goal: 0, helpCost: 1, eventChance: 40, botLevel: 'caotico', chatMode: 'livre' } },
+  familia: { e: '👨‍👩‍👧', name: 'Família', desc: 'Sem conteúdo ousado, mais tempo e ajuda para quem fica para trás.',
+    v: { rush: false, auto: false, voteNext: false, helps: true, events: false, finalDouble: false, handicap: true, family: true, zoeira: true, joker: true, rounds: 3, timeMult: 1.5, goal: 0, helpCost: 1, eventChance: 30, botLevel: 'facil', chatMode: 'livre' } },
+  competitivo: { e: '🏆', name: 'Competitivo', desc: 'Sem ajudas, coringa nem sorte: vence quem joga melhor.',
+    v: { rush: false, auto: false, voteNext: false, helps: false, events: false, finalDouble: false, handicap: false, family: false, zoeira: false, joker: false, rounds: 5, timeMult: 1, goal: 0, helpCost: 1, eventChance: 30, botLevel: 'dificil', chatMode: 'livre' } },
+  padrao: { e: '⚙️', name: 'Padrão', desc: 'Volta tudo ao jeito normal do PlayBox.',
+    v: { rush: false, auto: false, voteNext: false, helps: true, events: false, finalDouble: false, handicap: false, family: false, zoeira: true, joker: true, rounds: 3, timeMult: 1, goal: 0, helpCost: 1, eventChance: 30, botLevel: 'normal', chatMode: 'livre' } },
+};
+// Qual estilo bate com os ajustes de agora (null = personalizado).
+const presetOf = s => Object.keys(PRESETS).find(k => Object.entries(PRESETS[k].v).every(([key, val]) => (typeof val === 'boolean' ? tglOn(s, key) : cfg(s, key)) === val)) || null;
+function presetPanelHTML(s) {
+  const cur = presetOf(s);
+  return `<section class="panel" aria-labelledby="psTitle"><div class="panel-head"><h2 class="panel-title" id="psTitle">Estilo da sala</h2><span class="tag">${cur ? PRESETS[cur].name : 'Personalizado'}</span></div>
+    <p class="hint">Um toque ajusta tempo, rodadas, ajudas, eventos e bots de uma vez. Dá para mudar cada ajuste depois.</p>
+    <div class="preset-grid">${Object.entries(PRESETS).map(([k, p]) => `<button class="preset-card" data-act="preset" data-k="${k}" aria-pressed="${cur === k}"><span class="preset-e" aria-hidden="true">${p.e}</span><b>${p.name}</b><small>${p.desc}</small></button>`).join('')}</div></section>`;
+}
 const maxP = s => cfg(s, 'maxPlayers');
 const gameOn = (s, id) => !(s.settings.off || []).includes(id);
 const cfgStepHTML = (s, k) => { const c = CFG[k], v = cfg(s, k); return `<div class="cfg-step"><button data-act="cfg" data-k="${k}" data-d="-1" ${v <= c.min ? 'disabled' : ''} aria-label="Diminuir ${c.label}">−</button><b>${c.fmt ? c.fmt(v) : v}</b><button data-act="cfg" data-k="${k}" data-d="1" ${v >= c.max ? 'disabled' : ''} aria-label="Aumentar ${c.label}">+</button></div>`; };
@@ -7046,7 +7126,8 @@ function renderChat() {
         <button class="fab fab-react" data-act="reactTray" aria-label="Reações" aria-expanded="false">${icon('smile')}</button></div>
       <button class="fab fab-chat" data-act="chat" aria-label="Abrir o chat" aria-expanded="false">${icon('chat')}<span class="fab-badge" id="chatBadge" hidden></span></button>
       <section class="chat-panel" id="chatPanel" hidden aria-label="Chat da sala">
-        <header class="chat-head"><b>Chat da sala</b><button class="icon-btn" data-act="chat" aria-label="Fechar o chat">${icon('close')}</button></header>
+        <button type="button" class="chat-grip" id="chatGrip" aria-label="Redimensionar o chat: arraste ou use as setas" title="Arraste para mudar o tamanho · duplo clique volta ao normal"><i></i></button>
+        <header class="chat-head"><b>Chat da sala</b><span class="chat-head-tools"><button class="icon-btn" data-act="chatMax" aria-label="Aumentar o chat">${icon('expand')}</button><button class="icon-btn" data-act="chat" aria-label="Fechar o chat">${icon('close')}</button></span></header>
         <ul class="chat-list" id="chatList"></ul>
         <div class="chat-reacts">${reacts}</div><div class="chat-quick">${CHAT_QUICK.map(q => `<button type="button" data-act="quick" data-v="${q}">${q}</button>`).join('')}</div>
         <form class="chat-form" data-form="chat" novalidate><label class="sr-only" for="chatIn">Mensagem</label>
@@ -7054,6 +7135,8 @@ function renderChat() {
           <button class="btn primary chat-send" aria-label="Enviar mensagem">${icon('send')}</button></form>
       </section>`;
     Chat.built = true;
+    applyChatSize();
+    bindChatGrip();
   }
   root.dataset.mode = cfg(s, 'chatMode');
   const msgs = s.chat || [], maxN = msgs.length ? msgs[msgs.length - 1].n : 0, me = Store.me.id;
@@ -7072,6 +7155,65 @@ function renderChat() {
   badge.hidden = !unread;
   badge.textContent = unread > 9 ? '9+' : unread;
 }
+// Tamanho do chat: arraste a alça (canto no computador, barrinha de cima no celular). Fica salvo neste aparelho.
+const ChatSize = {
+  get() { try { return JSON.parse(localStorage.getItem('playbox:chatSize')) || {}; } catch { return {}; } },
+  save(v) { try { localStorage.setItem('playbox:chatSize', JSON.stringify(v)); } catch {} },
+};
+const chatWide = () => innerWidth >= 720;
+const chatClampH = h => clamp(Math.round(h), 240, innerHeight - (chatWide() ? 100 : 24));
+const chatClampW = w => clamp(Math.round(w), 300, Math.min(innerWidth - 32, 960));
+function applyChatSize() {
+  const panel = $('#chatPanel');
+  if (!panel) return;
+  const v = ChatSize.get();
+  panel.classList.toggle('is-max', !!v.max);
+  panel.style.setProperty('--ch', v.h ? chatClampH(v.h) + 'px' : '');
+  panel.style.setProperty('--cw', v.w && chatWide() ? chatClampW(v.w) + 'px' : '');
+  const b = $('[data-act="chatMax"]');
+  if (b) { b.innerHTML = icon(v.max ? 'shrink' : 'expand'); b.setAttribute('aria-label', v.max ? 'Diminuir o chat' : 'Aumentar o chat'); b.setAttribute('aria-pressed', !!v.max); }
+}
+function bindChatGrip() {
+  const grip = $('#chatGrip'), panel = $('#chatPanel');
+  if (!grip || grip.dataset.bound) return;
+  grip.dataset.bound = '1';
+  let st = null;
+  grip.addEventListener('pointerdown', e => {
+    e.preventDefault();
+    const r = panel.getBoundingClientRect();
+    st = { x: e.clientX, y: e.clientY, w: r.width, h: r.height };
+    try { grip.setPointerCapture(e.pointerId); } catch {}
+    panel.classList.add('is-resizing');
+  });
+  grip.addEventListener('pointermove', e => {
+    if (!st) return;
+    // O chat fica preso no canto de baixo à direita: puxar para cima/esquerda aumenta.
+    st.h2 = chatClampH(st.h + st.y - e.clientY);
+    st.w2 = chatWide() ? chatClampW(st.w + st.x - e.clientX) : null;
+    panel.classList.remove('is-max');
+    panel.style.setProperty('--ch', st.h2 + 'px');
+    if (st.w2) panel.style.setProperty('--cw', st.w2 + 'px');
+  });
+  const end = () => {
+    if (!st) return;
+    if (st.h2) ChatSize.save({ h: st.h2, w: st.w2 || ChatSize.get().w });
+    st = null;
+    panel.classList.remove('is-resizing');
+    applyChatSize();
+  };
+  grip.addEventListener('pointerup', end);
+  grip.addEventListener('pointercancel', end);
+  grip.addEventListener('dblclick', () => { ChatSize.save({}); applyChatSize(); });
+  grip.addEventListener('keydown', e => {
+    const d = { ArrowUp: [0, 40], ArrowDown: [0, -40], ArrowLeft: [40, 0], ArrowRight: [-40, 0] }[e.key];
+    if (!d) return;
+    e.preventDefault();
+    const r = panel.getBoundingClientRect();
+    ChatSize.save({ h: chatClampH(r.height + d[1]), w: chatWide() ? chatClampW(r.width + d[0]) : ChatSize.get().w });
+    applyChatSize();
+  });
+}
+addEventListener('resize', () => applyChatSize());
 function spawnFx(e, p) {
   const layer = $('#fxLayer');
   if (!layer || layer.childElementCount > 24) return;
@@ -7085,6 +7227,46 @@ function spawnFx(e, p) {
   Sound.play('react');
   setTimeout(() => el.remove(), 2700);
 }
+// Tutorial rápido: aparece na primeira vez que a pessoa entra numa sala e volta pelo "Como jogar".
+const Tour = {
+  i: null,
+  seen() { try { return localStorage.getItem('playbox:tour') === '1'; } catch { return true; } },
+  mark() { try { localStorage.setItem('playbox:tour', '1'); } catch {} },
+  steps() {
+    const list = [
+      { e: '📦', t: 'Bem-vindo ao PlayBox', p: 'Cada pessoa joga no <b>próprio celular</b>. Alguém cria a sala e o resto entra com o <b>código de 4 letras</b>, pelo link ou pelo QR code.' },
+      { e: '🎮', t: 'Como é uma rodada', p: 'O host escolhe o jogo (ou a galera vota). Aparece o desafio, você responde <b>antes do tempo acabar</b> e todo mundo vê quem mandou bem. Os pontos de todos os jogos somam num <b>placar geral</b>.' },
+      { e: '🙋', t: 'O que você pode fazer', p: 'No lobby, <b>Estou pronto</b> avisa que você está on e tocar num jogo <b>sugere</b> ele pro host. Durante o jogo, o <b>coringa 🃏</b> dobra seus pontos uma vez por partida e a <b>ajuda 💡</b> salva quando você trava.' },
+      { e: '💬', t: 'Chat e zoeira', p: 'O balão abre o <b>chat</b>: <b>@nome</b> chama alguém e <b>/</b> mostra comandos como /dado e /enquete. A carinha solta <b>reações</b>, buzina e dancinhas. Toque no <b>avatar</b> de alguém para arremessar um tomate 🍅.' },
+    ];
+    if (isHost()) list.push({ e: '👑', t: 'Você é o host', p: 'Chame a galera no <b>Convidar</b>, complete a mesa com <b>bots</b> e ajuste tudo em <b>Personalizar a sala</b>. Depois é só tocar num jogo, no <b>Jogo surpresa</b> ou em <b>Galera vota</b>.' });
+    list.push({ e: '📺', t: 'Dica: telão', p: 'Tem uma TV ou notebook por perto? Abra o PlayBox nele, digite o código e toque em <b>Usar esta tela como telão</b>. A pergunta aparece grandona e o celular vira controle.' });
+    return list;
+  },
+  open(i = 0) {
+    Tour.mark();
+    const st = Tour.steps();
+    i = clamp(i, 0, st.length - 1);
+    const back = Tour.i !== null && i < Tour.i;
+    Tour.i = i;
+    const s = st[i], last = i === st.length - 1;
+    $('#modalRoot').innerHTML = `<div class="modal" data-act="closeModal"><div class="modal-card tour-card" role="dialog" aria-modal="true" aria-labelledby="tourTitle" aria-describedby="tourText" data-keep-open>
+      <button type="button" class="icon-btn tour-x" data-act="closeModal" aria-label="Fechar o tutorial">${icon('close')}</button>
+      <p class="label-caps">Como jogar · ${i + 1} de ${st.length}</p>
+      <div class="tour-slide ${back ? 'is-back' : ''}"><div class="tour-e" aria-hidden="true">${s.e}</div>
+        <h2 id="tourTitle">${s.t}</h2><p class="tour-p" id="tourText">${s.p}</p></div>
+      <div class="tour-dots">${st.map((x, k) => `<button type="button" class="${k === i ? 'on' : ''}" data-act="tourGo" data-i="${k}" aria-label="Passo ${k + 1}: ${x.t}" ${k === i ? 'aria-current="step"' : ''}></button>`).join('')}</div>
+      <div class="tour-nav">${i ? `<button type="button" class="btn pill" data-act="tourGo" data-i="${i - 1}">Voltar</button>` : '<button type="button" class="btn pill" data-act="closeModal">Pular</button>'}
+        <button type="button" class="btn primary pill" id="tourNext" ${last ? 'data-act="closeModal"' : `data-act="tourGo" data-i="${i + 1}"`}>${last ? 'Bora jogar!' : 'Próximo'}</button></div>
+    </div></div>`;
+    const card = $('#modalRoot .tour-card');
+    // No celular dá para passar arrastando o cartão para os lados.
+    let x0 = null;
+    card.addEventListener('pointerdown', e => { x0 = e.clientX; });
+    card.addEventListener('pointerup', e => { if (x0 === null) return; const dx = e.clientX - x0; x0 = null; if (Math.abs(dx) > 50) Tour.open(i + (dx < 0 ? 1 : -1)); });
+    $('#tourNext')?.focus({ preventScroll: true });
+  },
+};
 function closeOverlays() {
   $('#modalRoot').innerHTML = '';
   if (Chat.open) Actions.chat();
@@ -7357,6 +7539,7 @@ const Actions = {
     if (Chat.open) { const tray = $('#reactTray'); if (tray) tray.hidden = true; renderChat(); setTimeout(() => $('#chatIn')?.focus(), 30); }
     else renderChat();
   },
+  chatMax() { const v = ChatSize.get(); v.max = !v.max; ChatSize.save(v); applyChatSize(); },
   reactTray() {
     const tray = $('#reactTray'), btn = $('[data-act="reactTray"]');
     tray.hidden = !tray.hidden;
@@ -7380,6 +7563,9 @@ const Actions = {
       <button class="btn primary pill" data-act="closeModal">Fechar</button></div></div>`;
     $('#modalRoot .modal-card .btn')?.focus();
   },
+  tour() { Tour.i = null; Tour.open(0); },
+  tourGo(el) { Tour.open(+el.dataset.i); },
+  preset(el) { dispatch({ type: 'host:preset', key: el.dataset.k }); },
   closeModal(el, e) {
     // Clique dentro do cartão não fecha; só no fundo escuro ou no botão Fechar.
     if (el.classList.contains('modal') && e.target.closest('[data-keep-open]')) return;
@@ -7585,6 +7771,7 @@ document.addEventListener('keydown', e => {
   // Enter num campo do Stop pula para o próximo; no último, aperta Stop se puder.
   const t = e.target;
   if (e.key === 'Escape') { closeOverlays(); return; }
+  if ((e.key === 'ArrowLeft' || e.key === 'ArrowRight') && $('#modalRoot .tour-card')) { e.preventDefault(); Tour.open(Tour.i + (e.key === 'ArrowRight' ? 1 : -1)); return; }
   const gm = Store.room?.screen === 'game' && Store.room.game;
   if (gm && Games[gm.id].keydown && !['INPUT', 'TEXTAREA', 'SELECT'].includes(t.tagName) && Games[gm.id].keydown(e, gm, Store.room, Store.me?.id)) return;
   if (t.getAttribute?.('role') === 'tab' && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
