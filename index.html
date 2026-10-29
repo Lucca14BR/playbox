@@ -741,6 +741,8 @@ body.in-game .tm-k{height:clamp(38px,6.4vh,52px)}
   body.in-game .hostbar{margin-top:6px}
   body.in-game .hb-label{display:none}
 }
+/* Logo depois de trocar a tela, o que está sob o mouse não refaz a transição (evita a "piscada") */
+html.calm :hover,html.calm :hover::before,html.calm :hover::after{transition:none!important}
 /* ---------- Visual: fundo vivo, brilhos e detalhes ---------- */
 body::before{content:"";position:fixed;inset:-25%;z-index:-1;pointer-events:none;will-change:transform;
   background:radial-gradient(30% 26% at 18% 28%,color-mix(in srgb,var(--glow) 22%,transparent),transparent 70%),
@@ -6702,21 +6704,27 @@ function render() {
     // Mesma fase e o jogo sabe se atualizar por partes: não redesenha a tela toda.
     const mod = Games[s.game.id];
     if (sig === lastSig && mod.patch && s.game.phase !== 'final' && s.game.phase !== 'reveal' && !mod.phases[s.game.phase]?.betting && !Store.hostLost && !$('.banner', app) && $('.stage-body', app)) {
+      app.__html = null;
       mod.patch(s.game, s, Store.me.id);
-      const strip = $('.strip', app);
-      if (strip) strip.outerHTML = stripHTML(s, s.game, mod);
+      const strip = $('.strip', app), sh = stripHTML(s, s.game, mod);
+      if (strip && strip.__html !== sh) { strip.outerHTML = sh; const ns = $('.strip', app); if (ns) { ns.__html = sh; calmRender(ns); } }
       return;
     }
     html = viewGame(s);
   }
   else { sig = 'podium'; html = viewPodium(s); }
   if (s && !isHost() && Store.hostLost) html = `<div class="banner" role="alert">Sem sinal do host há alguns segundos. Se a aba do host foi fechada, a sala acabou.</div>` + html;
+  // Nada mudou na tela (ex.: só chegou mensagem no chat ou uma reação): não recria nada. Recriar a tela
+  // inteira a cada novidade fazia a interface piscar e reiniciava o efeito do mouse e as animações.
+  if (sig === lastSig && app.__html === html) { afterRender(s); return; }
+  app.__html = html;
   const kept = captureInputs(app);
   // Mesma tela e mesma fase: a área que rola continua onde estava (antes voltava ao topo a cada atualização).
   const sbTop = sig === lastSig ? ($('.stage-body', app)?.scrollTop || 0) : 0;
   app.innerHTML = html;
   restoreInputs(app, kept);
   if (sbTop) { const sb = $('.stage-body', app); if (sb) sb.scrollTop = sbTop; }
+  calmRender(app);
   if (sig !== lastSig) {
     // Pausar ou continuar não conta como tela nova: sem animação de entrada e sem voltar ao topo.
     const same = sig.replace(/:p$/, '') === lastSig.replace(/:p$/, '');
@@ -6753,6 +6761,19 @@ function restoreInputs(root, { vals, focus }) {
   }
 }
 
+// Animações que ficam rodando (PIN flutuando, pontinhos, bomba) recomeçavam do zero a cada troca de tela:
+// agora todas seguem o relógio da página, então continuam do mesmo ponto. E o elemento embaixo do mouse
+// aparece direto no estado "com o mouse em cima", sem refazer a transição.
+function calmRender(root) {
+  const T = document.timeline?.currentTime;
+  if (T != null && root.getAnimations) {
+    try { root.getAnimations({ subtree: true }).forEach(a => { if (a.effect?.getTiming().iterations === Infinity) a.currentTime = T; }); } catch {}
+  }
+  const html = document.documentElement;
+  html.classList.add('calm');
+  clearTimeout(calmRender.t);
+  calmRender.t = setTimeout(() => html.classList.remove('calm'), 300);
+}
 function afterRender(s) {
   syncPinSlots();
   $$('canvas[data-tel]:not([data-painted])').forEach(cv => { cv.dataset.painted = '1'; try { padPaint(cv, JSON.parse(cv.dataset.tel) || []); } catch {} });
@@ -6775,9 +6796,10 @@ function afterRender(s) {
 function renderTop() {
   const el = $('#topRight'), s = Store.room;
   const snd = `<button class="icon-btn snd" data-act="sound" aria-pressed="${Sound.on}" aria-label="${Sound.on ? 'Desligar os sons' : 'Ligar os sons'}" title="${Sound.on ? 'Sons ligados' : 'Sons desligados'}">${icon(Sound.on ? 'volume' : 'mute')}</button>`;
-  if (!s || !Store.me) { el.innerHTML = snd; return; }
+  if (!s || !Store.me) { if (el.__html !== snd) el.innerHTML = el.__html = snd; return; }
   const me = s.players[Store.me.id];
-  el.innerHTML = `${snd}<span class="room-chip"><span>Sala </span><b>${s.pin}</b></span>${me ? avatar(me, 'sm') : ''}<button class="btn ghost xs" data-act="leave">Sair</button>`;
+  const top = `${snd}<span class="room-chip"><span>Sala </span><b>${s.pin}</b></span>${me ? avatar(me, 'sm') : ''}<button class="btn ghost xs" data-act="leave">Sair</button>`;
+  if (el.__html !== top) el.innerHTML = el.__html = top;
 }
 
 /* ---------- Ícones (SVG em linha, traço de 2px) ---------- */
@@ -7672,7 +7694,8 @@ function renderChat() {
   if (Chat.open) Chat.seen = maxN;
   const list = $('#chatList');
   const nearBottom = list.scrollHeight - list.scrollTop - list.clientHeight < 60;
-  list.innerHTML = msgs.map(m => chatItem(s, m)).join('') || '<li class="chat-sys">Ninguém falou nada ainda. Puxa o assunto!</li>';
+  const listHTML = msgs.map(m => chatItem(s, m)).join('') || '<li class="chat-sys">Ninguém falou nada ainda. Puxa o assunto!</li>';
+  if (list.__html !== listHTML) list.innerHTML = list.__html = listHTML;
   if (nearBottom || Chat.open) list.scrollTop = list.scrollHeight;
   const unread = msgs.filter(m => m.n > Chat.seen && !m.sys && m.pid !== me).length, badge = $('#chatBadge');
   badge.hidden = !unread;
