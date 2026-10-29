@@ -1527,7 +1527,7 @@ html.tv-role .fab,html.tv-role .react-wrap,html.tv-role .top-right .btn{display:
 .tv-players b{font-size:1.05rem}
 .tv-players span{font-size:.85rem;color:var(--muted)}
 .tv-ticker{position:fixed;left:16px;bottom:16px;z-index:30;display:grid;gap:6px;max-width:min(560px,60vw);pointer-events:none}
-.tv-ticker p{padding:8px 14px;border-radius:14px;background:rgba(18,19,26,.92);border:1px solid var(--line-2);font-size:1rem;animation:chatIn .3s ease}
+.tv-ticker p{padding:8px 14px;border-radius:14px;background:rgba(18,19,26,.8);border:1px solid var(--line-2);font-size:1rem;animation:chatIn .3s ease}
 .tv-ticker p.sys{color:var(--dim);font-size:.85rem}
 .tv-ticker b{color:var(--muted);margin-right:8px}
 
@@ -2089,6 +2089,8 @@ function enginePhase(s, name) {
   g.deadline = ph.dur ? now() + ph.dur * 1000 : null;
   HostRT.allInAt = null;
   ph.enter && ph.enter(g, s);
+  // Salas grandes: mais respostas para ler e votar, então a fase ganha alguns segundos por jogador.
+  if (g.deadline && ph.perP) { const extra = Math.min(40, ph.perP * Math.max(0, (g.roster || []).length - 5)); g.dur += extra; g.deadline += extra * 1000; }
   if (g.deadline && rushOn(s, ph)) { g.dur *= RUSH; g.deadline = g.phaseStart + g.dur * 1000; }
   if (g.deadline && ph.rush !== false && cfg(s, 'timeMult') !== 1) { g.dur *= cfg(s, 'timeMult'); g.deadline = g.phaseStart + g.dur * 1000; }
   if (name === 'reveal') {
@@ -2140,9 +2142,9 @@ Games.mane = {
   first: 'answer',
   init(g) { g.data = { qi: drawItem(g, MANE_Q), guesses: {}, votes: {}, result: null }; },
   phases: {
-    answer: { label: 'Palpite secreto', dur: 40, bot: [4, 16], next: 'vote', allIn: (g, s) => active(g, s).every(id => id in g.data.guesses) },
-    vote: { label: 'Caça ao Mané', dur: 30, bot: [3, 10], next: 'reveal', allIn: (g, s) => active(g, s).every(id => id in g.data.votes || !maneTargets(g, id).length) },
-    reveal: { label: 'Gabarito', dur: 25, enter(g, s) {
+    answer: { label: 'Palpite secreto', dur: 30, bot: [4, 16], next: 'vote', allIn: (g, s) => active(g, s).every(id => id in g.data.guesses) },
+    vote: { label: 'Caça ao Mané', dur: 25, perP: 1, bot: [3, 10], next: 'reveal', allIn: (g, s) => active(g, s).every(id => id in g.data.votes || !maneTargets(g, id).length) },
+    reveal: { label: 'Gabarito', dur: 15, enter(g, s) {
       const ans = MANE_Q[g.data.qi].a, d = {};
       const e = Object.entries(g.data.guesses).map(([pid, v]) => ({ pid, dist: Math.abs(v - ans) }));
       let closest = [], mane = [];
@@ -2242,8 +2244,8 @@ Games.provavel = {
   first: 'vote',
   init(g) { g.data = { pi: drawItem(g, PROV_Q), votes: {}, result: null }; },
   phases: {
-    vote: { label: 'Voto secreto', dur: 25, bot: [2, 12], next: 'reveal', allIn: (g, s) => active(g, s).every(id => id in g.data.votes) },
-    reveal: { label: 'Resultado', dur: 20, enter(g, s) {
+    vote: { label: 'Voto secreto', dur: 20, perP: 0.5, bot: [2, 12], next: 'reveal', allIn: (g, s) => active(g, s).every(id => id in g.data.votes) },
+    reveal: { label: 'Resultado', dur: 14, enter(g, s) {
       const r = voteCounts(g.data.votes), d = {};
       r.top.forEach(p => add(d, p, 2));
       Object.entries(g.data.votes).forEach(([v, t]) => { if (r.top.includes(t)) add(d, v, 1); });
@@ -2296,10 +2298,10 @@ Games.impostor = {
   first: 'role',
   init(g) { g.data = { wi: drawItem(g, IMP_WORDS), impostor: pick(g.roster), seen: {}, clues: {}, votes: {}, result: null }; },
   phases: {
-    role: { label: 'Seu papel', dur: 20, bot: [1, 4], next: 'clue', allIn: (g, s) => active(g, s).every(id => g.data.seen[id]) },
-    clue: { label: 'Uma pista', dur: 40, bot: [4, 15], next: 'vote', allIn: (g, s) => active(g, s).every(id => id in g.data.clues) },
-    vote: { label: 'Discussão e voto', dur: 50, bot: [8, 22], next: 'reveal', allIn: (g, s) => active(g, s).every(id => id in g.data.votes) },
-    reveal: { label: 'Desmascarado?', dur: 25, enter(g, s) {
+    role: { label: 'Seu papel', dur: 12, bot: [1, 4], next: 'clue', allIn: (g, s) => active(g, s).every(id => g.data.seen[id]) },
+    clue: { label: 'Uma pista', dur: 35, bot: [4, 15], next: 'vote', allIn: (g, s) => active(g, s).every(id => id in g.data.clues) },
+    vote: { label: 'Discussão e voto', dur: 45, perP: 2, bot: [8, 22], next: 'reveal', allIn: (g, s) => active(g, s).every(id => id in g.data.votes) },
+    reveal: { label: 'Desmascarado?', dur: 15, enter(g, s) {
       const d = g.data, r = voteCounts(d.votes), deltas = {};
       const caught = r.top.length === 1 && r.top[0] === d.impostor;
       Object.entries(d.votes).forEach(([v, t]) => { if (t === d.impostor && v !== d.impostor) add(deltas, v, 2); });
@@ -2405,8 +2407,8 @@ Games.geo = {
   first: 'answer',
   init(g) { const qi = drawItem(g, GEO_Q); g.data = { qi, opts: shuffle(GEO_Q[qi].o), answers: {}, result: null }; },
   phases: {
-    answer: { label: 'Escolha rápido', dur: 18, bot: [2.5, 12], next: 'reveal', allIn: (g, s) => active(g, s).every(id => id in g.data.answers) },
-    reveal: { label: 'Resposta', dur: 15, enter(g, s) {
+    answer: { label: 'Escolha rápido', dur: 15, bot: [2.5, 12], next: 'reveal', allIn: (g, s) => active(g, s).every(id => id in g.data.answers) },
+    reveal: { label: 'Resposta', dur: 8, enter(g, s) {
       const right = GEO_Q[g.data.qi].o[0], d = {};
       const ok = Object.entries(g.data.answers).filter(([, a]) => a.c === right).sort((a, b) => a[1].t - b[1].t);
       ok.forEach(([pid]) => add(d, pid, 2));
@@ -2464,9 +2466,9 @@ Games.stop = {
   phases: {
     fill: { label: 'Preencha rápido', dur: 75, bot: [6, 26], next: 'stopped' },
     stopped: { label: 'Stop!', dur: 2.5, rush: false, next: 'validate' },
-    validate: { label: 'Validação', dur: 45, bot: [4, 10], next: 'reveal',
+    validate: { label: 'Validação', dur: 35, perP: 1.5, bot: [4, 10], next: 'reveal',
       allIn: (g, s) => active(g, s).every(id => g.data.ready[id]) && !Object.values(g.data.botFollow).some(t => t > 0) },
-    reveal: { label: 'Pontos da rodada', dur: 25, enter(g, s) {
+    reveal: { label: 'Pontos da rodada', dur: 15, enter(g, s) {
       const d = g.data, voters = active(g, s), res = {}, deltas = {};
       d.cats.forEach((ci, k) => {
         const count = {};
@@ -2589,7 +2591,7 @@ Games.fato = {
   init(g) { g.data = { qi: drawItem(g, FATO_Q), answers: {}, result: null }; },
   phases: {
     answer: { label: 'Fato ou fake?', dur: 12, bot: [1.2, 9], next: 'reveal', allIn: (g, s) => active(g, s).every(id => id in g.data.answers) },
-    reveal: { label: 'Resposta', dur: 12, enter(g, s) {
+    reveal: { label: 'Resposta', dur: 9, enter(g, s) {
       const q = FATO_Q[g.data.qi], d = {};
       Object.entries(g.data.answers).forEach(([pid, a]) => { if (a.v === q.a) add(d, pid, fatoMult(a.t, Games.fato.phases.answer.dur)); });
       updateScores(s, d);
@@ -2838,11 +2840,11 @@ Games.desenho = {
     g.data = { drawer, choices, word: null, strokes: [], redo: [], guessed: {}, order: [], feed: [], rerolled: false };
   },
   phases: {
-    pick: { label: 'Escolhendo a palavra', dur: 12, bot: [1, 3], next: 'draw', allIn: g => !!g.data.word },
-    draw: { label: 'Desenhe e adivinhe', dur: 80, bot: [12, 55], next: 'reveal',
+    pick: { label: 'Escolhendo a palavra', dur: 10, bot: [1, 3], next: 'draw', allIn: g => !!g.data.word },
+    draw: { label: 'Desenhe e adivinhe', dur: 75, bot: [12, 55], next: 'reveal',
       enter(g) { if (!g.data.word) g.data.word = g.data.choices[0]; },
       allIn: (g, s) => active(g, s).filter(id => id !== g.data.drawer).every(id => id in g.data.guessed) },
-    reveal: { label: 'Era…', dur: 12, enter(g, s) {
+    reveal: { label: 'Era…', dur: 9, enter(g, s) {
       const d = g.data, deltas = {};
       d.order.forEach((pid, k) => add(deltas, pid, Math.max(1, 3 - k)));
       if (d.order.length) { add(deltas, d.drawer, Math.min(3, d.order.length)); matchStat(s, d.drawer, 'drawn', d.order.length); }
@@ -3005,8 +3007,8 @@ Games.termo = {
     g.roster.forEach(id => { if (s.players[id]?.isBot) g.data.bots[id] = termoBotPlan(answer); });
   },
   phases: {
-    play: { label: 'Descubra a palavra', dur: 120, next: 'reveal', allIn: (g, s) => active(g, s).every(id => termoDone(g, id)) },
-    reveal: { label: 'A palavra era', dur: 15, enter(g, s) {
+    play: { label: 'Descubra a palavra', dur: 150, next: 'reveal', allIn: (g, s) => active(g, s).every(id => termoDone(g, id)) },
+    reveal: { label: 'A palavra era', dur: 9, enter(g, s) {
       const d = g.data, deltas = {};
       Object.entries(d.solved).forEach(([pid, r]) => add(deltas, pid, r.n <= 2 ? 4 : r.n <= 4 ? 3 : 2));
       if (d.first) add(deltas, d.first, 1);
@@ -3116,7 +3118,7 @@ Games.reflexo = {
     wait: { label: 'Espere…', dur: 4, hideTimer: true, bot: [.6, 2.5], next: 'go',
       enter(g) { g.dur = g.data.wait; g.deadline = g.phaseStart + g.data.wait * 1000; } },
     go: { label: 'Toque!', dur: 3.5, rush: false, bot: [.25, .55], next: 'reveal', allIn: (g, s) => active(g, s).every(id => id in g.data.taps) },
-    reveal: { label: 'Tempos', dur: 10, enter(g, s) {
+    reveal: { label: 'Tempos', dur: 8, enter(g, s) {
       const ok = Object.entries(g.data.taps).filter(([, t]) => !t.early).sort((a, b) => a[1].ms - b[1].ms), d = {};
       ok.slice(0, 3).forEach(([pid], k) => add(d, pid, 3 - k));
       updateScores(s, d);
@@ -3208,8 +3210,8 @@ Games.emoji = {
   first: 'guess',
   init(g) { g.data = { qi: drawItem(g, EMOJI_Q), solved: {}, order: [] }; },
   phases: {
-    guess: { label: 'Adivinhe', dur: 45, bot: [6, 32], next: 'reveal', allIn: (g, s) => active(g, s).every(id => id in g.data.solved) },
-    reveal: { label: 'Resposta', dur: 10, enter(g, s) {
+    guess: { label: 'Adivinhe', dur: 35, bot: [6, 32], next: 'reveal', allIn: (g, s) => active(g, s).every(id => id in g.data.solved) },
+    reveal: { label: 'Resposta', dur: 8, enter(g, s) {
       const d = {};
       g.data.order.forEach((pid, k) => add(d, pid, Math.max(1, 3 - k)));
       updateScores(s, d);
@@ -3284,8 +3286,8 @@ Games.mente = {
   first: 'answer',
   init(g) { g.data = { qi: drawItem(g, MENTE_Q), answers: {}, groups: null }; },
   phases: {
-    answer: { label: 'Resposta secreta', dur: 30, bot: [3, 15], next: 'reveal', allIn: (g, s) => active(g, s).every(id => id in g.data.answers) },
-    reveal: { label: 'A galera pensou…', dur: 15, enter(g, s) {
+    answer: { label: 'Resposta secreta', dur: 25, bot: [3, 15], next: 'reveal', allIn: (g, s) => active(g, s).every(id => id in g.data.answers) },
+    reveal: { label: 'A galera pensou…', dur: 12, perP: 0.5, enter(g, s) {
       const map = {}, deltas = {};
       Object.entries(g.data.answers).forEach(([pid, txt]) => {
         const k = menteKey(txt) || '?';
@@ -3390,7 +3392,7 @@ Games.bomba = {
     // O pavio é sorteado e escondido: é isso que dá o suspense.
     play: { label: 'Passe a bomba!', dur: 30, hideTimer: true, next: 'reveal',
       enter(g) { g.dur = g.data.fuse; g.deadline = g.phaseStart + g.data.fuse * 1000; } },
-    reveal: { label: 'BUM!', dur: 10, enter(g, s) {
+    reveal: { label: 'BUM!', dur: 8, enter(g, s) {
       const d = {};
       g.roster.forEach(id => { if (id !== g.data.holder && s.players[id]) add(d, id, 2); });
       updateScores(s, d);
@@ -3564,8 +3566,8 @@ Games.mentira = {
   first: 'lie',
   init(g, s) { g.data = { q: pickFrom(g, fibPool(s), (custom(s).facts || []).length), lies: {}, opts: null, picks: {} }; },
   phases: {
-    lie: { label: 'Invente uma mentira', dur: 45, bot: [5, 25], next: 'pick', allIn: (g, s) => active(g, s).every(id => id in g.data.lies) },
-    pick: { label: 'Qual é a verdade?', dur: 25, bot: [3, 14], next: 'reveal',
+    lie: { label: 'Invente uma mentira', dur: 50, bot: [5, 25], next: 'pick', allIn: (g, s) => active(g, s).every(id => id in g.data.lies) },
+    pick: { label: 'Qual é a verdade?', dur: 20, perP: 1, bot: [3, 14], next: 'reveal',
       enter(g) {
         const q = g.data.q, map = new Map([[fibKey(q.a), { text: q.a, by: [], truth: true }]]);
         // Mentiras iguais viram uma opção só, com os dois autores.
@@ -3579,7 +3581,7 @@ Games.mentira = {
         g.data.opts = shuffle([...map.values()]);
       },
       allIn: (g, s) => active(g, s).every(id => id in g.data.picks) },
-    reveal: { label: 'A verdade é…', dur: 16, enter(g, s) {
+    reveal: { label: 'A verdade é…', dur: 14, enter(g, s) {
       const d = g.data, deltas = {};
       Object.entries(d.picks).forEach(([pid, i]) => {
         const o = d.opts[i];
@@ -3694,10 +3696,10 @@ Games.legenda = {
   init(g) { g.data = { qi: drawItem(g, CAP_Q), caps: {}, votes: {}, order: null }; },
   phases: {
     write: { label: 'Escreva a legenda', dur: 50, bot: [6, 30], next: 'vote', allIn: (g, s) => active(g, s).every(id => id in g.data.caps) },
-    vote: { label: 'Vote na melhor', dur: 25, bot: [3, 12], next: 'reveal',
+    vote: { label: 'Vote na melhor', dur: 20, perP: 1, bot: [3, 12], next: 'reveal',
       enter(g) { g.data.order = shuffle(Object.keys(g.data.caps)); },
       allIn: (g, s) => active(g, s).every(id => id in g.data.votes || !Object.keys(g.data.caps).some(x => x !== id)) },
-    reveal: { label: 'A melhor legenda', dur: 15, enter(g, s) {
+    reveal: { label: 'A melhor legenda', dur: 12, enter(g, s) {
       const { counts, top } = voteCounts(g.data.votes), deltas = {};
       Object.entries(counts).forEach(([pid, n]) => add(deltas, pid, n));
       top.forEach(pid => add(deltas, pid, 1));
@@ -3786,8 +3788,8 @@ Games.preco = {
   first: 'guess',
   init(g, s) { g.data = { q: pickFrom(g, pricePool(s), (custom(s).prices || []).length), guesses: {}, result: null }; },
   phases: {
-    guess: { label: 'Quanto custou?', dur: 35, bot: [4, 20], next: 'reveal', allIn: (g, s) => active(g, s).every(id => id in g.data.guesses) },
-    reveal: { label: 'O preço certo', dur: 16, enter(g, s) {
+    guess: { label: 'Quanto custou?', dur: 25, bot: [4, 20], next: 'reveal', allIn: (g, s) => active(g, s).every(id => id in g.data.guesses) },
+    reveal: { label: 'O preço certo', dur: 12, enter(g, s) {
       const q = g.data.q, deltas = {}, all = Object.entries(g.data.guesses);
       const under = all.filter(([, v]) => v <= q.v).sort((a, b) => b[1] - a[1]);
       under.slice(0, 3).forEach(([pid], k) => add(deltas, pid, 3 - k));
@@ -3865,8 +3867,8 @@ Games.linha = {
     g.data = { ev, orders: {} };
   },
   phases: {
-    order: { label: 'Ordene os fatos', dur: 50, bot: [8, 32], next: 'reveal', allIn: (g, s) => active(g, s).every(id => id in g.data.orders) },
-    reveal: { label: 'A ordem certa', dur: 18, enter(g, s) {
+    order: { label: 'Ordene os fatos', dur: 45, bot: [8, 32], next: 'reveal', allIn: (g, s) => active(g, s).every(id => id in g.data.orders) },
+    reveal: { label: 'A ordem certa', dur: 12, enter(g, s) {
       const d = g.data, deltas = {};
       Object.entries(d.orders).forEach(([pid, o]) => { const n = tlScore(o, d.ev); add(deltas, pid, n + (n === d.ev.length ? 2 : 0)); });
       updateScores(s, deltas);
@@ -3960,7 +3962,7 @@ Games.digita = {
   phases: {
     ready: { label: 'Preparar…', dur: 4, hideTimer: true, next: 'race' },
     race: { label: 'Digite!', dur: 60, next: 'reveal', allIn: (g, s) => active(g, s).every(id => id in g.data.fin) },
-    reveal: { label: 'Resultado', dur: 14, enter(g, s) {
+    reveal: { label: 'Resultado', dur: 10, enter(g, s) {
       const deltas = {};
       g.data.order.forEach((pid, k) => add(deltas, pid, Math.max(1, 3 - k)));
       const w0 = g.data.order[0];
@@ -4114,9 +4116,9 @@ Games.proibida = {
     g.data = { giver, card: (pool => pool[drawItem(g, pool)])(tabooPool(s)), clues: [], feed: [], guessed: {}, order: [], buzz: 0, botClue: 0 };
   },
   phases: {
-    play: { label: 'Dê dicas e adivinhe', dur: 75, bot: [15, 60], next: 'reveal',
+    play: { label: 'Dê dicas e adivinhe', dur: 80, bot: [15, 60], next: 'reveal',
       allIn: (g, s) => active(g, s).filter(id => id !== g.data.giver).every(id => id in g.data.guessed) },
-    reveal: { label: 'Era…', dur: 12, enter(g, s) {
+    reveal: { label: 'Era…', dur: 9, enter(g, s) {
       const d = g.data, deltas = {};
       d.order.forEach((pid, k) => add(deltas, pid, Math.max(1, 3 - k)));
       if (d.order.length) add(deltas, d.giver, Math.min(3, d.order.length));
@@ -4755,8 +4757,8 @@ Games.mapa = {
   first: 'guess',
   init(g) { g.data = { qi: drawItem(g, MAP_Q), guesses: {} }; },
   phases: {
-    guess: { label: 'Marque no mapa', dur: 30, bot: [4, 22], next: 'reveal', allIn: (g, s) => active(g, s).every(id => id in g.data.guesses) },
-    reveal: { label: 'Era aqui', dur: 16, enter(g, s) {
+    guess: { label: 'Marque no mapa', dur: 35, bot: [4, 22], next: 'reveal', allIn: (g, s) => active(g, s).every(id => id in g.data.guesses) },
+    reveal: { label: 'Era aqui', dur: 18, enter(g, s) {
       const q = MAP_Q[g.data.qi], deltas = {};
       Object.entries(g.data.guesses).forEach(([pid, p]) => add(deltas, pid, mapPts(mapKm(p, q))));
       updateScores(s, deltas);
@@ -4838,7 +4840,7 @@ Games.lobisomem = {
     g.data = { roles, alive: [...g.roster], ok: {}, night: 0, act: {}, votes: {}, seen: {}, dawn: null, dusk: null, winner: null };
   },
   phases: {
-    roles: { label: 'Seu papel', dur: 15, bot: [1, 3], next: 'night', allIn: (g, s) => active(g, s).every(id => g.data.ok[id]) },
+    roles: { label: 'Seu papel', dur: 12, bot: [1, 3], next: 'night', allIn: (g, s) => active(g, s).every(id => g.data.ok[id]) },
     night: { label: 'Noite', dur: 25, bot: [2, 12], next: 'dawn', hideTimer: false,
       enter(g) { g.data.night++; g.data.act = {}; },
       allIn: (g, s) => wolfPowers(g, s).every(id => id in g.data.act) },
@@ -4853,7 +4855,7 @@ Games.lobisomem = {
         if (target && !saved) d.alive = d.alive.filter(id => id !== target);
         d.winner = wolfWinner(d);
       } },
-    day: { label: 'Votação da vila', dur: 50, bot: [8, 35], next: 'dusk', enter(g) { g.data.votes = {}; },
+    day: { label: 'Votação da vila', dur: 50, perP: 2, bot: [8, 35], next: 'dusk', enter(g) { g.data.votes = {}; },
       allIn: (g, s) => active(g, s).filter(id => g.data.alive.includes(id)).every(id => id in g.data.votes) },
     dusk: { label: 'A vila decidiu', dur: 7, next: g => g.data.winner || g.data.night >= 3 ? 'reveal' : 'night',
       enter(g) {
@@ -4862,7 +4864,7 @@ Games.lobisomem = {
         if (out) d.alive = d.alive.filter(id => id !== out);
         d.winner = wolfWinner(d);
       } },
-    reveal: { label: 'Fim de jogo', dur: 18, enter(g, s) {
+    reveal: { label: 'Fim de jogo', dur: 15, enter(g, s) {
       const d = g.data, deltas = {};
       if (!d.winner) d.winner = wolfAlive(d, 'lobos').length ? 'lobos' : 'vila';
       g.roster.forEach(id => { if (WOLF_ROLES[d.roles[id]].team === d.winner) { add(deltas, id, 3 + (d.alive.includes(id) ? 1 : 0)); if (d.alive.includes(id)) matchStat(s, id, 'survive'); } });
@@ -4981,11 +4983,11 @@ Games.quemdisse = {
   first: 'write',
   init(g) { g.data = { qi: drawItem(g, QD_Q), ans: {}, cards: [], guesses: {} }; },
   phases: {
-    write: { label: 'Responda em segredo', dur: 45, bot: [5, 25], next: 'guess', allIn: (g, s) => active(g, s).every(id => id in g.data.ans) },
-    guess: { label: 'Quem disse isso?', dur: 45, bot: [5, 25], next: 'reveal',
+    write: { label: 'Responda em segredo', dur: 40, bot: [5, 25], next: 'guess', allIn: (g, s) => active(g, s).every(id => id in g.data.ans) },
+    guess: { label: 'Quem disse isso?', dur: 35, perP: 1, bot: [5, 25], next: 'reveal',
       enter(g) { g.data.cards = shuffle(Object.keys(g.data.ans)).slice(0, 4); },
       allIn: (g, s) => active(g, s).every(id => Games.quemdisse.todo(g, id).every(k => (g.data.guesses[id] || {})[k] !== undefined)) },
-    reveal: { label: 'Eram eles!', dur: 18, enter(g, s) {
+    reveal: { label: 'Eram eles!', dur: 14, enter(g, s) {
       const d = g.data, deltas = {};
       Object.entries(d.guesses).forEach(([pid, gs]) => Object.entries(gs).forEach(([k, who]) => {
         const author = d.cards[k];
@@ -5051,11 +5053,11 @@ Games.mimica = {
     g.data = { teller: humans.length ? humans[(g.round - 1) % humans.length] : g.roster[0], opts: [0, 1, 2].map(() => drawItem(g, EMOJI_Q)), qi: null, seq: [], guessed: {}, order: [], feed: [], botStep: 0 };
   },
   phases: {
-    pick: { label: 'Escolhendo o filme', dur: 12, bot: [1, 3], next: 'tell', allIn: g => g.data.qi !== null },
+    pick: { label: 'Escolhendo o filme', dur: 10, bot: [1, 3], next: 'tell', allIn: g => g.data.qi !== null },
     tell: { label: 'Conte com emojis', dur: 75, bot: [12, 55], next: 'reveal',
       enter(g) { if (g.data.qi === null) g.data.qi = g.data.opts[0]; },
       allIn: (g, s) => active(g, s).filter(id => id !== g.data.teller).every(id => id in g.data.guessed) },
-    reveal: { label: 'Era…', dur: 12, enter(g, s) {
+    reveal: { label: 'Era…', dur: 9, enter(g, s) {
       const d = g.data, deltas = {};
       d.order.forEach((pid, k) => add(deltas, pid, Math.max(1, 3 - k)));
       if (d.order.length) add(deltas, d.teller, Math.min(3, d.order.length));
@@ -5152,8 +5154,8 @@ Games.leilao = {
     g.data = { p, hint: [lo, lo + 3], bids: {}, win: null };
   },
   phases: {
-    bid: { label: 'Dê seu lance', dur: 25, bot: [3, 15], next: 'reveal', allIn: (g, s) => active(g, s).every(id => id in g.data.bids) },
-    reveal: { label: 'Arrematado!', dur: 14, enter(g, s) {
+    bid: { label: 'Dê seu lance', dur: 20, bot: [3, 15], next: 'reveal', allIn: (g, s) => active(g, s).every(id => id in g.data.bids) },
+    reveal: { label: 'Arrematado!', dur: 10, enter(g, s) {
       const d = g.data, e = Object.entries(d.bids).filter(([, b]) => b.v > 0).sort((a, b) => b[1].v - a[1].v || a[1].t - b[1].t);
       if (!e.length) return;
       const [pid, b] = e[0], v = d.p.v;
@@ -5227,7 +5229,7 @@ Games.detalhe = {
   },
   phases: {
     find: { label: 'Ache as diferenças', dur: 60, next: 'reveal', allIn: (g, s) => active(g, s).every(id => (g.data.found[id] || []).length >= SPOT_N) },
-    reveal: { label: 'Eram estas', dur: 14, enter(g, s) {
+    reveal: { label: 'Eram estas', dur: 10, enter(g, s) {
       const d = g.data, deltas = {};
       Object.entries(d.found).forEach(([pid, f]) => { add(deltas, pid, f.length); matchStat(s, pid, 'found', f.length); });
       if (d.done[0]) add(deltas, d.done[0], 2);
@@ -5302,7 +5304,7 @@ Games.ritmo = {
     play: { label: 'No ritmo!', dur: 12, rush: false, hideTimer: true, next: 'reveal',
       enter(g) { const d = g.data, len = (RT_LEAD + d.n * 60000 / d.bpm + 2500) / 1000; g.dur = len; g.deadline = g.phaseStart + len * 1000; },
       allIn: (g, s) => active(g, s).every(id => id in g.data.scores) },
-    reveal: { label: 'Resultado', dur: 14, enter(g, s) {
+    reveal: { label: 'Resultado', dur: 10, enter(g, s) {
       const e = Object.entries(g.data.scores).filter(([, v]) => v.pts > 0).sort((a, b) => b[1].pts - a[1].pts), deltas = {};
       e.forEach(([pid], k) => add(deltas, pid, Math.max(1, 3 - k)));
       Object.entries(g.data.scores).forEach(([pid, v]) => matchStat(s, pid, 'rhythm', v.perfect || 0));
@@ -5417,7 +5419,7 @@ Games.vod = {
       },
       allIn: g => g.data.ready },
     judge: { label: 'Valeu?', dur: 15, bot: [2, 8], next: 'reveal', allIn: (g, s) => active(g, s).filter(id => id !== g.data.who).every(id => id in g.data.votes) },
-    reveal: { label: 'Veredito', dur: 10, enter(g, s) {
+    reveal: { label: 'Veredito', dur: 8, enter(g, s) {
       const d = g.data, yes = Object.values(d.votes).filter(Boolean).length, no = Object.values(d.votes).length - yes;
       d.ok = yes > 0 && yes >= no;
       if (d.ok) { updateScores(s, { [d.who]: d.kind === 'd' ? 3 : 2 }); if (d.kind === 'd') { matchStat(s, d.who, 'brave'); addMoment(s, { k: 'dare', pid: d.who, text: d.card }); } }
@@ -5656,7 +5658,8 @@ const Narrator = {
   },
 };
 const vibOn = () => { try { return localStorage.getItem('playbox:vib') !== 'off'; } catch { return true; } };
-function buzz(p) { if (vibOn() && myRole() !== 'tv' && navigator.vibrate) try { navigator.vibrate(p); } catch {} }
+// O navegador só deixa vibrar depois que a pessoa tocou na página (antes, só enchia o console de avisos).
+function buzz(p) { if (vibOn() && myRole() !== 'tv' && navigator.vibrate && navigator.userActivation?.hasBeenActive !== false) try { navigator.vibrate(p); } catch {} }
 function narrateCues(s, cur, p) {
   if (!cur || !p) return;
   const g = s.game;
@@ -6168,7 +6171,7 @@ function hostHandle(from, a) {
       if (role !== 'player') np.role = role;
       s.players[pl.id] = np;
       s.order.push(pl.id);
-      pushChat(s, { sys: true, text: role === 'tv' ? 'Um telão foi conectado' : role === 'spectator' ? `${name} está assistindo${full ? ' (os ${maxP(s)} lugares de jogador estão ocupados)' : ''}` : `${name} entrou na sala` });
+      pushChat(s, { sys: true, text: role === 'tv' ? 'Um telão foi conectado' : role === 'spectator' ? `${name} está assistindo${full ? ` (os ${maxP(s)} lugares de jogador estão ocupados)` : ''}` : `${name} entrou na sala` });
       if (role === 'player') botsWelcome(s, name);
       changed = true;
     }
@@ -6242,6 +6245,7 @@ function hostCommand(s, a) {
     }
     case 'host:kick':
       if (s.screen !== 'lobby' || a.id === s.hostId || !s.players[a.id]) return false;
+      if (!s.players[a.id].isBot) Transport.send({ kind: 'kicked', to: a.id });
       delete s.players[a.id];
       s.order = s.order.filter(id => id !== a.id);
       return true;
@@ -6467,6 +6471,9 @@ function hostTick() {
   for (const p of Object.values(s.players)) {
     if (!p.isBot && p.id !== s.hostId && p.connected && now() - p.lastSeen > 10000) { p.connected = false; changed = true; }
   }
+  for (const p of Object.values(s.players)) {
+    if (p.role === 'tv' && !p.connected && now() - p.lastSeen > 60000) { delete s.players[p.id]; s.order = s.order.filter(id => id !== p.id); changed = true; }
+  }
   if (s.screen === 'lobby' && s.vote && voteTick(s)) changed = true;
   const g = s.game;
   botTune(s);
@@ -6517,6 +6524,7 @@ function stopHost() {
    Cliente: conexão com a sala
    ===================================================================== */
 let joinWait = null, lastHostSignal = 0, pingTimer = null;
+const Stale = { since: 0, missing: 0 };
 
 function onMessage(msg) {
   const me = Store.me;
@@ -6528,16 +6536,27 @@ function onMessage(msg) {
     return;
   }
   if (msg.kind === 'state' && msg.state) {
+    if (msg.state.pin !== me.pin) return;
     lastHostSignal = now();
+    // Mensagens chegam por dois servidores: uma versão antiga (de antes de você entrar) pode chegar atrasada.
+    // Versão velha é ignorada; se só chegam versões velhas por um tempo, o host recomeçou a sala e vale a dele.
+    if (Store.room && msg.state.version <= Store.room.version) {
+      if (msg.state.version === Store.room.version) return;
+      if (!Stale.since) Stale.since = now();
+      if (now() - Stale.since < 5000) return;
+    }
+    Stale.since = 0;
     const inside = !!msg.state.players[me.id];
     if (joinWait) {
       if (!inside) return;
       const w = joinWait; joinWait = null; w.done({ ok: true });
     } else if (!inside) {
+      // Só sai depois de sumir de duas versões novas seguidas (o host avisa direto quando remove alguém).
+      if (++Stale.missing < 2) return;
       leaveRoom('Você foi removido da sala.', true);
       return;
     }
-    if (Store.room && msg.state.version < Store.room.version && msg.state.pin === Store.room.pin) return;
+    Stale.missing = 0;
     Store.room = msg.state;
     if (Store.hostLost) Store.hostLost = false;
     render();
@@ -6549,6 +6568,8 @@ function onMessage(msg) {
     if (Store.hostLost) { Store.hostLost = false; render(); }
   } else if (msg.kind === 'closed') {
     leaveRoom('O host encerrou a sala.', true);
+  } else if (msg.kind === 'kicked' && msg.to === me.id && !joinWait) {
+    leaveRoom('Você foi removido da sala.', true);
   } else if (msg.kind === 'reject' && msg.to === me.id && joinWait) {
     const w = joinWait; joinWait = null; w.done({ ok: false, reason: msg.reason });
   }
@@ -6597,6 +6618,7 @@ function joinRoom(pin, profile, existingId, onProgress) {
   pin = String(pin || '').toUpperCase().trim();
   const id = existingId || 'p-' + uid(8);
   Store.me = { id, pin, isHost: false, profile };
+  Stale.since = 0; Stale.missing = 0; Store.room = null;
   Transport.open(pin, onMessage, 'client');
   const started = now();
   let lastAsk = now();
@@ -6971,7 +6993,7 @@ function viewLobby(s) {
         <section class="panel pin-block" aria-label="PIN da sala">
           <p class="label-caps">PIN da sala</p>
           <div class="pin-keys" aria-label="${s.pin.split('').join(' ')}">${s.pin.split('').map(c => `<span class="key" aria-hidden="true">${c}</span>`).join('')}</div>
-          <div class="row center"><button class="btn xs primary" data-act="share">${icon('link')}Convidar</button><button class="btn xs" data-act="copyCode">${icon('copy')}Copiar código</button><button class="btn xs" data-act="qr">${icon('qr')}QR code</button></div>
+          <div class="row center"><button class="btn xs primary" data-act="share">${icon('link')}Convidar</button><button class="btn xs" data-act="copyCode">${icon('copy')}Copiar código</button><button class="btn xs" data-act="tvLink" title="Abra esse link no navegador da TV ou do notebook">${icon('tv')}Telão</button><button class="btn xs" data-act="qr">${icon('qr')}QR code</button></div>
           ${netStatusHTML()}
         </section>
         <section class="panel" aria-labelledby="plTitle">
@@ -7274,7 +7296,7 @@ function botsAmbient(s) {
       const r = Math.random();
       if (r < .45) hostFx(s, b.id, { t: 'emote', e: pick(EMOTES) });
       else if (r < .75 && tgt) hostFx(s, b.id, { t: 'throw', e: pick(THROWS), to: tgt });
-      else if (r < .9) hostFx(s, b.id, { t: pick(['horn', 'confetti', 'flash', 'bomb']) });
+      else if (r < .9) hostFx(s, b.id, { t: Math.random() < .75 ? 'horn' : pick(['confetti', 'flash', 'bomb']) });
       else hostFx(s, b.id, { t: 'shout', text: pick(['VALENDO!', 'BORA!!!', 'É AGORA', 'SEGURA!', 'NINGUÉM ME PARA']) });
     }
   }
@@ -7295,9 +7317,11 @@ function botSay(id, text, delay = 0) {
     if (!p || !isHost() || ['off', 'reacoes'].includes(cfg(room, 'chatMode'))) return;
     const T = botTalk(room);
     BotChatRT.said = BotChatRT.said.filter(x => now() - x < 8000);
+    const said = botFill(room, text, id);
+    if ((room.chat || []).slice(-8).some(m => m.text === said)) return;
     if (BotChatRT.said.length >= T.cap) return;
     BotChatRT.said.push(now());
-    pushChat(room, { pid: id, name: p.name, text: botFill(room, text, id) }); commit();
+    pushChat(room, { pid: id, name: p.name, text: said }); commit();
   }, delay);
 }
 function botsGreet(s) {
@@ -7346,7 +7370,10 @@ const THROWS = ['🍅', '🥚', '🎈', '💐', '🧻', '🥧'];
 const EMOTES = ['💃', '🕺', '🤸', '🙇', '👋', '😎'];
 const CHAT_QUICK = ['KKKKKK', 'GG', 'Roubado!', 'Não acredito 😱', 'Eu sabia!', 'Bora!', 'F'];
 const FxRT = { last: {}, hype: [], lastRain: 0 };
-const FX_GAP = { throw: 1200, horn: 6000, shout: 8000, emote: 1500, confetti: 3000, flash: 5000, bomb: 5000, spin: 8000 };
+const FX_GAP = { throw: 1200, horn: 6000, shout: 8000, emote: 1500, confetti: 15000, flash: 20000, bomb: 20000, spin: 30000 };
+// Entre um efeito de caos e outro (de qualquer pessoa ou bot), a sala respira um pouco.
+const CHAOS_ROOM_GAP = 6000;
+const isChaos = k => CHAOS_FX.some(x => x[0] === k);
 const CHAOS_FX = [['confetti', '🎊', 'Confete'], ['flash', '⚡', 'Raio'], ['bomb', '💣', 'Bomba'], ['spin', '🌀', 'Girar a tela']];
 function hostFx(s, pid, a) {
   const p = s?.players[pid];
@@ -7358,9 +7385,10 @@ function hostFx(s, pid, a) {
   if (a.t === 'throw') { if (!THROWS.includes(a.e) || !s.players[a.to] || a.to === pid) return; msg = { t: 'throw', e: a.e, to: a.to }; }
   else if (a.t === 'horn') msg = { t: 'horn' };
   else if (a.t === 'emote') { if (!EMOTES.includes(a.e)) return; msg = { t: 'emote', e: a.e }; }
-  else if (CHAOS_FX.some(x => x[0] === a.t)) msg = { t: a.t };
+  else if (isChaos(a.t)) { if (now() - (FxRT.lastChaos || 0) < CHAOS_ROOM_GAP) return; msg = { t: a.t }; }
   else { let text = String(a.text || '').replace(/\s+/g, ' ').trim().slice(0, 40); if (!text) return; if (s.settings.family) text = familyClean(text); msg = { t: 'shout', text }; }
   FxRT.last[key] = now();
+  if (isChaos(a.t)) FxRT.lastChaos = now();
   Transport.send({ kind: 'fx', pid, ...msg });
   if (pid !== Store.me?.id) runFx({ pid, ...msg });
   if (a.t === 'throw') {
@@ -7418,6 +7446,7 @@ function runFx(m) {
     layer.appendChild(el); Sound.play('react');
     return setTimeout(() => el.remove(), 1700);
   }
+  if (isChaos(m.t)) FxRT.lastChaos = now();
   if (m.t === 'confetti') { fxTag(p, 'soltou confete 🎊'); Sound.play('fanfare'); return fxConfetti(layer); }
   if (m.t === 'flash') {
     fxTag(p, 'mandou um raio ⚡'); Sound.play('boom'); buzz(60);
@@ -7600,7 +7629,12 @@ function renderChat() {
     return;
   }
   if (myRole() === 'tv') {
-    const last = (s.chat || []).filter(m => !m.hid).slice(-4);
+    const at = now(), seen = Chat.tvSeen || (Chat.tvSeen = new Map());
+    (s.chat || []).forEach(m => { if (!seen.has(m.n)) seen.set(m.n, Chat.tvBuilt ? at : 0); });
+    Chat.tvBuilt = true;
+    const last = (s.chat || []).filter(m => !m.hid && !m.poll && at - seen.get(m.n) < 12000).slice(-3);
+    clearTimeout(Chat.tvTimer);
+    if (last.length) Chat.tvTimer = setTimeout(renderChat, 12100 - (at - seen.get(last[0].n)));
     root.innerHTML = `<div class="tv-ticker" aria-live="polite">${last.map(m => m.sys ? `<p class="sys">${esc(m.text)}</p>` : `<p><b>${esc(m.name)}</b>${esc(m.text)}</p>`).join('')}</div>`;
     Chat.built = false;
     return;
@@ -7615,7 +7649,7 @@ function renderChat() {
         <button type="button" class="chat-grip" id="chatGrip" aria-label="Redimensionar o chat: arraste ou use as setas" title="Arraste para mudar o tamanho · duplo clique volta ao normal"><i></i></button>
         <header class="chat-head"><b>Chat da sala</b><span class="chat-head-tools"><button class="icon-btn" data-act="chatMax" aria-label="Aumentar o chat">${icon('expand')}</button><button class="icon-btn" data-act="chat" aria-label="Fechar o chat">${icon('close')}</button></span></header>
         <ul class="chat-list" id="chatList"></ul>
-        <div class="chat-reacts">${reacts}</div><div class="chat-quick">${CHAT_QUICK.map(q => `<button type="button" data-act="quick" data-v="${q}">${q}</button>`).join('')}</div>
+        <div class="chat-reacts">${reacts}</div><div class="chat-quick">${CHAT_QUICK.map(q => `<button type="button" data-act="chatQuick" data-v="${q}">${q}</button>`).join('')}</div>
         <form class="chat-form" data-form="chat" novalidate><label class="sr-only" for="chatIn">Mensagem</label>
           <input class="input" id="chatIn" maxlength="140" autocomplete="off" placeholder="Mensagem, @nome ou /comando…">
           <button class="btn primary chat-send" aria-label="Enviar mensagem">${icon('send')}</button></form>
@@ -8044,6 +8078,10 @@ const Actions = {
     for (let i = 0; i < 3; i++) dispatch({ type: 'host:addBot' });
     toast('Sala criada com 3 bots. Escolha um jogo.');
   },
+  async tvLink() {
+    const url = roomLink() + '-tv';
+    toast(await copyText(url) ? 'Link do telão copiado: abra no navegador da TV' : `Abra na TV: ${url}`);
+  },
   async copyCode() { toast(await copyText(Store.room.pin) ? `Código ${Store.room.pin} copiado` : `O código é ${Store.room.pin}`); },
   async copyLink() {
     toast(await copyText(roomLink()) ? 'Link da sala copiado' : 'Não deu para copiar. Use o código da sala.');
@@ -8176,7 +8214,10 @@ const Actions = {
   },
   zfx(el) {
     const k = el.dataset.v, s = Store.room;
-    if (!s || s.settings.zoeira === false || myRole() === 'tv' || !FX_GAP[k] || now() - ((Actions.lastZfx || {})[k] || 0) < FX_GAP[k]) return;
+    if (!s || s.settings.zoeira === false || myRole() === 'tv' || !FX_GAP[k]) return;
+    const mine = FX_GAP[k] - (now() - ((Actions.lastZfx || {})[k] || 0)), room = CHAOS_ROOM_GAP - (now() - (FxRT.lastChaos || 0));
+    if (mine > 0) { toast(`${el.textContent} recarregando: mais ${Math.ceil(mine / 1000)} s`); return; }
+    if (room > 0) { toast(`Calma! O caos volta em ${Math.ceil(room / 1000)} s`); return; }
     (Actions.lastZfx = Actions.lastZfx || {})[k] = now();
     el.classList.remove('is-cool'); void el.offsetWidth; el.classList.add('is-cool');
     el.style.setProperty('--cd', FX_GAP[k] + 'ms');
@@ -8186,7 +8227,7 @@ const Actions = {
     if (now() - (Actions.lastEmote || 0) < 1500) return;
     Actions.lastEmote = now(); runFx({ pid: Store.me.id, t: 'emote', e: el.dataset.v }); dispatch({ type: 'fx', t: 'emote', e: el.dataset.v });
   },
-  quick(el) { dispatch({ type: 'chat', text: el.dataset.v }); },
+  chatQuick(el) { dispatch({ type: 'chat', text: el.dataset.v }); },
   pollVote(el) { dispatch({ type: 'pollVote', i: +el.dataset.i }); },
   lobbyReady() { dispatch({ type: 'lobbyReady' }); },
   suggest(el) { dispatch({ type: 'suggest', game: el.dataset.game }); },
@@ -8390,6 +8431,17 @@ const Wake = {
   },
   off() { try { this.lock && this.lock.release(); } catch {} this.lock = null; },
 };
+// Arrastar uma imagem (a logo, um avatar) e soltar na página fazia o navegador abrir a imagem
+// no lugar do PlayBox, derrubando a pessoa da sala (e a sala inteira, se fosse o host).
+document.addEventListener('dragstart', e => { if (e.target instanceof HTMLImageElement || e.target instanceof HTMLCanvasElement) e.preventDefault(); });
+['dragover', 'drop'].forEach(ev => document.addEventListener(ev, e => { if (!e.target.closest?.('input,textarea')) e.preventDefault(); }));
+// Recarregar ou fechar sem querer: o navegador pergunta antes (o host derrubaria a sala de todo mundo).
+addEventListener('beforeunload', e => {
+  const s = Store.room;
+  if (!Store.me || !s) return;
+  const others = s.order.some(id => id !== Store.me.id && s.players[id] && !s.players[id].isBot);
+  if ((isHost() && others) || (!isHost() && s.screen === 'game')) { e.preventDefault(); e.returnValue = ''; }
+});
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState !== 'visible' || !Store.me) return;
   Wake.on();
@@ -8401,7 +8453,8 @@ document.addEventListener('visibilitychange', () => {
 async function boot() {
   Object.values(Games).forEach(addBetPhase);
   Store.local.profile = loadProfile();
-  const hashPin = location.hash.slice(1).toUpperCase();
+  const hashRaw = location.hash.slice(1).toUpperCase(), tvLink = /^[A-Z0-9]{4}-TV$/.test(hashRaw);
+  const hashPin = tvLink ? hashRaw.slice(0, 4) : hashRaw;
   if (/^[A-Z0-9]{4}$/.test(hashPin)) { Store.local.pinDraft = hashPin; Store.local.invite = true; Store.local.homeTab = 'join'; }
   requestAnimationFrame(frame);
   let sess = Session.load();
@@ -8426,6 +8479,7 @@ async function boot() {
     return;
   }
   render();
+  if (tvLink) Actions.joinTv();
 }
 boot();
 </script>
