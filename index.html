@@ -649,10 +649,56 @@ body.in-game .hostbar{padding-right:64px}
 body.in-game .game-top{margin-bottom:10px}
 /* Quadros e mapas encolhem para caber na altura disponível */
 body.in-game #dwBoard,body.in-game #telBoard{width:min(100%,calc((100dvh - var(--chrome-h) - 130px) * 4 / 3));margin-inline:auto}
-body.in-game .dw-board-wrap{display:flex;justify-content:center}
+body.in-game .dw-board-wrap{display:flex;justify-content:center;align-items:flex-start;align-self:start}
 body.in-game .map-wrap{width:min(100%,calc((100dvh - var(--chrome-h) - 150px) * 2));margin-inline:auto}
-body.in-game .sp-pair{max-width:calc((100dvh - var(--chrome-h)) / .7 * 2 + 10px);margin-inline:auto}
+body.in-game .sp-pair{margin-inline:auto}
 body.in-game .rt-pad{width:min(70vw,260px,calc(100dvh - var(--chrome-h) - 40px))}
+/* Área livre medida de verdade (--sb-h vem do JavaScript); sem ela, usa a estimativa antiga */
+body.in-game .screen.game{--sbh:var(--sb-h,calc(100dvh - var(--chrome-h) - 130px))}
+body.in-game #dwBoard,body.in-game #telBoard{width:min(100%,calc((var(--sbh) - 160px) * 4 / 3));min-width:min(100%,200px)}
+body.in-game .stage-body:not(:has(.can-draw)) #dwBoard{width:min(100%,calc((var(--sbh) - 120px) * 4 / 3))}
+body.in-game .map-wrap{width:min(100%,calc((var(--sbh) - 135px) * 2))}
+.gt-snd{display:none}
+.gt-time{display:inline-flex;align-items:center;gap:6px}
+/* Termo: peças e teclado do tamanho da área livre */
+body.in-game .stage-body{--key:clamp(36px,calc(var(--sbh) * .105),52px)}
+body.in-game .tm-board{--tile:clamp(26px,calc((var(--sbh) - 3 * var(--key) - 92px) / 6.6),56px);gap:5px}
+body.in-game .tm-row{grid-template-columns:repeat(5,var(--tile));gap:5px}
+body.in-game .tm-tile{font-size:calc(var(--tile) * .5);border-radius:9px}
+body.in-game .tm-k{height:var(--key)}
+@media (min-width:900px) and (max-height:900px){ body.in-game .tm-board{--tile:clamp(30px,calc((var(--sbh) - 40px) / 6.4),60px)} }
+/* Jogos que passavam da tela: cada um encolhe conforme a área medida */
+body.in-game .sp-pair{max-width:calc((var(--sbh) - 92px) / .7 * 2 + 10px)}
+body.in-game .mm-pal{max-height:max(100px,calc(var(--sbh) - 235px))}
+body.in-game .bm-bomb{width:min(150px,38vw,max(80px,calc(var(--sbh) - 230px)))}
+body.in-game .rx-pad{min-height:min(clamp(240px,46vh,380px),max(160px,calc(var(--sbh) - 40px)))}
+body.in-game .mm-pal{max-height:max(96px,calc(var(--sbh) - 285px))}
+body.in-game .map-wrap{width:min(100%,calc((var(--sbh) - 175px) * 2))}
+body.in-game .postcard{width:min(100%,max(180px,calc((var(--sbh) - 225px) * 1.6)))}
+@media (max-height:820px){
+  body.in-game .tl-list{gap:5px}
+  body.in-game .tl-main{min-height:40px;padding:6px 12px}
+  body.in-game .tl-edge{margin:2px 0}
+  body.in-game .stop-letter{width:60px;height:60px;font-size:1.9rem}
+}
+@media (min-width:760px) and (min-aspect-ratio:5/4){
+  /* Mapa: grande à esquerda, lugar e botão (ou resultados) à direita */
+  body.in-game .stage-body:has(> .map-wrap){display:grid;grid-template-columns:min(calc((var(--sbh) - 10px) * 2),calc(100% - 270px)) minmax(230px,1fr);column-gap:20px;row-gap:10px;align-content:start}
+  body.in-game .stage-body:has(> .map-wrap) > *{grid-column:2;margin-top:0!important}
+  body.in-game .stage-body:has(> .map-wrap) > .map-wrap{grid-column:1;grid-row:1 / span 8;width:100%}
+  body.in-game .stage-body:has(> .map-wrap) .map-foot .btn{width:100%;margin-top:0!important}
+  /* Stop: campos em duas colunas */
+  body.in-game .stop-fields{grid-template-columns:1fr 1fr}
+  /* Geografia (figura ou bandeira): figura à esquerda, pergunta e opções à direita */
+  body.in-game .stage-body:has(> .postcard){display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:22px;row-gap:10px;align-content:center;align-items:center}
+  body.in-game .stage-body:has(> .postcard) > *{grid-column:2;margin-top:0!important}
+  body.in-game .stage-body:has(> .postcard) > .postcard{grid-column:1;grid-row:1 / span 8;width:100%;max-height:calc(var(--sbh) - 10px)}
+  /* Linha do tempo: lista à esquerda, dica e botão à direita */
+  body.in-game .stage-body:has(> #tlList){display:grid;grid-template-columns:minmax(0,1fr) 230px;grid-template-rows:auto auto auto 1fr;column-gap:22px;align-content:start}
+  body.in-game .stage-body:has(> #tlList) > *{grid-column:1;margin-top:0!important}
+  body.in-game .stage-body:has(> #tlList) > .hint{grid-column:2;grid-row:1 / 3;align-self:end;text-align:left}
+  body.in-game .stage-body:has(> #tlList) > .btn{grid-column:2;grid-row:3 / 5;align-self:start;margin-top:12px!important}
+}
 /* Telas baixas (notebook, Chromebook, celular deitado): tudo mais compacto */
 @media (max-height:780px){
   body.in-game .stage{padding:14px 18px}
@@ -664,6 +710,12 @@ body.in-game .rt-pad{width:min(70vw,260px,calc(100dvh - var(--chrome-h) - 40px))
   body.in-game .strip .av-md{--s:34px}
   body.in-game .hostbar{margin-top:8px}
   body.in-game .screen.game{--chrome-h:300px}
+}
+@media (max-height:820px){
+  body.in-game .sh-how{display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;cursor:pointer;margin-top:6px}
+  body.in-game .sh-how:focus{-webkit-line-clamp:unset;outline:none}
+  body.in-game .stage-pills .joker-btn small{display:none}
+  body.in-game .stage-pills{margin-top:6px}
 }
 @media (max-height:560px){ body.in-game .sh-how,body.in-game .stage-head .sh-sub{display:none} body.in-game .screen.game{--chrome-h:240px} }
 /* Telas largas (monitor, notebook): placar numa coluna ao lado do jogo */
@@ -697,19 +749,75 @@ body.in-game .rt-pad{width:min(70vw,260px,calc(100dvh - var(--chrome-h) - 40px))
   body.in-game .stage-body:has(> .tm-board:first-child) > *{grid-column:2;margin-top:10px}
   body.in-game .stage-body:has(> .tm-board:first-child) > .tm-board{grid-column:1;grid-row:1 / span 4;margin-top:0}
 }
-/* Desenho em tela larga e baixa: ferramentas ao lado do quadro */
-@media (min-width:900px) and (max-height:900px){
-  body.in-game .stage-body:has(.can-draw){display:grid;grid-template-columns:auto minmax(240px,300px);column-gap:20px;align-content:start;justify-content:center}
-  body.in-game .stage-body:has(.can-draw) > *{grid-column:1 / -1}
-  body.in-game .stage-body:has(.can-draw) > .dw-board-wrap{grid-column:1;grid-row:span 8}
-  body.in-game .stage-body:has(.can-draw) > .dw-board-wrap ~ *{grid-column:2}
-  body.in-game .stage-body:has(.can-draw) > .dw-tools{margin-top:0}
+/* Desenho em tela larga (Chromebook, notebook, monitor, tablet deitado): quadro à esquerda com a altura toda,
+   palavra, ferramentas e chutes na coluna da direita */
+@media (min-width:760px) and (min-aspect-ratio:5/4){
+  body.in-game .stage-body:has(> .dw-board-wrap){--bw:min(calc((var(--sbh) - 14px) * 4 / 3),calc(100% - 290px));display:grid;grid-template-columns:var(--bw) minmax(230px,320px);grid-auto-rows:min-content;column-gap:20px;row-gap:10px;align-content:start;justify-content:center}
+  body.in-game .stage-body:has(> .dw-board-wrap) > *{grid-column:2;margin-top:0!important}
+  body.in-game .stage-body:has(> .dw-board-wrap) > .dw-board-wrap{grid-column:1;grid-row:1 / span 30}
+  body.in-game .stage-body:has(> .dw-board-wrap) #dwBoard,body.in-game .stage-body:has(> .dw-board-wrap) #telBoard{width:100%;min-width:0}
+  body.in-game .stage-body:has(> .dw-board-wrap) .dw-word{text-align:left}
+  body.in-game .stage-body:has(> .dw-board-wrap) .dw-hint{justify-content:flex-start}
+  body.in-game .stage-body:has(> .dw-board-wrap) .verdict{text-align:left}
 }
-body.in-game .tm-row{grid-template-columns:repeat(5,clamp(34px,min(12vw,6.6vh),56px))}
-body.in-game .tm-k{height:clamp(38px,6.4vh,52px)}
-@media (max-height:780px){ body.in-game .postcard{width:min(100%,calc(28vh * 1.6))} body.in-game .choice{min-height:48px} }
+
+@media (max-height:780px){ body.in-game .choice{min-height:48px} }
+@media (max-width:600px) and (orientation:portrait){
+  body.in-game .topbar{display:none}
+  body.in-game.in-room #app{padding-top:max(6px,env(safe-area-inset-top))}
+  body.in-game .gt-snd{display:inline-grid;width:30px;height:30px}
+  body.in-game .gt-snd .ic{width:17px;height:17px}
+  body.in-game .sp-pair{max-width:calc((var(--sbh) - 50px) / 1.4)}
+  body.in-game .map-wrap{width:min(100%,calc((var(--sbh) - 130px) * 4 / 3))!important}
+  body.in-game .pc-card{padding:9px 14px;gap:10px;margin-bottom:8px;border-radius:16px}
+  body.in-game .pc-emoji{font-size:1.9rem}
+  body.in-game .pc-item{font-size:1rem;margin:0}
+  body.in-game .stage-body > .hint{font-size:.78rem}
+  /* Termo: sem a dica de texto (o teclado inteiro precisa aparecer) */
+  body.in-game .stage-body > .tm-board ~ .hint{display:none}
+  body.in-game .stage-body > .tm-board ~ .help-btn{min-height:34px;padding-block:4px}
+  /* Linha do tempo: itens e botão mais baixos para o botão de enviar aparecer */
+  body.in-game .stage-body:has(> #tlList) > *+*{margin-top:6px}
+  body.in-game .tl-main{min-height:36px;padding:5px 10px;font-size:.88rem;gap:8px}
+  body.in-game .tl-n{width:24px;height:24px}
+  body.in-game .stage-body > #tlList ~ .hint{display:none}
+  body.in-game .stage-body > #tlList ~ .btn{min-height:44px;margin-top:8px!important}
+  /* Batata quente: bomba menor para a ajuda caber */
+  body.in-game .bm-bomb{width:min(150px,38vw,max(70px,calc(var(--sbh) - 290px)))}
+}
 /* Celular em jogo: barra do host numa linha só, explicação recolhida e placar mais baixo */
 @media (max-width:600px){
+  body.in-game .topbar{padding-top:max(6px,env(safe-area-inset-top));padding-bottom:6px}
+  body.in-game .topbar .wordmark{display:none}
+  body.in-game .topbar .icon-btn{width:34px;height:34px}
+  body.in-game .room-chip{height:30px}
+  body.in-game.in-room #app{padding-top:6px;padding-bottom:6px}
+  body.in-game .screen.game{height:calc(100dvh - var(--top-h,50px) - 12px);min-height:380px}
+  body.in-game .game-top{margin-bottom:6px;row-gap:6px}
+  body.in-game .stage-head{gap:10px}
+  body.in-game .sh-icon{width:32px;height:32px}
+  body.in-game .sh-icon .ic{width:17px;height:17px}
+  body.in-game .sh-name{font-size:1rem}
+  body.in-game .stage-head .sh-sub{display:none}
+  body.in-game .sh-how{margin-top:4px;font-size:.78rem;-webkit-line-clamp:1!important}
+  body.in-game .stage-body{margin-top:8px}
+  body.in-game .stage-body>*+*{margin-top:10px}
+  body.in-game .strip{padding-top:6px;padding-bottom:6px}
+  body.in-game .strip .av-md{--s:28px!important}
+  body.in-game .sp-name{font-size:.68rem}
+  body.in-game .hostbar{margin-top:6px}
+  /* Desenho: palavra numa linha e ferramentas compactas que rolam para o lado */
+  body.in-game .dw-word{display:flex;align-items:baseline;justify-content:center;gap:8px;font-size:.85rem}
+  body.in-game .dw-word b{display:inline;margin:0;font-size:1.25rem}
+  body.in-game .dw-tools{padding:6px;gap:6px;border-radius:14px}
+  body.in-game .dw-row{flex-wrap:nowrap;justify-content:flex-start;overflow-x:auto;scrollbar-width:none;gap:5px;padding:1px}
+  body.in-game .dw-row::-webkit-scrollbar{display:none}
+  body.in-game .dw-row > *{flex:none}
+  body.in-game .dw-tool,body.in-game .dw-row .icon-btn{width:34px;height:34px;border-radius:10px}
+  body.in-game .dw-row .dw-sw{width:26px;height:26px}
+  body.in-game .dw-size-row{height:28px}
+  body.in-game .dw-size-dot{width:28px;height:28px}
+  body.in-game .dw-size-row input[type=range]{flex:1;min-width:120px}
   body.in-game .hb-label{display:none}
   body.in-game .hostbar{flex-wrap:nowrap;gap:6px;padding-right:58px}
   body.in-game .hostbar .btn{min-height:34px;padding:0 10px;font-size:.8rem;white-space:nowrap}
@@ -859,6 +967,14 @@ body.fx-shake #app{animation:fxShake .6s}
 .joker-btn small{font-weight:600;font-size:11px;color:var(--muted)}
 .joker-pill{width:max-content;max-width:100%;margin:0 auto 10px;padding:6px 14px;border-radius:999px;background:rgba(251,191,36,.18);border:1px solid rgba(251,191,36,.5);font-size:13px;font-weight:700;text-align:center}
 .sp-joker{position:absolute;top:-4px;left:-4px;font-size:16px}
+.sp-fire{position:absolute;top:-6px;right:-4px;padding:0 5px;border-radius:999px;background:linear-gradient(180deg,#F97316,#DC2626);color:#fff;font-size:10px;font-weight:900;line-height:16px;box-shadow:0 0 12px rgba(249,115,22,.7);animation:ultraPulse 1.2s ease-in-out infinite}
+.dw-choice{display:grid;gap:4px;justify-items:center}
+.dw-diff{display:inline-block;margin-left:6px;padding:1px 8px;border-radius:999px;font-size:.7rem;font-weight:800;letter-spacing:.02em;vertical-align:middle;text-transform:none}
+.dw-choice .dw-diff{margin:0}
+.dw-diff.d0{background:rgba(34,197,94,.18);color:#86EFAC}
+.dw-diff.d1{background:rgba(251,191,36,.18);color:#FDE68A}
+.dw-diff.d2{background:rgba(239,68,68,.2);color:#FCA5A5}
+.stop-hard{margin:6px auto 0;width:max-content;max-width:100%;padding:3px 12px;border-radius:999px;background:rgba(249,115,22,.18);border:1px solid rgba(249,115,22,.5);color:#FDBA74;font-size:.82rem;font-weight:800}
 .sp{position:relative}
 .cry-bubble{display:flex;align-items:center;gap:10px;width:max-content;max-width:100%;margin:12px auto 0;padding:10px 16px;border-radius:18px 18px 18px 4px;background:linear-gradient(120deg,rgba(99,102,241,.3),rgba(236,72,153,.3));border:1px solid rgba(236,72,153,.4);font-size:15px;animation:evIn .5s cubic-bezier(.2,1.4,.4,1)}
 /* Uma linha só: com sala cheia, rola para o lado em vez de empurrar o jogo para baixo */
@@ -969,6 +1085,28 @@ body.fx-shake #app{animation:fxShake .6s}
 .ev-pill{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px;margin:0 auto 10px;padding:8px 14px;width:max-content;max-width:100%;border-radius:999px;background:linear-gradient(90deg,rgba(168,85,247,.25),rgba(236,72,153,.25));border:1px solid rgba(236,72,153,.45);font-size:14px;text-align:center;animation:evIn .5s cubic-bezier(.2,1.4,.4,1)}
 .ev-pill b{margin-right:4px}
 .ev-pill.is-final{background:linear-gradient(90deg,rgba(249,115,22,.28),rgba(251,191,36,.28));border-color:rgba(251,191,36,.55)}
+.ready-next{display:flex;align-items:center;justify-content:center;gap:10px;margin:12px auto 0;padding:8px 18px;border-radius:999px;background:color-mix(in srgb,var(--g) 22%,var(--bg-2));border:1px solid color-mix(in srgb,var(--g) 55%,transparent);font-weight:800;transition:transform .12s,background .15s}
+.ready-next:hover:not(:disabled){transform:translateY(-1px);background:color-mix(in srgb,var(--g) 32%,var(--bg-2))}
+.ready-next small{padding:1px 8px;border-radius:999px;background:rgba(0,0,0,.35);font-size:.75rem;color:var(--muted)}
+.ready-next.is-on{opacity:.8;cursor:default}
+.tm-pill{display:inline-flex;align-items:center;margin-left:6px;padding:1px 8px;border-radius:999px;border:1px solid var(--line-2);font-size:.72rem;font-weight:700;color:var(--muted)}
+.ultra-pill{display:inline-flex;align-items:center;gap:4px;margin-left:6px;padding:1px 8px;border-radius:999px;background:rgba(239,68,68,.18);border:1px solid rgba(239,68,68,.6);color:#FCA5A5;font-size:.72rem;font-weight:900;letter-spacing:.04em;animation:ultraPulse 1.4s ease-in-out infinite}
+@keyframes ultraPulse{50%{box-shadow:0 0 14px rgba(239,68,68,.6)}}
+.ultra-row span{display:grid}
+.ultra-row small{font-size:.75rem;color:var(--muted)}
+.ultra-btn{background:linear-gradient(90deg,#DC2626,#F97316);border-color:transparent;color:#fff}
+.ultra-card{width:min(420px,100%);border-color:rgba(239,68,68,.55);box-shadow:0 0 60px -10px rgba(239,68,68,.55)}
+.ultra-card.step-2{background:repeating-linear-gradient(-45deg,rgba(250,204,21,.06) 0 14px,transparent 14px 28px),var(--surface-solid)}
+.ultra-e{font-size:3.4rem;line-height:1;animation:tourPop .45s cubic-bezier(.3,1.6,.5,1)}
+.ultra-yes{background:linear-gradient(90deg,#DC2626,#F97316);border-color:transparent;color:#fff}
+.ultra-in{text-align:center;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+.ultra-card.nope{animation:msgShake .45s}
+html.ultra body::before{filter:hue-rotate(-60deg) saturate(1.6)}
+.stage-pills{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px;margin-top:10px}
+.stage-pills > *{margin:0!important}
+.stage-pills .joker-btn{flex-direction:row;gap:6px;padding:6px 14px;border-radius:999px;font-size:13px}
+.stage-pills .ev-pill{padding:6px 12px;font-size:.85rem}
+.stage-pills .ev-note{flex-basis:100%}
 .ev-note{margin:10px auto 0;text-align:center;font-weight:700;color:#FBBF24}
 @keyframes evIn{from{transform:scale(.6);opacity:0}to{transform:none;opacity:1}}
 .tv .ev-pill{font-size:22px;padding:12px 22px}
@@ -1368,6 +1506,11 @@ body.fx-spin #app{animation:fxSpin 1.2s cubic-bezier(.5,0,.3,1)}
 .modal-card h2{font-size:1.25rem;font-weight:800}
 /* Tutorial rápido */
 .tour-link{font-size:.86rem;padding:4px 2px}
+.hero-links{display:flex;flex-wrap:wrap;gap:4px 16px}
+.ins-steps{display:grid;gap:8px;padding-left:20px;list-style:decimal;text-align:left;color:var(--muted)}
+.ins-steps b{color:var(--ink)}
+/* Instalado como app: respeita a área do relógio e da câmera do celular */
+@media (display-mode:standalone){ .topbar{padding-top:max(12px,env(safe-area-inset-top))} }
 .home-hero .tour-link{margin-top:10px}
 .tour-card{position:relative;width:min(440px,100%);gap:14px;padding:28px 24px 22px;touch-action:pan-y;user-select:none;-webkit-user-select:none}
 .tour-x{position:absolute;top:10px;right:10px}
@@ -1744,6 +1887,8 @@ const GEO_Q = [
 // A primeira opção de cada item é a correta; as opções são embaralhadas a cada rodada.
 
 const STOP_CATS = ['Nome','Animal','Fruta','Objeto','País','Profissão'];
+// Letras com menos palavras: valem pontos em dobro.
+const STOP_HARD = ['J', 'V', 'G'];
 const STOP_BOT = {
   A: ['Ana','Abelha','Abacaxi','Agulha','Argentina','Advogado'],
   B: ['Bruno','Baleia','Banana','Bola','Brasil','Bombeiro'],
@@ -2095,6 +2240,9 @@ function enginePhase(s, name) {
   if (g.deadline && ph.perP) { const extra = Math.min(40, ph.perP * Math.max(0, (g.roster || []).length - 5)); g.dur += extra; g.deadline += extra * 1000; }
   if (g.deadline && rushOn(s, ph)) { g.dur *= RUSH; g.deadline = g.phaseStart + g.dur * 1000; }
   if (g.deadline && ph.rush !== false && cfg(s, 'timeMult') !== 1) { g.dur *= cfg(s, 'timeMult'); g.deadline = g.phaseStart + g.dur * 1000; }
+  // Rush + rodada relâmpago + "tempo das etapas" juntos deixavam uma pergunta com uns 3 s: agora há um piso.
+  if (g.deadline && ph.dur) { const floor = Math.min(ph.dur, name === 'reveal' ? 5 : 8); if (g.dur < floor) { g.dur = floor; g.deadline = g.phaseStart + floor * 1000; } }
+  g.rready = {};
   if (name === 'reveal') {
     if (modeOf(s) === 'apostas') settleBets(s);
     roundRevealExtras(s);
@@ -2487,6 +2635,7 @@ Games.stop = {
         });
       });
       d.result = res;
+      if (STOP_HARD.includes(d.L)) Object.keys(deltas).forEach(k => { deltas[k] *= 2; });
       updateScores(s, deltas);
     } },
   },
@@ -2552,7 +2701,7 @@ Games.stop = {
       const fields = d.cats.map((ci, k) => `<label class="stop-field"><span class="sf-num" aria-hidden="true">${k + 1}.</span><span class="sr-only">${STOP_CATS[ci]}</span>
         <input class="input" data-keep="stop-${g.round}-${k}" data-stop="${k}" ${k === 0 ? 'data-autofocus' : ''} autocomplete="off" autocapitalize="words" spellcheck="false" maxlength="24" placeholder="Palavra…" ${locked ? 'disabled' : ''}>
         <span class="sf-cat" aria-hidden="true">${STOP_CATS[ci]}</span><span class="sf-ok" aria-hidden="true">${icon('check')}</span></label>`).join('');
-      return `<div class="stop-letter" role="img" aria-label="Letra ${d.L}">${d.L}</div>
+      return `<div class="stop-letter" role="img" aria-label="Letra ${d.L}">${d.L}</div>${STOP_HARD.includes(d.L) ? '<p class="stop-hard">🔥 Letra difícil: pontos em dobro</p>' : ''}
         <p class="hint center">Digite 3 palavras que começam com <b>${d.L}</b>, uma para cada categoria. O botão STOP libera quando as três estiverem certas.</p>
         <div class="stop-fields" data-letter="${d.L}">${fields}</div>
         ${g.phase === 'fill'
@@ -2829,6 +2978,11 @@ const dwFeedHTML = (d, s) => d.feed.slice(-12).reverse().map(f => f.ok
   || '<li class="dw-empty">Os chutes aparecem aqui.</li>';
 const dwGot = () => `<p class="dw-got" id="dwGuessBox">${icon('check')} Você acertou! Agora é torcer pela galera.</p>`;
 
+// Dificuldade das 3 opções: a palavra mais curta é a fácil, a mais longa é a difícil (e vale mais).
+const DW_DIFF = [{ n: 'Fácil', m: 1, t: '1' }, { n: 'Média', m: 1.5, t: '1,5' }, { n: 'Difícil', m: 2, t: '2' }];
+const dwSort = arr => arr.sort((a, b) => a.replace(/\s/g, '').length - b.replace(/\s/g, '').length);
+const dwDiff = d => DW_DIFF[Math.max(0, d.choices.indexOf(d.word))] || DW_DIFF[0];
+const dwDiffTag = d => { const i = Math.max(0, d.choices.indexOf(d.word)); return i ? `<span class="dw-diff d${i}">${DW_DIFF[i].n} ×${DW_DIFF[i].t}</span>` : ''; };
 Games.desenho = {
   id: 'desenho', name: 'Desenha Aí', tag: 'Desenhe e adivinhe', icon: 'brush', color: '#8B5CF6', lip: '#6D28D9', min: 2,
   how: 'Um jogador desenha a palavra secreta e o resto tenta adivinhar digitando. Quem acerta primeiro ganha mais, e quem desenha ganha um ponto por acerto.',
@@ -2839,6 +2993,7 @@ Games.desenho = {
     const choices = [];
     const pool = drawPool(s), nc = (custom(s).words || []).length;
     for (let i = 0; choices.length < 3 && i < 30; i++) { const w = pickFrom(g, pool, nc); if (!choices.includes(w) || i > 20) choices.push(w); }
+    dwSort(choices);
     g.data = { drawer, choices, word: null, strokes: [], redo: [], guessed: {}, order: [], feed: [], rerolled: false };
   },
   phases: {
@@ -2850,6 +3005,8 @@ Games.desenho = {
       const d = g.data, deltas = {};
       d.order.forEach((pid, k) => add(deltas, pid, Math.max(1, 3 - k)));
       if (d.order.length) { add(deltas, d.drawer, Math.min(3, d.order.length)); matchStat(s, d.drawer, 'drawn', d.order.length); }
+      const m = dwDiff(d).m;
+      if (m !== 1) Object.keys(deltas).forEach(k => { deltas[k] = Math.max(1, Math.round(deltas[k] * m)); });
       updateScores(s, deltas);
     } },
   },
@@ -2859,7 +3016,7 @@ Games.desenho = {
     if (g.phase === 'pick' && pid === d.drawer) {
       if (a.type === 'choose' && d.choices.includes(a.word)) { d.word = a.word; return true; }
       // Uma troca grátis das opções por rodada.
-      if (a.type === 'reroll' && !d.rerolled && !d.word) { d.rerolled = true; const pool = drawPool(s); d.choices = [0, 1, 2].map(() => pool[drawItem(g, pool)]); return true; }
+      if (a.type === 'reroll' && !d.rerolled && !d.word) { d.rerolled = true; const pool = drawPool(s); d.choices = dwSort([0, 1, 2].map(() => pool[drawItem(g, pool)])); return true; }
       return false;
     }
     if (g.phase !== 'draw') return false;
@@ -2890,17 +3047,17 @@ Games.desenho = {
     if (g.phase === 'pick') {
       if (!drawer) return waitCard(`${avatar(s.players[d.drawer], 'lg')}<br>${esc(nameOf(s, d.drawer))} vai desenhar`, 'Escolhendo a palavra');
       return `<h2 class="ask center">Escolha o que desenhar</h2>
-        <div class="dw-choices">${d.choices.map(w => `<button class="dw-choice ${d.word === w ? 'on' : ''}" data-act="g:choose" data-v="${esc(w)}" ${d.word ? 'disabled' : ''}>${esc(w)}</button>`).join('')}</div>
+        <div class="dw-choices">${d.choices.map((w, i) => `<button class="dw-choice ${d.word === w ? 'on' : ''}" data-act="g:choose" data-v="${esc(w)}" ${d.word ? 'disabled' : ''}>${esc(w)}<small class="dw-diff d${i}">${DW_DIFF[i].n} ×${DW_DIFF[i].t}</small></button>`).join('')}</div>
         <p class="hint center">Ninguém mais vê essas opções.</p>
         ${d.rerolled || d.word ? '' : `<button class="linkish quick" data-act="g:reroll" style="display:block;margin:0 auto">${icon('shuffle')}Trocar as opções</button>`}`;
     }
     const board = `<div class="dw-board-wrap"><canvas id="dwBoard" class="dw-board ${drawer && g.phase === 'draw' ? 'can-draw' : ''}" width="1000" height="750" role="img" aria-label="Quadro de desenho"></canvas></div>`;
     if (g.phase === 'reveal') {
       const solvers = d.order.map((pid, k) => `<li>${avatar(s.players[pid], 'sm')}<b>${esc(nameOf(s, pid))}</b><span>${k + 1}º</span></li>`).join('');
-      return `<p class="verdict center">Era ${esc(d.word)}</p>${board}
+      return `<p class="verdict center">Era ${esc(d.word)} ${dwDiffTag(d)}</p>${board}
         ${solvers ? `<ul class="dw-solvers">${solvers}</ul>` : '<p class="hint center">Ninguém acertou dessa vez.</p>'}`;
     }
-    const top = drawer ? `<p class="dw-word">Desenhe: <b>${esc(d.word)}</b></p>` : `<div id="dwTop">${dwMask(d.word, (d.hint || {})[me])}</div>`;
+    const top = drawer ? `<p class="dw-word">Desenhe: <b>${esc(d.word)}</b>${dwDiffTag(d)}</p>` : `<div id="dwTop">${dwMask(d.word, (d.hint || {})[me])}</div>`;
     let guess = '';
     if (!drawer && can) guess = me in d.guessed ? dwGot()
       : `<form class="dw-guess" id="dwGuessBox" data-form="g:guess" novalidate><label class="sr-only" for="dwGuess">Seu chute</label>
@@ -4452,6 +4609,20 @@ const MAP_Q = [
   { t: 'Estação brasileira na Antártida', e: '🐧', lat: -62.084, lon: -58.392 }, { t: 'Nairóbi', e: '🦒', lat: -1.286, lon: 36.817 },
   { t: 'Singapura', e: '🦁', lat: 1.352, lon: 103.82 }, { t: 'Torre de Belém, em Lisboa', e: '⚓', lat: 38.692, lon: -9.216 },
   { t: 'Las Vegas', e: '🎰', lat: 36.17, lon: -115.14 }, { t: 'Bali', e: '🏝️', lat: -8.34, lon: 115.092 },
+  { t: 'Lençóis Maranhenses', e: '🏜️', lat: -2.486, lon: -43.128 }, { t: 'Pelourinho, em Salvador', e: '🥁', lat: -12.972, lon: -38.508 },
+  { t: 'Congresso Nacional, em Brasília', e: '🏛️', lat: -15.799, lon: -47.864 }, { t: 'Ouro Preto', e: '⛪', lat: -20.386, lon: -43.503 },
+  { t: 'Bonito, no Mato Grosso do Sul', e: '🐠', lat: -21.127, lon: -56.482 }, { t: 'Jericoacoara', e: '🏄', lat: -2.795, lon: -40.513 },
+  { t: 'Gramado', e: '🍫', lat: -29.379, lon: -50.876 }, { t: 'Chapada Diamantina', e: '⛰️', lat: -12.56, lon: -41.39 },
+  { t: 'Pantanal (Poconé)', e: '🐊', lat: -16.26, lon: -56.62 }, { t: 'Ponte Estaiada, em São Paulo', e: '🌉', lat: -23.611, lon: -46.698 },
+  { t: 'Grand Canyon', e: '🏜️', lat: 36.107, lon: -112.113 }, { t: 'Stonehenge', e: '🗿', lat: 51.179, lon: -1.826 },
+  { t: 'Sagrada Família, em Barcelona', e: '⛪', lat: 41.404, lon: 2.174 }, { t: 'Angkor Wat', e: '🛕', lat: 13.412, lon: 103.867 },
+  { t: 'Ponte Golden Gate', e: '🌉', lat: 37.819, lon: -122.478 }, { t: 'Cataratas Vitória', e: '💧', lat: -17.924, lon: 25.857 },
+  { t: 'Monte Kilimanjaro', e: '🏔️', lat: -3.067, lon: 37.356 }, { t: 'Uluru', e: '🪨', lat: -25.344, lon: 131.036 },
+  { t: 'Veneza', e: '🛶', lat: 45.44, lon: 12.316 }, { t: 'Salar de Uyuni', e: '🧂', lat: -20.134, lon: -67.489 },
+  { t: 'Times Square', e: '🌃', lat: 40.758, lon: -73.986 }, { t: 'Ilhas Galápagos', e: '🦎', lat: -0.953, lon: -90.966 },
+  { t: 'Seul', e: '🏯', lat: 37.566, lon: 126.978 }, { t: 'Marrakech', e: '🐪', lat: 31.629, lon: -7.981 },
+  { t: 'Torres del Paine', e: '🏔️', lat: -50.942, lon: -73.406 }, { t: 'Havana', e: '🚗', lat: 23.113, lon: -82.366 },
+  { t: 'Amsterdã', e: '🌷', lat: 52.367, lon: 4.904 }, { t: 'Lago Baikal', e: '🧊', lat: 53.5, lon: 108 },
 ];
 const mapKm = (a, b) => {
   const R = 6371, r = Math.PI / 180, dLat = (b.lat - a.lat) * r, dLon = (b.lon - a.lon) * r;
@@ -4762,7 +4933,13 @@ Games.mapa = {
     guess: { label: 'Marque no mapa', dur: 35, bot: [4, 22], next: 'reveal', allIn: (g, s) => active(g, s).every(id => id in g.data.guesses) },
     reveal: { label: 'Era aqui', dur: 18, enter(g, s) {
       const q = MAP_Q[g.data.qi], deltas = {};
-      Object.entries(g.data.guesses).forEach(([pid, p]) => add(deltas, pid, mapPts(mapKm(p, q))));
+      const target = mapWhere(q.lat, q.lon).country;
+      g.data.sameCountry = {};
+      Object.entries(g.data.guesses).forEach(([pid, p]) => {
+        add(deltas, pid, mapPts(mapKm(p, q)));
+        // 🎯 Marcou dentro do país certo: +1 (precisa dos contornos já baixados no aparelho do host).
+        if (target && mapWhere(p.lat, p.lon).country === target) { add(deltas, pid, 1); g.data.sameCountry[pid] = 1; }
+      });
       updateScores(s, deltas);
     } },
   },
@@ -4785,7 +4962,7 @@ Games.mapa = {
       ${!MapGeo.c110 && !MapGeo.failed ? '<p class="map-loading">Carregando o mapa…</p>' : ''}</div>`;
     if (g.phase === 'guess') return card + board + `<div class="map-foot">${mapFoot(g, s, me)}</div>` + (MapGeo.failed ? '<p class="hint center">Não deu para baixar o mapa. Use as linhas: o equador fica no meio.</p>' : '');
     const rows = Object.entries(d.guesses).map(([pid, p]) => ({ pid, km: mapKm(p, q) })).sort((a, b) => a.km - b.km);
-    return card + board + `<ul class="res-list">${rows.map(({ pid, km }) => `<li class="res-row">${avatar(s.players[pid], 'sm')}<span class="res-who"><span class="res-name">${esc(nameOf(s, pid))}</span></span>
+    return card + board + `<ul class="res-list">${rows.map(({ pid, km }) => `<li class="res-row">${avatar(s.players[pid], 'sm')}<span class="res-who"><span class="res-name">${esc(nameOf(s, pid))}</span>${(d.sameCountry || {})[pid] ? '<span class="tag tag-good">🎯 país certo +1</span>' : ''}</span>
       <span class="res-val">${mapKmText(km)}</span>${deltaBadge(g.roundDelta[pid])}</li>`).join('') || '<li class="hint">Ninguém marcou.</li>'}</ul>`;
   },
   // Enquanto a galera marca, só o rodapé muda: o mapa (e o zoom) fica como está.
@@ -5793,6 +5970,9 @@ const EVENTS = {
   roubo: { e: '🦝', name: 'Roubo', desc: 'quem vencer a rodada rouba 1 ponto do líder' },
   dobro: { e: '✨', name: 'Rodada dourada', desc: 'todo mundo ganha pontos em dobro' },
   chuva: { e: '🌧️', name: 'Chuva de pontos', desc: 'quem pontuar ganha +1 de brinde' },
+  azarao: { e: '🐢', name: 'Vez do azarão', desc: 'quem está em último ganha pontos em triplo' },
+  robin: { e: '🏹', name: 'Robin Hood', desc: 'no fim da rodada, o líder dá 1 ponto para o último' },
+  trevo: { e: '🍀', name: 'Trevo da sorte', desc: 'alguém sorteado ganha +3 no fim da rodada' },
 };
 function roundSetup(s, g) {
   g.mult = s.settings.finalDouble && g.total > 1 && g.round === g.total ? 2 : 1;
@@ -5800,6 +5980,7 @@ function roundSetup(s, g) {
   if (s.settings.events && Math.random() < cfg(s, 'eventChance') / 100) {
     const k = pick(Object.keys(EVENTS));
     g.ev = { k, ...EVENTS[k] };
+    if (k === 'azarao') g.evLast = playerIds(s).filter(id => s.players[id]).sort((a, b) => s.players[a].score - s.players[b].score)[0] || null;
     if (k === 'invertido') { const ids = playerIds(s).filter(id => s.players[id]).sort((a, b) => s.players[a].score - s.players[b].score); g.evBottom = ids.slice(0, Math.ceil(ids.length / 2)); }
   }
 }
@@ -5808,16 +5989,38 @@ function scoreMult(g, pid) {
   let m = g.mult || 1;
   if (g.ev?.k === 'dobro') m *= 2;
   if (g.ev?.k === 'invertido' && (g.evBottom || []).includes(pid)) m *= 2;
+  if (g.ev?.k === 'azarao' && g.evLast === pid) m *= 3;
   if ((g.jokers || {})[pid]) m *= 2;
   return m;
 }
 function roundRevealExtras(s) {
-  const g = s.game, deltas = Object.entries(g.roundDelta || {}).filter(([id, n]) => n > 0 && s.players[id]);
+  const g = s.game;
+  const st = s.match.streak || (s.match.streak = {}), hot = [];
+  g.roster.filter(id => s.players[id]).forEach(id => {
+    const before = st[id] || 0;
+    st[id] = (g.roundDelta || {})[id] > 0 ? before + 1 : 0;
+    if (st[id] >= 3) hot.push(id);
+    else if (before >= 3) pushChat(s, { sys: true, text: `🧯 O fogo de ${s.players[id].name} apagou depois de ${before} rodadas seguidas.` });
+  });
+  if (hot.length) {
+    g.noMult = true; updateScores(s, Object.fromEntries(hot.map(id => [id, 1]))); g.noMult = false;
+    hot.filter(id => st[id] === 3).forEach(id => pushChat(s, { sys: true, text: `🔥 ${s.players[id].name} está EM CHAMAS! +1 por rodada enquanto continuar pontuando.` }));
+  }
+  const deltas = Object.entries(g.roundDelta || {}).filter(([id, n]) => n > 0 && s.players[id]);
   const best = Math.max(0, ...deltas.map(e => e[1]));
   deltas.filter(e => e[1] === best).forEach(([id]) => matchStat(s, id, 'roundWins'));
   if (!g.ev) return;
   g.noMult = true;
   if (g.ev.k === 'chuva' && deltas.length) { updateScores(s, Object.fromEntries(deltas.map(([id]) => [id, 1]))); g.evNote = `Chuva de pontos: ${plural(deltas.length, 'pessoa ganhou', 'pessoas ganharam')} +1.`; }
+  if (g.ev.k === 'robin') {
+    const ids = playerIds(s).filter(id => s.players[id]).sort((a, b) => s.players[b].score - s.players[a].score);
+    const rich = ids[0], poor = ids[ids.length - 1];
+    if (rich && poor && rich !== poor && s.players[rich].score > 0) { updateScores(s, { [rich]: -1, [poor]: 1 }); g.evNote = `🏹 ${s.players[rich].name} deu 1 ponto para ${s.players[poor].name}.`; }
+  }
+  if (g.ev.k === 'trevo') {
+    const lucky = pick(g.roster.filter(id => s.players[id]));
+    if (lucky) { updateScores(s, { [lucky]: 3 }); g.evNote = `🍀 O trevo escolheu ${s.players[lucky].name}: +3!`; }
+  }
   if (g.ev.k === 'roubo' && best > 0) {
     const thief = deltas.find(e => e[1] === best)[0];
     const leader = playerIds(s).filter(id => s.players[id] && id !== thief).sort((a, b) => s.players[b].score - s.players[a].score)[0];
@@ -5829,6 +6032,8 @@ function roundRevealExtras(s) {
   }
   g.noMult = false;
 }
+// Avisos do topo da rodada numa fileira só (antes cada um ocupava uma linha e espremia o jogo).
+const stagePills = (...parts) => { const html = parts.join(''); return html ? `<div class="stage-pills">${html}</div>` : ''; };
 function eventPillsHTML(g) {
   return `${g.mult > 1 ? '<p class="ev-pill is-final"><span>🔥</span><b>Rodada final</b>pontos em dobro</p>' : ''}${g.ev ? `<p class="ev-pill"><span>${g.ev.e}</span><b>${g.ev.name}</b>${g.ev.desc}</p>` : ''}${g.phase === 'reveal' && g.evNote ? `<p class="ev-note">${esc(g.evNote)}</p>` : ''}`;
 }
@@ -6207,6 +6412,13 @@ function hostHandle(from, a) {
     hostFx(s, from, a);
   } else if (a.type === 'pollVote') {
     if (s.poll && Number.isInteger(a.i) && a.i >= 0 && a.i < s.poll.opts.length) { s.poll.votes[from] = a.i; changed = true; }
+  } else if (a.type === 'revealReady') {
+    const g = s.game;
+    if (g && g.phase === 'reveal' && inRoster(g, from) && !(g.rready || {})[from]) {
+      (g.rready = g.rready || {})[from] = 1;
+      changed = true;
+      if (revealNeed(s, g).every(id => g.rready[id])) setTimeout(() => { const r = Store.room; if (r?.game === g && g.phase === 'reveal') { engineAdvance(r); commit(); } }, 500);
+    }
   } else if (a.type === 'lobbyReady') {
     if (s.screen === 'lobby') { p.ready = !p.ready; changed = true; }
   } else if (a.type === 'suggest') {
@@ -6315,6 +6527,15 @@ function hostCommand(s, a) {
     case 'host:custom':
       s.custom = parseCustom(a);
       return true;
+    case 'host:ultra':
+      s.settings.ultra = !!a.on;
+      pushChat(s, { sys: true, text: a.on ? '☢️ OS BOTS ULTRA CAÓTICOS FORAM LIBERADOS. Boa sorte a todos.' : '😌 Os bots foram acalmados… por enquanto.' });
+      if (a.on) {
+        const rain = { kind: 'fx', pid: s.hostId, t: 'rain', e: '☢️' }, flash = { kind: 'fx', pid: s.hostId, t: 'flash' };
+        FxRT.lastRain = now(); Transport.send(rain); runFx(rain);
+        setTimeout(() => { Transport.send(flash); runFx(flash); }, 500);
+      }
+      return true;
     case 'host:preset': {
       const p = PRESETS[a.key];
       if (!p) return false;
@@ -6396,7 +6617,7 @@ function hostCommand(s, a) {
     }
     case 'host:newMatch':
       Object.values(s.players).forEach(p => { p.score = 0; });
-      s.match.played = []; s.match.byGame = {}; s.match.stats = {}; s.match.moments = []; s.match.jokers = {}; s.warm = {}; s.match.id = uid(6); s.terr = null; s.vote = null; s.game = null; s.screen = 'lobby';
+      s.match.played = []; s.match.byGame = {}; s.match.stats = {}; s.match.moments = []; s.match.jokers = {}; s.match.streak = {}; s.warm = {}; s.match.id = uid(6); s.terr = null; s.vote = null; s.game = null; s.screen = 'lobby';
       return true;
   }
   return false;
@@ -6481,7 +6702,7 @@ function hostTick() {
   botTune(s);
   // Bots de salas antigas chamados "Bot", "Bot 2"… ganham um nome de verdade.
   Object.values(s.players).forEach(p => { if (p.isBot && /^Bot( \d+)?$/.test(p.name)) { p.name = botName(s); changed = true; } });
-  botsAmbient(s);
+  if (botsAmbient(s)) changed = true;
   if (s.poll && now() > s.poll.until) { closePoll(s); changed = true; }
   if (goalCheck(s)) { commit(); return; }
   if (g && g.phase === 'final' && (s.settings.auto || (s.playlist || []).length)) {
@@ -6691,6 +6912,7 @@ function render() {
   // No jogo, a tela inteira cabe na janela: só a área do meio rola (quando precisa).
   document.body.classList.toggle('in-game', !!(s && Store.me && s.screen === 'game' && s.game && s.game.phase !== 'final'));
   document.documentElement.classList.toggle('in-room', !!(s && Store.me));
+  document.documentElement.classList.toggle('ultra', !!(s && Store.me && s.settings.ultra));
   measureTop();
   renderChat();
   renderTop();
@@ -6774,7 +6996,22 @@ function calmRender(root) {
   clearTimeout(calmRender.t);
   calmRender.t = setTimeout(() => html.classList.remove('calm'), 300);
 }
+// Altura real da área do jogo: quadros, mapa e tabuleiros se ajustam a ela (antes era uma estimativa fixa
+// que errava em celulares e Chromebooks: sobrava espaço ou faltava e tinha que rolar).
+const StageSize = { ro: null, el: null };
+function measureStage() {
+  const sb = $('.stage-body');
+  if (!sb) return;
+  const set = () => { const h = sb.clientHeight, w = sb.clientWidth; if (h) { document.documentElement.style.setProperty('--sb-h', h + 'px'); document.documentElement.style.setProperty('--sb-w', w + 'px'); } };
+  set();
+  if (StageSize.el === sb || !window.ResizeObserver) return;
+  StageSize.ro?.disconnect();
+  StageSize.el = sb;
+  StageSize.ro = new ResizeObserver(set);
+  StageSize.ro.observe(sb);
+}
 function afterRender(s) {
+  measureStage();
   syncPinSlots();
   $$('canvas[data-tel]:not([data-painted])').forEach(cv => { cv.dataset.painted = '1'; try { padPaint(cv, JSON.parse(cv.dataset.tel) || []); } catch {} });
   if (s?.screen === 'podium') MyStats.record(s);
@@ -6900,7 +7137,7 @@ function viewHome() {
     <div class="home-hero">
       <h1 class="hero-title"><span>Abra a caixa.</span><span class="accent">Chame a galera.</span></h1>
       <p class="lede">${invite ? `Você foi chamado para a sala ${invite}. Escolha um apelido e entre.` : GAME_ORDER.length + ' jogos. 1 sala. Quem será o maior? Crie uma sala ou entre com o código que um amigo te passou.'}</p>
-      <button type="button" class="linkish tour-link" data-act="tour">${icon('question')}Como jogar?</button>
+      <span class="hero-links"><button type="button" class="linkish tour-link" data-act="tour">${icon('question')}Como jogar?</button>${installLinkHTML()}</span>
     </div>
     <div class="home-art"><img class="logo-art" src="${LOGO_SRC}" width="320" height="320" alt="Logo do PlayBox: uma caixa de presente abrindo com controle, estrela e emoji"></div>
 
@@ -7001,7 +7238,7 @@ function viewLobby(s) {
     ${toggle('zoeira', 'smile', 'Zoeira liberada', 'Arremessos, buzina e grito aparecem na tela de todo mundo.', set.zoeira !== false)}
     ${toggle('joker', 'coin', 'Coringa', 'Cada jogador pode dobrar os pontos de uma rodada por partida.', set.joker !== false)}
     ${toggle('tv', 'tv', 'Modo telão nesta tela', 'Deixa tudo grande, para mostrar na TV. Só neste aparelho.', !!Store.local.tvView, 'tvView')}</div></div></section>${customizePanelHTML(s)}${contentPanelHTML(s)}`
-    : `<p class="set-chips"><span class="tag">${icon(MODES[mode].icon)}${MODES[mode].name}</span>${presetOf(s) && presetOf(s) !== 'padrao' ? `<span class="tag">${PRESETS[presetOf(s)].e} ${PRESETS[presetOf(s)].name}</span>` : ''}${set.rush ? `<span class="tag tag-rush">${icon('bolt')}Modo Rush</span>` : ''}${set.auto ? '<span class="tag">Jogos em sequência</span>' : ''}${set.locked ? '<span class="tag">Sala trancada</span>' : ''}</p>`;
+    : `<p class="set-chips"><span class="tag">${icon(MODES[mode].icon)}${MODES[mode].name}</span>${presetOf(s) && presetOf(s) !== 'padrao' ? `<span class="tag">${PRESETS[presetOf(s)].e} ${PRESETS[presetOf(s)].name}</span>` : ''}${set.rush ? `<span class="tag tag-rush">${icon('bolt')}Modo Rush</span>` : ''}${set.ultra ? '<span class="tag ultra-pill">☢️ Bots ULTRA caóticos</span>' : ''}${set.auto ? '<span class="tag">Jogos em sequência</span>' : ''}${set.locked ? '<span class="tag">Sala trancada</span>' : ''}</p>`;
   const audPanel = aud.length || myRole() === 'spectator' ? `<section class="panel" aria-labelledby="auTitle"><h2 class="panel-title" id="auTitle">Plateia (${aud.length})</h2>
     ${myRole() === 'spectator' ? '<p class="hint">Você está na plateia: assiste, conversa, reage e dá o prêmio do público no fim de cada rodada.</p>' : ''}
     <ul class="aud-list">${aud.map(id => { const p = s.players[id];
@@ -7078,23 +7315,21 @@ function viewGame(s) {
   return `<section class="screen game ${rush ? 'is-rush' : ''}" style="${gameVars(mod)}">
     <div class="game-top ${showTimer ? 'timer' : ''} ${showTimer && left < 5000 ? 'low' : ''}" ${timerAttrs}>
       ${role === 'tv' ? '<span></span>' : `<button class="icon-btn" data-act="${host ? 'toLobby' : 'leave'}" aria-label="${host ? 'Voltar ao lobby' : 'Sair da partida'}">${icon('back')}</button>`}
-      <span class="gt-round">Rodada ${g.round}/${g.total}${rush ? `<span class="rush-pill">${icon('bolt')}Rush</span>` : ''}${teamPill}</span>
-      <span class="gt-time">${showTimer ? `${icon('clock')}<span class="timer-num">${Math.ceil(left / 1000)}s</span>` : ph.hideTimer ? `${icon('clock')}<span>???</span>` : ''}</span>
+      <span class="gt-round">Rodada ${g.round}/${g.total}${rush ? `<span class="rush-pill">${icon('bolt')}Rush</span>` : g.ev?.k === 'relampago' ? `<span class="rush-pill" title="Evento surpresa: metade do tempo">${icon('bolt')}Relâmpago</span>` : ''}${s.settings.ultra ? '<span class="ultra-pill" title="Bots ULTRA caóticos ligados">☢️ ULTRA</span>' : ''}${cfg(s, 'timeMult') !== 1 ? `<span class="tm-pill" title="Tempo das etapas ajustado pelo host">⏱ ${String(cfg(s, 'timeMult')).replace('.', ',')}×</span>` : ''}${teamPill}</span>
+      <span class="gt-time"><button class="icon-btn gt-snd" data-act="sound" aria-label="${Sound.on ? 'Desligar os sons' : 'Ligar os sons'}">${icon(Sound.on ? 'volume' : 'mute')}</button>${showTimer ? `${icon('clock')}<span class="timer-num">${Math.ceil(left / 1000)}s</span>` : ph.hideTimer ? `${icon('clock')}<span>???</span>` : ''}</span>
       <div class="timer-track" role="progressbar" aria-label="Tempo restante"><div class="timer-fill"></div></div>
     </div>
     ${watcher && role !== 'tv' ? `<p class="watch-pill">${icon('eye')}${host ? 'Você está só apresentando' : 'Você está na plateia'}</p>` : ''}
     <div class="stage">
       <header class="stage-head"><span class="sh-icon">${gameIcon(mod)}</span>
         <div><h1 class="sh-name">${mod.name}</h1><p class="sh-sub">${ph.label}</p></div></header>
-      ${firstStep && g.surprise ? `<p class="surprise-pill">${icon('shuffle')}Jogo surpresa!</p>` : ''}
-      ${firstStep && g.voted ? `<p class="surprise-pill">${icon('vote')}A galera escolheu!</p>` : ''}
-      ${eventPillsHTML(g)}${jokerHTML(s, g, me)}
+      ${stagePills(firstStep && g.surprise ? `<p class="surprise-pill">${icon('shuffle')}Jogo surpresa!</p>` : '', firstStep && g.voted ? `<p class="surprise-pill">${icon('vote')}A galera escolheu!</p>` : '', eventPillsHTML(g), jokerHTML(s, g, me))}
       ${firstStep ? `<p class="sh-how" tabindex="0" title="Toque para ler tudo">${esc(mod.how)}</p>` : ''}
       <div class="stage-body">${body}</div>
       ${modeRevealHTML(s, g)}
       ${cryHTML(s, g)}
       ${watcher && role === 'spectator' && reveal ? applauseHTML(s, g, me) : ''}
-      ${!watcher && reveal ? kudosHTML(s, g, me) : ''}
+      ${!watcher && reveal ? readyNextHTML(s, g, me) + kudosHTML(s, g, me) : ''}
       ${stripHTML(s, g, mod)}
       ${g.paused ? `<div class="pause-veil" role="status"><span class="pv-ic">${icon('pause')}</span><b>Jogo pausado</b>
         <span>${host ? 'Toque em Continuar quando a galera estiver pronta.' : 'O host pausou o jogo. Já, já continua.'}</span></div>` : ''}
@@ -7103,10 +7338,17 @@ function viewGame(s) {
       <button class="btn sm pill" data-act="${g.paused ? 'resume' : 'pause'}">${icon(g.paused ? 'play' : 'pause')}${g.paused ? 'Continuar' : 'Pausar'}</button>
       ${showTimer && !reveal ? `<button class="btn sm pill" data-act="addTime" ${g.paused ? 'disabled' : ''} title="Dar mais 15 segundos nesta etapa">${icon('plus')}15s</button>` : ''}
       ${reveal ? `<button class="btn primary sm pill" data-act="next">${g.round >= g.total ? 'Ver resultado do jogo' : 'Próxima rodada'}</button>` : `<button class="btn sm pill" data-act="next">Pular etapa</button>`}</div>`
-      : reveal && role !== 'tv' ? '<p class="hint center" style="margin-top:14px">A próxima rodada começa quando o tempo acabar ou o host avançar.</p>' : ''}
+      : reveal && role !== 'tv' ? '<p class="hint center" style="margin-top:14px">A próxima rodada começa quando o tempo acabar ou todo mundo apertar Pronto.</p>' : ''}
   </section>`;
 }
 
+// Quem precisa apertar "Pronto" para pular o resultado: as pessoas (não bots) conectadas desta rodada.
+const revealNeed = (s, g) => g.roster.filter(id => s.players[id] && !s.players[id].isBot && s.players[id].connected !== false);
+function readyNextHTML(s, g, me) {
+  const need = revealNeed(s, g), done = need.filter(id => (g.rready || {})[id]).length, mine = !!(g.rready || {})[me];
+  if (need.length < 1 || !need.includes(me)) return '';
+  return `<button class="ready-next ${mine ? 'is-on' : ''}" data-act="revealReady" ${mine ? 'disabled' : ''}>${mine ? 'Pronto ✓' : 'Pronto, próxima!'}<small>${done}/${need.length}</small></button>`;
+}
 function stripHTML(s, g, mod) {
   const ph = mod.phases[g.phase] || {}, team = modeOf(s) === 'equipes' ? s.teams || {} : null;
   const ids = [...g.roster, ...s.order.filter(id => !g.roster.includes(id) && plays(s, id))].filter(id => s.players[id]);
@@ -7116,7 +7358,7 @@ function stripHTML(s, g, mod) {
     const stat = delta ? `<span class="sp-stat delta ${delta < 0 ? 'neg' : ''}">${delta > 0 ? '+' : ''}${delta}</span>`
       : done ? `<span class="sp-stat is-ok" title="Já jogou">${icon('check')}</span>`
       : `<span class="sp-stat ${inR ? 'is-wait' : 'is-out'}" title="${inR ? 'Ainda pensando' : 'Entra na próxima rodada'}"></span>`;
-    return `<li class="sp ${p.connected || p.isBot ? '' : 'off'} ${id === Store.me.id ? 'me' : ''} ${team && team[id] ? 'team-' + team[id] : ''}" data-pid="${id}"><span class="throw-tgt" data-act="throwAt" data-id="${id}" title="Toque para arremessar">${avatar(p, 'md')}</span>${(g.jokers || {})[id] ? '<span class="sp-joker" title="Coringa: pontos em dobro">🃏</span>' : ''}
+    return `<li class="sp ${p.connected || p.isBot ? '' : 'off'} ${id === Store.me.id ? 'me' : ''} ${team && team[id] ? 'team-' + team[id] : ''}" data-pid="${id}"><span class="throw-tgt" data-act="throwAt" data-id="${id}" title="Toque para arremessar">${avatar(p, 'md')}</span>${(g.jokers || {})[id] ? '<span class="sp-joker" title="Coringa: pontos em dobro">🃏</span>' : ''}${(s.match.streak || {})[id] >= 3 ? `<span class="sp-fire" title="Em chamas: ${s.match.streak[id]} rodadas seguidas pontuando">🔥${s.match.streak[id]}</span>` : ''}
       <span class="sp-name">${esc(p.name)}</span><span class="sp-pts">${p.score} pts</span>${stat}</li>`;
   }).join('')}</ul>`;
 }
@@ -7238,6 +7480,7 @@ function customizePanelHTML(s) {
     <form class="cfg-title" data-form="title" novalidate><label for="roomTitle">Nome da sala</label><div class="cfg-inline"><input class="input" id="roomTitle" data-keep="roomTitle" maxlength="28" placeholder="Ex.: Noite dos campeões" value="${esc(s.settings.title || '')}"><button class="btn sm pill">Salvar</button></div></form>
     ${['maxPlayers', 'rounds', 'timeMult', 'goal', 'helpCost', 'eventChance'].map(k => `<div class="cfg-row"><span>${CFG[k].label}</span>${cfgStepHTML(s, k)}</div>`).join('')}
     ${en('botLevel')}${en('botTalk')}${en('chatMode')}
+    <div class="cfg-row ultra-row"><span>☢️ Bots ULTRA caóticos<small>${s.settings.ultra ? 'Ligado. Que os céus nos ajudem.' : 'Modo proibido (vem com avisos sérios).'}</small></span><button class="btn xs ${s.settings.ultra ? '' : 'ultra-btn'}" data-act="${s.settings.ultra ? 'ultraOff' : 'ultraOn'}">${s.settings.ultra ? 'Acalmar os bots' : 'Ligar'}</button></div>
     <div class="cfg-row"><span>Jogos fora do sorteio${off.length ? `: <b>${off.length}</b>` : ''}</span><button class="btn xs ${Store.local.offEdit ? 'primary' : ''}" data-act="offEdit">${Store.local.offEdit ? 'Pronto' : 'Escolher'}</button></div>
     ${Store.local.offEdit ? '<p class="hint">Toque nos jogos lá embaixo para tirar ou devolver ao sorteio (jogo surpresa, votação e sequência automática).</p>' : ''}
   </div></section>`;
@@ -7285,8 +7528,43 @@ BOT_PERS.fofo.win.push('acertei!! 💖');
 BOT_PERS.nerd.lose.push('anomalia nos dados');
 const botPers = p => BOT_PERS[p?.pers] || Object.values(BOT_PERS)[(p?.id || 'x').charCodeAt((p?.id || 'x').length - 1) % Object.keys(BOT_PERS).length];
 // Quanto os bots falam: muda a frequência e o máximo de mensagens deles em poucos segundos.
-const BOT_TALK = { pouco: { m: .4, cap: 1 }, normal: { m: 1, cap: 2 }, muito: { m: 2, cap: 4 }, caos: { m: 3.5, cap: 7 } };
-const botTalk = s => BOT_TALK[cfg(s, 'botTalk')] || BOT_TALK.muito;
+const BOT_TALK = { pouco: { m: .4, cap: 1 }, normal: { m: 1, cap: 2 }, muito: { m: 2, cap: 4 }, caos: { m: 3.5, cap: 7 }, ultra: { m: 5, cap: 9 } };
+const botTalk = s => s?.settings?.ultra ? BOT_TALK.ultra : BOT_TALK[cfg(s, 'botTalk')] || BOT_TALK.muito;
+// ---- Modo bots ULTRA caóticos (o host liga em "Personalizar a sala", depois de três avisos)
+const ULTRA_LINES = ['EU SOU INEVITÁVEL 🤖', 'O CAOS É MEU PASTOR', 'quem desligou a gravidade??', '🤖🤖🤖🤖', 'ALGUÉM ME SEGURA', 'CPU A 300% 🔥', 'beep boop 💥', 'hoje eu tô sem freio',
+  'protocolo zoeira: ATIVADO', 'eu vi o futuro e {lider} perde', '{nome}, tô de olho em você 👀', 'AAAAAAAAAAA', 'calma que piora', 'deletando a humildade… 100%', 'eu não sou um bot, sou um estilo de vida', '🦖🦖🦖', 'quem jogou café no meu processador?'];
+const ULTRA_SHOUTS = ['CAOS TOTAL', 'ULTRA MODE', 'NINGUÉM ESCAPA', 'BOTS NO PODER', 'É O FIM', 'SEGURA ESSA'];
+function ultraPoll(s, b) {
+  const names = playerIds(s).filter(id => s.players[id]).map(id => s.players[id].name).sort(() => Math.random() - .5).slice(0, 3);
+  const games = GAME_ORDER.map(id => Games[id].name).sort(() => Math.random() - .5).slice(0, 3);
+  const q = pick([
+    `Quem é o mais roubado da sala? ${names.join(', ')}`,
+    'Pizza com abacaxi? SIM, NUNCA, só de madrugada',
+    'Os bots deveriam dominar o mundo? Sim, Com certeza, Óbvio',
+    `Qual o melhor jogo? ${games.join(', ')}`,
+    `Quem vai ganhar hoje? ${names.join(', ')}`,
+    'Biscoito ou bolacha? Biscoito, Bolacha, Tanto faz (mentira)',
+  ]);
+  chatCommand(s, b.id, '/enquete ' + q);
+}
+// Uma travessura a cada poucos segundos. Devolve true quando mudou algo na sala.
+function ultraAntics(s, bots) {
+  if (!s.settings.ultra || now() < (BotChatRT.nextUltra || 0)) return false;
+  BotChatRT.nextUltra = now() + rand(5000, 11000);
+  const b = pick(bots), r = Math.random(), zoeira = s.settings.zoeira !== false;
+  if (r < .22) { b.avatar = pick(AVATARS.filter(a => a !== b.avatar)); hostFx(s, b.id, { t: 'emote', e: '😎' }); return true; }
+  if (r < .36 && !s.poll && cfg(s, 'chatMode') === 'livre') { ultraPoll(s, b); return true; }
+  if (r < .54 && zoeira) { hostFx(s, b.id, { t: 'shout', text: pick(ULTRA_SHOUTS) }); return false; }
+  if (r < .64 && zoeira && now() - FxRT.lastRain > 25000) { FxRT.lastRain = now(); const m = { kind: 'fx', pid: b.id, t: 'rain', e: pick(['🤖', '👾', '🦖']) }; Transport.send(m); runFx(m); return false; }
+  if (r < .8 && zoeira) {
+    // Rajada: vários bots jogam coisas na mesma pessoa.
+    const tgt = pick(playerIds(s).filter(id => s.players[id]));
+    bots.filter(x => x.id !== tgt).slice(0, 3).forEach((x, i) => setTimeout(() => Store.room && hostFx(Store.room, x.id, { t: 'throw', e: pick(THROWS), to: tgt }), i * 350));
+    return false;
+  }
+  botSay(b.id, pick(ULTRA_LINES));
+  return false;
+}
 const BotChatRT = { said: [], nextTalk: 0, nextReact: 0 };
 // Troca {lider}, {nome} e {jogo} nas falas.
 function botFill(s, text, self) {
@@ -7299,7 +7577,8 @@ function botFill(s, text, self) {
 // Bots puxam assunto sozinhos e soltam reações e zoeira o tempo todo (o host roda isso a cada tique).
 function botsAmbient(s) {
   const bots = Object.values(s.players).filter(p => p.isBot);
-  if (!bots.length || cfg(s, 'chatMode') === 'off' || s.paused || s.game?.paused) return;
+  if (!bots.length || cfg(s, 'chatMode') === 'off' || s.paused || s.game?.paused) return false;
+  const ultraChanged = ultraAntics(s, bots);
   const T = botTalk(s), at = now(), g = s.game;
   if (!BotChatRT.nextTalk) BotChatRT.nextTalk = at + rand(3000, 7000) / T.m;
   if (at >= BotChatRT.nextTalk) {
@@ -7322,6 +7601,7 @@ function botsAmbient(s) {
       else hostFx(s, b.id, { t: 'shout', text: pick(['VALENDO!', 'BORA!!!', 'É AGORA', 'SEGURA!', 'NINGUÉM ME PARA']) });
     }
   }
+  return ultraChanged;
 }
 // Quem acaba de entrar ganha boas-vindas dos bots.
 function botsWelcome(s, name) {
@@ -7611,7 +7891,7 @@ function jokerHTML(s, g, me) {
   if (s.settings.joker === false || !inRoster(g, me) || g.phase === 'reveal') return '';
   if ((g.jokers || {})[me]) return '<p class="joker-pill">🃏 Coringa ativo: seus pontos valem dobro nesta rodada</p>';
   if ((s.match.jokers || {})[me] || !jokerWindow(g)) return '';
-  return '<button class="joker-btn" data-act="joker">🃏 Usar coringa <small>pontos x2 nesta rodada · 1 por partida</small></button>';
+  return '<button class="joker-btn" data-act="joker" title="Pontos em dobro nesta rodada (1 por partida)">🃏 Usar coringa <small>pontos x2 nesta rodada · 1 por partida</small></button>';
 }
 function cryHTML(s, g) {
   if (g.phase !== 'reveal') return '';
@@ -7841,6 +8121,22 @@ function fxConfetti(layer) {
   }
   layer.appendChild(box);
   setTimeout(() => box.remove(), 3000);
+}
+const ULTRA_STEPS = [
+  { e: '⚠️', t: 'Atenção, host', p: 'Você está prestes a ligar os <b>bots ULTRA caóticos</b>. Eles não dormem. Eles não descansam. Eles só zoam.', no: 'Melhor não', yes: 'Continuar' },
+  { e: '🚨', t: 'Aviso sério (é sério mesmo)', p: 'O Ministério da Zoeira adverte: este modo pode causar <b>risadas excessivas</b>, perda de dignidade e brigas por causa de tomate virtual.', no: 'Sou fraco, voltar', yes: 'Eu aguento' },
+  { e: '☢️', t: 'Última chance', p: 'Os bots vão gritar, trocar de cara, abrir enquetes absurdas e invadir a tela. O jogo continua jogável… provavelmente.<br>Digite <b>EU ACEITO O CAOS</b> para liberar.', input: true, no: 'Fugir', yes: 'Liberar o caos ☢️' },
+];
+function ultraModal(i) {
+  const st = ULTRA_STEPS[i];
+  $('#modalRoot').innerHTML = `<div class="modal" data-act="closeModal"><div class="modal-card ultra-card step-${i}" role="alertdialog" aria-modal="true" aria-labelledby="ulTitle" data-keep-open>
+    <div class="ultra-e" aria-hidden="true">${st.e}</div><p class="label-caps">Aviso ${i + 1} de ${ULTRA_STEPS.length}</p>
+    <h2 id="ulTitle">${st.t}</h2><p class="tour-p">${st.p}</p>
+    ${st.input ? '<input class="input ultra-in" id="ultraIn" maxlength="30" autocomplete="off" placeholder="EU ACEITO O CAOS" aria-label="Digite EU ACEITO O CAOS"><p class="err" id="ultraErr"></p>' : ''}
+    <div class="tour-nav"><button type="button" class="btn pill" data-act="closeModal">${st.no}</button><button type="button" class="btn pill ultra-yes" data-act="ultraStep" data-i="${i}">${st.yes}</button></div>
+  </div></div>`;
+  (st.input ? $('#ultraIn') : $('#modalRoot .ultra-yes'))?.focus();
+  Sound.play(i === 2 ? 'alarm' : 'wrong'); buzz(i === 2 ? [100, 60, 100, 60, 200] : 80);
 }
 // Tutorial rápido: aparece na primeira vez que a pessoa entra numa sala e volta pelo "Como jogar".
 const Tour = {
@@ -8125,7 +8421,7 @@ const Actions = {
     leaveRoom(isHost() ? 'Sala encerrada.' : 'Você saiu da sala.');
   },
   addBot() { dispatch({ type: 'host:addBot' }); },
-  sound() { Sound.unlock(); Sound.toggle(); renderTop(); },
+  sound() { Sound.unlock(); Sound.toggle(); renderTop(); $$('.gt-snd').forEach(b => { b.innerHTML = icon(Sound.on ? 'volume' : 'mute'); b.setAttribute('aria-label', Sound.on ? 'Desligar os sons' : 'Ligar os sons'); }); },
   mode(el) { dispatch({ type: 'host:mode', mode: el.dataset.k }); },
   shuffleTeams() { dispatch({ type: 'host:shuffleTeams' }); },
   team(el) { dispatch({ type: 'host:team', id: el.dataset.id }); },
@@ -8184,6 +8480,28 @@ const Actions = {
   },
   tour() { Tour.i = null; Tour.open(0); },
   tourGo(el) { Tour.open(+el.dataset.i); },
+  async install() {
+    if (Install.evt) { Install.evt.prompt(); const r = await Install.evt.userChoice.catch(() => null); Install.evt = null; if (r?.outcome !== 'accepted') render(); return; }
+    // iPhone/iPad não têm botão de instalar: mostra o caminho pelo menu Compartilhar.
+    $('#modalRoot').innerHTML = `<div class="modal" data-act="closeModal"><div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="insTitle" data-keep-open>
+      <div class="tour-e" aria-hidden="true">📲</div><h2 id="insTitle">Instalar no iPhone</h2>
+      <ol class="ins-steps"><li>Abra o PlayBox no <b>Safari</b>.</li><li>Toque em <b>Compartilhar</b> (o quadrado com a setinha para cima).</li><li>Escolha <b>Adicionar à Tela de Início</b> e toque em <b>Adicionar</b>.</li></ol>
+      <button type="button" class="btn primary pill" data-act="closeModal">Entendi</button></div></div>`;
+  },
+  ultraOn() { ultraModal(0); },
+  ultraOff() { dispatch({ type: 'host:ultra', on: false }); },
+  ultraStep(el) {
+    const i = +el.dataset.i;
+    if (i < ULTRA_STEPS.length - 1) { ultraModal(i + 1); return; }
+    const v = norm($('#ultraIn')?.value || '').replace(/\s+/g, ' ');
+    if (v !== 'eu aceito o caos') {
+      const e = $('#ultraErr'); if (e) e.textContent = 'Digite exatamente: EU ACEITO O CAOS';
+      const card = $('#modalRoot .ultra-card'); card?.classList.remove('nope'); void card?.offsetWidth; card?.classList.add('nope');
+      return;
+    }
+    $('#modalRoot').innerHTML = '';
+    dispatch({ type: 'host:ultra', on: true });
+  },
   preset(el) { dispatch({ type: 'host:preset', key: el.dataset.k }); },
   closeModal(el, e) {
     // Clique dentro do cartão não fecha; só no fundo escuro ou no botão Fechar.
@@ -8253,6 +8571,7 @@ const Actions = {
   chatQuick(el) { dispatch({ type: 'chat', text: el.dataset.v }); },
   pollVote(el) { dispatch({ type: 'pollVote', i: +el.dataset.i }); },
   lobbyReady() { dispatch({ type: 'lobbyReady' }); },
+  revealReady(el) { el.disabled = true; dispatch({ type: 'revealReady' }); },
   suggest(el) { dispatch({ type: 'suggest', game: el.dataset.game }); },
   warm(el, e) {
     Store.local.warmN = (Store.local.warmN || 0) + 1;
@@ -8401,6 +8720,7 @@ document.addEventListener('keydown', e => {
   // Enter num campo do Stop pula para o próximo; no último, aperta Stop se puder.
   const t = e.target;
   if (e.key === 'Escape') { closeOverlays(); return; }
+  if (e.key === 'Enter' && t.id === 'ultraIn') { e.preventDefault(); $('#modalRoot .ultra-yes')?.click(); return; }
   if ((e.key === 'ArrowLeft' || e.key === 'ArrowRight') && $('#modalRoot .tour-card')) { e.preventDefault(); Tour.open(Tour.i + (e.key === 'ArrowRight' ? 1 : -1)); return; }
   const gm = Store.room?.screen === 'game' && Store.room.game;
   if (gm && Games[gm.id].keydown && !['INPUT', 'TEXTAREA', 'SELECT'].includes(t.tagName) && Games[gm.id].keydown(e, gm, Store.room, Store.me?.id)) return;
@@ -8473,6 +8793,14 @@ document.addEventListener('visibilitychange', () => {
   else if (!joinWait) Transport.send({ kind: 'hello' });
 });
 
+// ---- PWA: instalar como app e abrir sem internet (precisa do sw.js publicado junto do index.html)
+const Install = { evt: null };
+const isStandalone = () => matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+const isIOS = () => /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+addEventListener('beforeinstallprompt', e => { e.preventDefault(); Install.evt = e; if (!Store.me) render(); });
+addEventListener('appinstalled', () => { Install.evt = null; toast('PlayBox instalado! Procure o ícone na tela inicial 🎉'); if (!Store.me) render(); });
+const installLinkHTML = () => !isStandalone() && (Install.evt || isIOS()) ? `<button type="button" class="linkish tour-link" data-act="install">📲 Instalar como app</button>` : '';
 async function boot() {
   Object.values(Games).forEach(addBetPhase);
   Store.local.profile = loadProfile();
