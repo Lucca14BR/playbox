@@ -967,6 +967,28 @@ body.fx-shake #app{animation:fxShake .6s}
 .joker-btn small{font-weight:600;font-size:11px;color:var(--muted)}
 .joker-pill{width:max-content;max-width:100%;margin:0 auto 10px;padding:6px 14px;border-radius:999px;background:rgba(251,191,36,.18);border:1px solid rgba(251,191,36,.5);font-size:13px;font-weight:700;text-align:center}
 .sp-joker{position:absolute;top:-4px;left:-4px;font-size:16px}
+.sp-move{display:inline-block;margin-left:5px;font-size:.68rem;font-weight:900;animation:tourPop .45s cubic-bezier(.3,1.6,.5,1)}
+.sp-move.up{color:#4ADE80}
+.sp-move.down{color:#F87171}
+.fx-ach{position:fixed;left:50%;top:30%;display:grid;justify-items:center;gap:4px;min-width:min(320px,86vw);max-width:92vw;padding:16px 26px 18px;border-radius:24px;background:radial-gradient(circle at 50% 0%,rgba(251,191,36,.35),rgba(20,16,40,.96) 70%);border:2px solid rgba(251,191,36,.7);box-shadow:0 0 60px -6px rgba(251,191,36,.6),0 24px 60px -20px rgba(0,0,0,.9);text-align:center;transform:translateX(-50%);animation:fxAch 2.7s cubic-bezier(.2,1.4,.4,1) forwards}
+.fx-ach-e{font-size:3.4rem;line-height:1;filter:drop-shadow(0 6px 14px rgba(0,0,0,.5))}
+.fx-ach b{font-size:clamp(1.4rem,5vw,2rem);font-weight:900;letter-spacing:.02em;color:#FDE68A;text-transform:uppercase}
+.fx-ach small{font-size:.9rem;color:#E5E7EB}
+@keyframes fxAch{0%{transform:translateX(-50%) scale(.3) rotate(-8deg);opacity:0}12%{transform:translateX(-50%) scale(1.08) rotate(2deg);opacity:1}20%{transform:translateX(-50%) scale(1) rotate(0)}85%{opacity:1;transform:translateX(-50%) scale(1)}100%{opacity:0;transform:translateX(-50%) scale(.9) translateY(-20px)}}
+.fx-roulette{position:fixed;inset:0;display:grid;place-items:center;background:rgba(5,5,10,.55);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);animation:screenIn .2s ease;transition:opacity .4s}
+.fx-roulette.out{opacity:0}
+.rl-box{display:grid;justify-items:center;gap:6px;padding:22px 30px;border-radius:26px;background:var(--surface-solid);border:2px solid rgba(251,191,36,.6);box-shadow:0 0 70px -10px rgba(251,191,36,.55);min-width:min(300px,86vw);text-align:center}
+.rl-e{display:grid;place-items:center;width:96px;height:96px;border-radius:24px;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.35);font-size:3.6rem;line-height:1}
+.rl-e.done{animation:tourPop .5s cubic-bezier(.3,1.8,.5,1);box-shadow:0 0 30px rgba(251,191,36,.6)}
+.rl-name{font-size:1.3rem;font-weight:900}
+.rl-desc{color:var(--muted);max-width:30ch}
+.ff-bet{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px;margin-bottom:10px;font-weight:700;font-size:.9rem}
+.ff-bet button{min-width:46px;padding:5px 10px;border-radius:999px;border:1px solid var(--line-2);font-weight:900;background:rgba(255,255,255,.04)}
+.ff-bet button.on.b1{background:rgba(255,255,255,.14);border-color:#fff}
+.ff-bet button.on.b2{background:rgba(251,191,36,.25);border-color:#FBBF24;color:#FDE68A}
+.ff-bet button.on.b3{background:rgba(239,68,68,.28);border-color:#F87171;color:#FCA5A5;box-shadow:0 0 14px rgba(239,68,68,.5)}
+.ff-bet small{flex-basis:100%;text-align:center;font-weight:500;font-size:.75rem;color:var(--muted)}
+.ff-bet-tag{color:#FDE68A;border-color:rgba(251,191,36,.45)}
 .sp-fire{position:absolute;top:-6px;right:-4px;padding:0 5px;border-radius:999px;background:linear-gradient(180deg,#F97316,#DC2626);color:#fff;font-size:10px;font-weight:900;line-height:16px;box-shadow:0 0 12px rgba(249,115,22,.7);animation:ultraPulse 1.2s ease-in-out infinite}
 .dw-choice{display:grid;gap:4px;justify-items:center}
 .dw-diff{display:inline-block;margin-left:6px;padding:1px 8px;border-radius:999px;font-size:.7rem;font-weight:800;letter-spacing:.02em;vertical-align:middle;text-transform:none}
@@ -1093,6 +1115,15 @@ body.fx-shake #app{animation:fxShake .6s}
 .ultra-pill{display:inline-flex;align-items:center;gap:4px;margin-left:6px;padding:1px 8px;border-radius:999px;background:rgba(239,68,68,.18);border:1px solid rgba(239,68,68,.6);color:#FCA5A5;font-size:.72rem;font-weight:900;letter-spacing:.04em;animation:ultraPulse 1.4s ease-in-out infinite}
 @keyframes ultraPulse{50%{box-shadow:0 0 14px rgba(239,68,68,.6)}}
 .ultra-row span{display:grid}
+.chaos-row span small{display:block;font-size:.75rem;color:var(--muted);font-weight:500}
+.chaos-slider{display:flex;align-items:center;gap:12px;width:100%}
+.chaos-slider input{flex:1;min-width:0;-webkit-appearance:none;appearance:none;height:10px;border-radius:999px;background:linear-gradient(90deg,#22C55E,#FBBF24 45%,#F97316 70%,#DC2626) no-repeat;background-size:var(--p,50%) 100%;background-color:rgba(255,255,255,.1);outline:none}
+.chaos-slider input::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:#fff;border:3px solid #F97316;box-shadow:0 0 12px rgba(249,115,22,.7);cursor:pointer}
+.chaos-slider input::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:#fff;border:3px solid #F97316;cursor:pointer}
+.chaos-val{flex:none;min-width:118px;text-align:right;font-weight:900;font-size:.85rem}
+.chaos-val.lv8,.chaos-val.lv9{color:#FB923C}
+.chaos-val.lv10{color:#F87171;animation:msgShake .6s infinite}
+.chaos-est{font-size:.75rem;color:var(--muted)}
 .ultra-row small{font-size:.75rem;color:var(--muted)}
 .ultra-btn{background:linear-gradient(90deg,#DC2626,#F97316);border-color:transparent;color:#fff}
 .ultra-card{width:min(420px,100%);border-color:rgba(239,68,68,.55);box-shadow:0 0 60px -10px rgba(239,68,68,.55)}
@@ -2246,6 +2277,7 @@ function enginePhase(s, name) {
   if (name === 'reveal') {
     if (modeOf(s) === 'apostas') settleBets(s);
     roundRevealExtras(s);
+    roundAchievements(s, s.game);
     if (modeOf(s) === 'territorio') conquer(s);
     botsReact(s);
   }
@@ -2737,37 +2769,45 @@ Games.stop = {
 const fatoMult = (t, dur) => { const f = t / (dur * 1000); return f < 1 / 3 ? 3 : f < 2 / 3 ? 2 : 1; };
 Games.fato = {
   id: 'fato', name: 'Fato ou Fake', tag: 'Trivia expressa', icon: 'bolt', color: '#3B82F6', lip: '#1D4ED8', min: 1,
-  how: 'Uma afirmação bizarra por rodada. Acertar vale 1 ponto multiplicado pela velocidade: x3 no começo, x2 no meio, x1 no fim.',
+  how: 'Uma afirmação bizarra por rodada. Acertar vale 1 ponto multiplicado pela velocidade (x3 no começo, x2 no meio, x1 no fim) e pela sua certeza: aposte x2 ou x3 se tiver certeza, mas errar com aposta tira pontos.',
   first: 'answer',
   init(g) { g.data = { qi: drawItem(g, FATO_Q), answers: {}, result: null }; },
   phases: {
     answer: { label: 'Fato ou fake?', dur: 12, bot: [1.2, 9], next: 'reveal', allIn: (g, s) => active(g, s).every(id => id in g.data.answers) },
     reveal: { label: 'Resposta', dur: 9, enter(g, s) {
       const q = FATO_Q[g.data.qi], d = {};
-      Object.entries(g.data.answers).forEach(([pid, a]) => { if (a.v === q.a) add(d, pid, fatoMult(a.t, Games.fato.phases.answer.dur)); });
+      Object.entries(g.data.answers).forEach(([pid, a]) => {
+        const b = a.b || 1;
+        if (a.v === q.a) add(d, pid, fatoMult(a.t, Games.fato.phases.answer.dur) * b);
+        else if (b > 1 && s.players[pid]) add(d, pid, -Math.min(b - 1, s.players[pid].score));
+      });
       updateScores(s, d);
     } },
   },
   handle(g, s, pid, a) {
     if (!inRoster(g, pid) || g.phase !== 'answer' || a.type !== 'submit' || pid in g.data.answers) return false;
-    g.data.answers[pid] = { v: !!a.value, t: now() - g.phaseStart }; return true;
+    g.data.answers[pid] = { v: !!a.value, t: now() - g.phaseStart, b: clamp(Math.round(+a.bet) || 1, 1, 3) }; return true;
   },
   done(g, pid) { return g.phase === 'answer' && pid in g.data.answers; },
-  bot(g) { const q = FATO_Q[g.data.qi]; return { type: 'submit', value: Math.random() < botP(.7) ? q.a : !q.a }; },
+  bot(g) { const q = FATO_Q[g.data.qi]; return { type: 'submit', value: Math.random() < botP(.7) ? q.a : !q.a, bet: pick([1, 1, 2, 2, 3]) }; },
+  myBet(g) { const L = Store.local; if (L.ffKey !== `${g.round}:${g.data.qi}`) { L.ffKey = `${g.round}:${g.data.qi}`; L.ffBet = 1; } return L.ffBet; },
+  ui: { bet(el) { Games.fato.myBet(Store.room.game); Store.local.ffBet = +el.dataset.v; $$('.ff-bet button').forEach(b => b.classList.toggle('on', b === el)); } },
   view(g, s, me) {
     const q = FATO_Q[g.data.qi], mine = g.data.answers[me], can = inRoster(g, me);
     const P = `<blockquote class="ff-quote">“${esc(q.t)}”</blockquote>`;
     if (g.phase === 'answer') {
       const sel = v => mine && mine.v === v ? 'on' : '';
       const locked = mine ? fatoMult(mine.t, g.dur) : 0;
-      return P + `<div class="ff-buttons"><button class="ff ff-true ${sel(true)}" data-act="fato" data-v="1" ${mine || !can ? 'disabled' : ''}>Verdadeiro</button>
+      const bet = this.myBet(g);
+      const betRow = !mine && can ? `<div class="ff-bet" role="group" aria-label="Sua certeza"><span>Certeza:</span>${[1, 2, 3].map(v => `<button type="button" class="${bet === v ? 'on' : ''} b${v}" data-act="g:bet" data-v="${v}">x${v}</button>`).join('')}<small>errar com x2 tira 1, com x3 tira 2</small></div>` : '';
+      return P + betRow + `<div class="ff-buttons"><button class="ff ff-true ${sel(true)}" data-act="fato" data-v="1" ${mine || !can ? 'disabled' : ''}>Verdadeiro</button>
         <button class="ff ff-false ${sel(false)}" data-act="fato" data-v="0" ${mine || !can ? 'disabled' : ''}>Falso</button></div>
         <div class="mult-wrap"><span class="hint">${mine ? 'Você garantiu' : 'Responda rápido: vale agora'}</span>
           <div class="mult-row" data-mult-start="${g.phaseStart}" data-mult-dur="${g.dur}" ${mine ? 'data-frozen="1"' : ''}>${[3, 2, 1].map(m => `<span data-m="${m}" class="${m === locked ? 'now' : ''}">x${m}</span>`).join('')}</div></div>
         ${mine ? `<p class="hint center">Você respondeu <b>${mine.v ? 'Verdadeiro' : 'Falso'}</b> em ${(mine.t / 1000).toFixed(1).replace('.', ',')} s.</p>` : ''}`;
     }
     const rows = Object.entries(g.data.answers).sort((a, b) => a[1].t - b[1].t).map(([pid, a]) => `<li class="res-row">${avatar(s.players[pid], 'sm')}
-      <span class="res-who"><span class="res-name">${esc(nameOf(s, pid))}</span>${a.v === q.a ? '<span class="tag tag-good">Acertou</span>' : '<span class="tag tag-bad">Errou</span>'}</span>
+      <span class="res-who"><span class="res-name">${esc(nameOf(s, pid))}</span>${a.v === q.a ? '<span class="tag tag-good">Acertou</span>' : '<span class="tag tag-bad">Errou</span>'}${(a.b || 1) > 1 ? `<span class="tag ff-bet-tag">apostou x${a.b}</span>` : ''}</span>
       <span class="res-val">${a.v ? 'Verdadeiro' : 'Falso'}<span class="res-sub">${(a.t / 1000).toFixed(1).replace('.', ',')} s</span></span>${deltaBadge(g.roundDelta[pid])}</li>`).join('');
     return P + `<p class="verdict" style="color:${q.a ? 'var(--ok)' : 'var(--coral)'}">${q.a ? 'Verdadeiro!' : 'Falso!'}</p><p class="lede">${esc(q.x)}</p>
       <ul class="res-list">${rows || '<li class="res-row">Ninguém respondeu a tempo.</li>'}</ul>`;
@@ -5973,8 +6013,11 @@ const EVENTS = {
   azarao: { e: '🐢', name: 'Vez do azarão', desc: 'quem está em último ganha pontos em triplo' },
   robin: { e: '🏹', name: 'Robin Hood', desc: 'no fim da rodada, o líder dá 1 ponto para o último' },
   trevo: { e: '🍀', name: 'Trevo da sorte', desc: 'alguém sorteado ganha +3 no fim da rodada' },
+  allin: { e: '🎰', name: 'Tudo ou nada', desc: 'quem vencer a rodada ganha o triplo; quem zerar perde 1' },
 };
 function roundSetup(s, g) {
+  g.rankBefore = playerIds(s).filter(id => s.players[id]).sort((a, b) => s.players[b].score - s.players[a].score);
+  g.scoreBefore = Object.fromEntries(g.rankBefore.map(id => [id, s.players[id].score]));
   g.mult = s.settings.finalDouble && g.total > 1 && g.round === g.total ? 2 : 1;
   g.ev = null; g.evNote = null; g.evBottom = null; g.jokers = {}; g.kudos = {};
   if (s.settings.events && Math.random() < cfg(s, 'eventChance') / 100) {
@@ -6017,6 +6060,12 @@ function roundRevealExtras(s) {
     const rich = ids[0], poor = ids[ids.length - 1];
     if (rich && poor && rich !== poor && s.players[rich].score > 0) { updateScores(s, { [rich]: -1, [poor]: 1 }); g.evNote = `🏹 ${s.players[rich].name} deu 1 ponto para ${s.players[poor].name}.`; }
   }
+  if (g.ev.k === 'allin') {
+    const bonus = {};
+    deltas.filter(e => e[1] === best && best > 0).forEach(([id, n]) => { bonus[id] = n * 2; });
+    g.roster.filter(id => s.players[id] && !((g.roundDelta || {})[id] > 0) && s.players[id].score > 0).forEach(id => { bonus[id] = -1; });
+    if (Object.keys(bonus).length) { updateScores(s, bonus); g.evNote = '🎰 Tudo ou nada: vencedor no triplo, quem zerou perdeu 1.'; }
+  }
   if (g.ev.k === 'trevo') {
     const lucky = pick(g.roster.filter(id => s.players[id]));
     if (lucky) { updateScores(s, { [lucky]: 3 }); g.evNote = `🍀 O trevo escolheu ${s.players[lucky].name}: +3!`; }
@@ -6031,6 +6080,32 @@ function roundRevealExtras(s) {
     }
   }
   g.noMult = false;
+}
+// Conquistas da rodada: aparecem num cartaz grande para todo mundo (no máximo duas por rodada).
+function roundAchievements(s, g) {
+  const before = g.rankBefore || [], ids = playerIds(s).filter(id => s.players[id]);
+  if (ids.length < 2 || !before.length) return;
+  const after = ids.slice().sort((a, b) => s.players[b].score - s.players[a].score), sb = g.scoreBefore || {};
+  const deltas = g.roundDelta || {}, best = Math.max(0, ...Object.values(deltas));
+  const winners = Object.keys(deltas).filter(id => deltas[id] === best && best > 0 && s.players[id]);
+  const nm = id => s.players[id].name, out = [];
+  if (!s.match.firstBlood && winners.length) { s.match.firstBlood = winners[0]; out.push({ e: '🩸', t: 'Primeiro sangue', d: `${nm(winners[0])} fez os primeiros pontos da partida` }); }
+  const l0 = before[0], l1 = after[0];
+  if (l0 && l1 && l0 !== l1 && s.players[l0] && s.players[l1].score > s.players[l0].score && (sb[l0] || 0) > 0) out.push({ e: '🔄', t: 'VIRADA!', d: `${nm(l1)} tomou a liderança de ${nm(l0)}` });
+  if (ids.length >= 3 && winners.length === 1 && before.indexOf(winners[0]) === before.length - 1 && (sb[before[0]] || 0) > 0) out.push({ e: '🦓', t: 'Zebra!', d: `${nm(winners[0])} estava em último e venceu a rodada` });
+  if (ids.length >= 5) ids.forEach(id => {
+    const p0 = before.indexOf(id), p1 = after.indexOf(id);
+    if (p0 < 0) return;
+    if (p0 === before.length - 1 && p1 <= 2) out.push({ e: '🧟', t: 'Ressurreição', d: `${nm(id)} saiu do último lugar direto para o pódio` });
+    else if (p0 - p1 >= 3) out.push({ e: '🚀', t: 'Foguete', d: `${nm(id)} subiu ${p0 - p1} posições de uma vez` });
+  });
+  const run = s.match.winRun || (s.match.winRun = { id: null, n: 0 });
+  if (winners.length === 1) { if (run.id === winners[0]) run.n++; else { run.id = winners[0]; run.n = 1; } if (run.n === 3) out.push({ e: '🎩', t: 'Hat-trick!', d: `${nm(winners[0])} venceu 3 rodadas seguidas` }); }
+  else { run.id = null; run.n = 0; }
+  out.slice(0, 2).forEach((a, i) => {
+    pushChat(s, { sys: true, text: `${a.e} ${a.t} ${a.d}` });
+    setTimeout(() => { if (!Store.room || !isHost()) return; const m = { kind: 'fx', pid: Store.room.hostId, t: 'ach', e: a.e, title: a.t, desc: a.d }; Transport.send(m); runFx(m); }, 900 + i * 2300);
+  });
 }
 // Avisos do topo da rodada numa fileira só (antes cada um ocupava uma linha e espremia o jogo).
 const stagePills = (...parts) => { const html = parts.join(''); return html ? `<div class="stage-pills">${html}</div>` : ''; };
@@ -6617,7 +6692,7 @@ function hostCommand(s, a) {
     }
     case 'host:newMatch':
       Object.values(s.players).forEach(p => { p.score = 0; });
-      s.match.played = []; s.match.byGame = {}; s.match.stats = {}; s.match.moments = []; s.match.jokers = {}; s.match.streak = {}; s.warm = {}; s.match.id = uid(6); s.terr = null; s.vote = null; s.game = null; s.screen = 'lobby';
+      s.match.played = []; s.match.byGame = {}; s.match.stats = {}; s.match.moments = []; s.match.jokers = {}; s.match.streak = {}; s.match.firstBlood = null; s.match.winRun = null; s.warm = {}; s.match.id = uid(6); s.terr = null; s.vote = null; s.game = null; s.screen = 'lobby';
       return true;
   }
   return false;
@@ -7010,8 +7085,28 @@ function measureStage() {
   StageSize.ro = new ResizeObserver(set);
   StageSize.ro.observe(sb);
 }
+function eventRoulette(g) {
+  const key = `${g.id}:${g.round}:${g.phaseStart}`;
+  if (Store.local.evShown === key || now() - g.phaseStart > 3500) return;
+  Store.local.evShown = key;
+  const layer = $('#fxLayer'), pool = Object.values(EVENTS).map(x => x.e), el = document.createElement('div');
+  el.className = 'fx-roulette';
+  el.innerHTML = '<div class="rl-box"><p class="label-caps">Evento surpresa</p><div class="rl-e">🎲</div><b class="rl-name">&nbsp;</b><small class="rl-desc">&nbsp;</small></div>';
+  layer.appendChild(el);
+  const face = el.querySelector('.rl-e');
+  let wait = 60, spent = 0;
+  const spin = () => {
+    if (spent < 1300) { face.textContent = pick(pool); Sound.play('tick'); spent += wait; wait *= 1.18; return setTimeout(spin, wait); }
+    face.textContent = g.ev.e; face.classList.add('done');
+    el.querySelector('.rl-name').textContent = g.ev.name; el.querySelector('.rl-desc').textContent = g.ev.desc;
+    Sound.play('start'); buzz(50);
+    setTimeout(() => { el.classList.add('out'); setTimeout(() => el.remove(), 400); }, 1700);
+  };
+  spin();
+}
 function afterRender(s) {
   measureStage();
+  { const g = s?.game; if (g && g.ev && s.screen === 'game' && g.phase && g.phase !== 'final' && (g.phase === Games[g.id].first || Games[g.id].phases[g.phase]?.betting)) eventRoulette(g); }
   syncPinSlots();
   $$('canvas[data-tel]:not([data-painted])').forEach(cv => { cv.dataset.painted = '1'; try { padPaint(cv, JSON.parse(cv.dataset.tel) || []); } catch {} });
   if (s?.screen === 'podium') MyStats.record(s);
@@ -7351,6 +7446,8 @@ function readyNextHTML(s, g, me) {
 }
 function stripHTML(s, g, mod) {
   const ph = mod.phases[g.phase] || {}, team = modeOf(s) === 'equipes' ? s.teams || {} : null;
+  const rankNow = g.phase === 'reveal' && g.rankBefore ? playerIds(s).filter(id => s.players[id]).sort((a, b) => s.players[b].score - s.players[a].score) : null;
+  const moveHTML = id => { if (!rankNow) return ''; const p0 = g.rankBefore.indexOf(id), p1 = rankNow.indexOf(id); if (p0 < 0 || p1 < 0 || p0 === p1) return ''; return p0 > p1 ? `<span class="sp-move up" title="Subiu ${p0 - p1}">▲${p0 - p1}</span>` : `<span class="sp-move down" title="Caiu ${p1 - p0}">▼${p1 - p0}</span>`; };
   const ids = [...g.roster, ...s.order.filter(id => !g.roster.includes(id) && plays(s, id))].filter(id => s.players[id]);
   return `<ul class="strip" aria-label="Jogadores">${ids.map(id => {
     const p = s.players[id], inR = inRoster(g, id), delta = g.phase === 'reveal' ? g.roundDelta[id] || 0 : 0;
@@ -7359,7 +7456,7 @@ function stripHTML(s, g, mod) {
       : done ? `<span class="sp-stat is-ok" title="Já jogou">${icon('check')}</span>`
       : `<span class="sp-stat ${inR ? 'is-wait' : 'is-out'}" title="${inR ? 'Ainda pensando' : 'Entra na próxima rodada'}"></span>`;
     return `<li class="sp ${p.connected || p.isBot ? '' : 'off'} ${id === Store.me.id ? 'me' : ''} ${team && team[id] ? 'team-' + team[id] : ''}" data-pid="${id}"><span class="throw-tgt" data-act="throwAt" data-id="${id}" title="Toque para arremessar">${avatar(p, 'md')}</span>${(g.jokers || {})[id] ? '<span class="sp-joker" title="Coringa: pontos em dobro">🃏</span>' : ''}${(s.match.streak || {})[id] >= 3 ? `<span class="sp-fire" title="Em chamas: ${s.match.streak[id]} rodadas seguidas pontuando">🔥${s.match.streak[id]}</span>` : ''}
-      <span class="sp-name">${esc(p.name)}</span><span class="sp-pts">${p.score} pts</span>${stat}</li>`;
+      <span class="sp-name">${esc(p.name)}</span><span class="sp-pts">${p.score} pts${moveHTML(id)}</span>${stat}</li>`;
   }).join('')}</ul>`;
 }
 
@@ -7441,6 +7538,7 @@ const CFG = {
   goal: { min: 0, max: 300, step: 10, def: 0, label: 'Meta de pontos (acaba a partida)', fmt: v => v ? `${v} pts` : 'sem meta' },
   helpCost: { min: 1, max: 3, step: 1, def: 1, label: 'Custo das ajudas', fmt: v => plural(v, 'ponto', 'pontos') },
   eventChance: { min: 10, max: 80, step: 10, def: 30, label: 'Chance de evento surpresa', fmt: v => `${v}%` },
+  chaosLevel: { min: 1, max: 10, step: 1, def: 5, label: 'Intensidade do caos dos bots' },
 };
 const CFG_ENUM = {
   botLevel: { label: 'Nível dos bots', def: 'normal', opts: { facil: 'Fácil', normal: 'Normal', dificil: 'Difícil', caotico: 'Caótico' } },
@@ -7472,6 +7570,12 @@ function presetPanelHTML(s) {
 const maxP = s => cfg(s, 'maxPlayers');
 const gameOn = (s, id) => !(s.settings.off || []).includes(id);
 const cfgStepHTML = (s, k) => { const c = CFG[k], v = cfg(s, k); return `<div class="cfg-step"><button data-act="cfg" data-k="${k}" data-d="-1" ${v <= c.min ? 'disabled' : ''} aria-label="Diminuir ${c.label}">−</button><b>${c.fmt ? c.fmt(v) : v}</b><button data-act="cfg" data-k="${k}" data-d="1" ${v >= c.max ? 'disabled' : ''} aria-label="Aumentar ${c.label}">+</button></div>`; };
+function chaosRowHTML(s) {
+  const v = chaosLvN(s), L = CHAOS_LV[v];
+  return `<div class="cfg-row is-col chaos-row"><span>🌪️ Intensidade do caos dos bots<small>${chaosMode(s) ? 'Valendo agora (Caos total ou ULTRA).' : 'Mexer na barrinha liga o “Caos total”.'}</small></span>
+    <div class="chaos-slider"><input type="range" min="1" max="10" step="1" value="${v}" data-range="chaosLevel" aria-label="Intensidade do caos dos bots" style="--p:${(v - 1) / 9 * 100}%"><b class="chaos-val lv${v}">${v} · ${CHAOS_NAMES[v]}</b></div>
+    <small class="chaos-est">≈ ${String(L.msg).replace('.', ',')} mensagens por segundo · ${Math.round(L.rx * 2)} reações a cada 2 s</small></div>`;
+}
 function customizePanelHTML(s) {
   const off = s.settings.off || [];
   const en = k => { const e = CFG_ENUM[k], v = cfg(s, k); return `<div class="cfg-row is-col"><span>${e.label}</span><div class="cat-chips wrap">${Object.entries(e.opts).map(([o, l]) => `<button class="cat-chip" data-act="cfgSet" data-k="${k}" data-v="${o}" aria-pressed="${v === o}">${l}</button>`).join('')}</div></div>`; };
@@ -7480,6 +7584,7 @@ function customizePanelHTML(s) {
     <form class="cfg-title" data-form="title" novalidate><label for="roomTitle">Nome da sala</label><div class="cfg-inline"><input class="input" id="roomTitle" data-keep="roomTitle" maxlength="28" placeholder="Ex.: Noite dos campeões" value="${esc(s.settings.title || '')}"><button class="btn sm pill">Salvar</button></div></form>
     ${['maxPlayers', 'rounds', 'timeMult', 'goal', 'helpCost', 'eventChance'].map(k => `<div class="cfg-row"><span>${CFG[k].label}</span>${cfgStepHTML(s, k)}</div>`).join('')}
     ${en('botLevel')}${en('botTalk')}${en('chatMode')}
+    ${chaosRowHTML(s)}
     <div class="cfg-row ultra-row"><span>☢️ Bots ULTRA caóticos<small>${s.settings.ultra ? 'Ligado. Que os céus nos ajudem.' : 'Modo proibido (vem com avisos sérios).'}</small></span><button class="btn xs ${s.settings.ultra ? '' : 'ultra-btn'}" data-act="${s.settings.ultra ? 'ultraOff' : 'ultraOn'}">${s.settings.ultra ? 'Acalmar os bots' : 'Ligar'}</button></div>
     <div class="cfg-row"><span>Jogos fora do sorteio${off.length ? `: <b>${off.length}</b>` : ''}</span><button class="btn xs ${Store.local.offEdit ? 'primary' : ''}" data-act="offEdit">${Store.local.offEdit ? 'Pronto' : 'Escolher'}</button></div>
     ${Store.local.offEdit ? '<p class="hint">Toque nos jogos lá embaixo para tirar ou devolver ao sorteio (jogo surpresa, votação e sequência automática).</p>' : ''}
@@ -7575,10 +7680,68 @@ function botFill(s, text, self) {
     .replace('{jogo}', Games[pick(GAME_ORDER.filter(id => gameOn(s, id)))]?.name || 'qualquer um');
 }
 // Bots puxam assunto sozinhos e soltam reações e zoeira o tempo todo (o host roda isso a cada tique).
+// ---- Intensidade do caos (barrinha de 1 a 10): vale no "Caos total" e no modo ULTRA.
+// msg = mensagens por segundo, rx = reações por segundo, fx = chance por tique de zoeira na tela.
+const CHAOS_LV = [null,
+  { msg: .5, rx: 1.5, fx: .02 }, { msg: 1, rx: 2.5, fx: .03 }, { msg: 1.6, rx: 3.5, fx: .04 }, { msg: 2.3, rx: 4.5, fx: .05 },
+  { msg: 3.2, rx: 6, fx: .06 }, { msg: 4, rx: 8, fx: .07 }, { msg: 5, rx: 10, fx: .08 }, { msg: 6, rx: 13, fx: .1 },
+  { msg: 7.5, rx: 16, fx: .12 }, { msg: 9, rx: 20, fx: .15 }];
+const CHAOS_NAMES = ['', 'De leve', 'Animado', 'Agitado', 'Bagunça', 'Caos', 'Muito caos', 'Insano', 'Surreal', 'Inferno', 'APOCALIPSE'];
+const chaosMode = s => !!s?.settings?.ultra || cfg(s, 'botTalk') === 'caos';
+const chaosLvN = s => clamp(Math.round(cfg(s, 'chaosLevel')) || 5, 1, 10);
+const CHAOS_BITS = ['oi', 'eita', 'vish', 'socorro', 'mds', 'bora', 'gg', 'F', 'quê??', 'para tudo', 'AAAAA', 'não aguento', 'calma', 'olha isso', 'eu sabia',
+  'mentira', 'nãooo', 'simmm', 'que isso', 'ai ai', 'tô passado', 'cadê o host', 'chama a polícia', 'que fase', 'tô rindo alto', 'bizarro', 'ninguém viu nada', 'de novo não'];
+// Uma fala de caos bem variada (risada de tamanho aleatório, sequência de emojis, gíria ou fala da personalidade).
+function chaosLine(s, b) {
+  const r = Math.random(), P = botPers(b);
+  if (r < .2) return (Math.random() < .5 ? 'K' : 'k').repeat(4 + Math.floor(Math.random() * 14));
+  if (r < .38) return Array.from({ length: 2 + Math.floor(Math.random() * 5) }, () => pick(REACTS)).join('');
+  if (r < .62) return pick(CHAOS_BITS) + pick(['', '!', '!!!', '?!', ' 😂', ' 🔥', ' 👀', ' 💀', ' kkk']);
+  if (r < .74 && s.settings.ultra) return pick(ULTRA_LINES);
+  const pool = [...(P.idle || []), ...(P.laugh || []), ...(P.reply || []), ...(s.screen === 'lobby' ? P.lobby || [] : [])];
+  return pick(pool) + pick(['', '', ' kkk', '!!', ' 😂', ' 🤡']);
+}
+// Mensagens e reações dos bots vão juntas, algumas vezes por segundo (um envio por mensagem derrubava a conexão).
+function chaosFlush() {
+  BotChatRT.flushT = null;
+  const s = Store.room;
+  if (!s || !isHost()) return;
+  const rq = BotChatRT.rq || [];
+  BotChatRT.rq = [];
+  if (rq.length) Transport.send({ kind: 'fx', t: 'burst', list: rq });
+  if (BotChatRT.dirty) { BotChatRT.dirty = false; commit(); }
+}
+const chaosSoon = () => { if (!BotChatRT.flushT) BotChatRT.flushT = setTimeout(chaosFlush, 330); };
+function chaosSay(s, b, text) {
+  pushChat(s, { pid: b.id, name: b.name, text: botFill(s, text, b.id) });
+  BotChatRT.dirty = true; chaosSoon();
+}
+function chaosReact(s, pid, e) {
+  (BotChatRT.rq = BotChatRT.rq || []).push({ pid, e });
+  setTimeout(() => Store.room && spawnFx(e, Store.room.players[pid]), Math.random() * 300);
+  hypeCheck(s, e, pid);
+  chaosSoon();
+}
+function chaosTick(s, bots) {
+  const L = CHAOS_LV[chaosLvN(s)], at = now(), g = s.game;
+  if (!BotChatRT.cNext || BotChatRT.cNext < at - 2000) BotChatRT.cNext = at;
+  if (!BotChatRT.rNext || BotChatRT.rNext < at - 2000) BotChatRT.rNext = at;
+  if (cfg(s, 'chatMode') === 'livre') for (let n = 0; at >= BotChatRT.cNext && n < 6; n++) { BotChatRT.cNext += 1000 / L.msg * rand(.5, 1.5); const b = pick(bots); chaosSay(s, b, chaosLine(s, b)); }
+  for (let n = 0; at >= BotChatRT.rNext && n < 12; n++) { BotChatRT.rNext += 1000 / L.rx * rand(.5, 1.5); chaosReact(s, pick(bots).id, pick(REACTS)); }
+  if (s.settings.zoeira !== false && s.screen === 'game' && Math.random() < L.fx) {
+    const b = pick(bots), tgt = pick(playerIds(s).filter(id => id !== b.id && s.players[id])), r = Math.random();
+    if (r < .35) hostFx(s, b.id, { t: 'emote', e: pick(EMOTES) });
+    else if (r < .7 && tgt) hostFx(s, b.id, { t: 'throw', e: pick(THROWS), to: tgt });
+    else if (r < .85) hostFx(s, b.id, { t: 'horn' });
+    else if (r < .93) hostFx(s, b.id, { t: pick(['confetti', 'flash', 'bomb']) });
+    else hostFx(s, b.id, { t: 'shout', text: pick(['VALENDO!', 'BORA!!!', 'É AGORA', 'SEGURA!', 'NINGUÉM ME PARA', 'CAOS!!!']) });
+  }
+}
 function botsAmbient(s) {
   const bots = Object.values(s.players).filter(p => p.isBot);
   if (!bots.length || cfg(s, 'chatMode') === 'off' || s.paused || s.game?.paused) return false;
   const ultraChanged = ultraAntics(s, bots);
+  if (chaosMode(s)) { chaosTick(s, bots); return ultraChanged; }
   const T = botTalk(s), at = now(), g = s.game;
   if (!BotChatRT.nextTalk) BotChatRT.nextTalk = at + rand(3000, 7000) / T.m;
   if (at >= BotChatRT.nextTalk) {
@@ -7727,6 +7890,14 @@ const fxAnchor = pid => { const el = pid && $(`[data-pid="${pid}"] .av, [data-pi
 function runFx(m) {
   const s = Store.room, layer = $('#fxLayer');
   if (!s || !layer) return;
+  if (m.t === 'ach') {
+    const el = document.createElement('div');
+    el.className = 'fx-ach';
+    el.innerHTML = `<span class="fx-ach-e">${esc(m.e || '🏅')}</span><b>${esc(m.title || '')}</b><small>${esc(m.desc || '')}</small>`;
+    layer.appendChild(el); Sound.play('fanfare'); buzz([40, 30, 90]);
+    return setTimeout(() => el.remove(), 2700);
+  }
+  if (m.t === 'burst') { if (!isHost()) (m.list || []).slice(0, 40).forEach((x, i) => setTimeout(() => spawnFx(x.e, Store.room?.players[x.pid]), i * 45)); return; }
   if (m.pid === Store.me?.id && m.echo) return;
   // Sala cheia: com muita coisa voando ao mesmo tempo, as próximas ficam de fora (o grito sempre aparece).
   if (layer.childElementCount > 24 && m.t !== 'shout') return;
@@ -8075,7 +8246,7 @@ function spawnFx(e, p) {
     burst.appendChild(b);
   }
   layer.append(el, burst);
-  Sound.play('react');
+  if (now() - (spawnFx.snd || 0) > 90) { spawnFx.snd = now(); Sound.play('react'); }
   setTimeout(() => el.remove(), 2700);
   setTimeout(() => burst.remove(), 1000);
 }
@@ -8481,13 +8652,15 @@ const Actions = {
   tour() { Tour.i = null; Tour.open(0); },
   tourGo(el) { Tour.open(+el.dataset.i); },
   async install() {
-    if (Install.evt) { Install.evt.prompt(); const r = await Install.evt.userChoice.catch(() => null); Install.evt = null; if (r?.outcome !== 'accepted') render(); return; }
-    // iPhone/iPad não têm botão de instalar: mostra o caminho pelo menu Compartilhar.
-    $('#modalRoot').innerHTML = `<div class="modal" data-act="closeModal"><div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="insTitle" data-keep-open>
-      <div class="tour-e" aria-hidden="true">📲</div><h2 id="insTitle">Instalar no iPhone</h2>
-      <ol class="ins-steps"><li>Abra o PlayBox no <b>Safari</b>.</li><li>Toque em <b>Compartilhar</b> (o quadrado com a setinha para cima).</li><li>Escolha <b>Adicionar à Tela de Início</b> e toque em <b>Adicionar</b>.</li></ol>
-      <button type="button" class="btn primary pill" data-act="closeModal">Entendi</button></div></div>`;
+    if (Install.evt) {
+      const ev = Install.evt; Install.evt = null;
+      try { await ev.prompt(); const r = await ev.userChoice; if (r?.outcome !== 'accepted') render(); } catch { installHelp('menu'); }
+      return;
+    }
+    // Sem o pedido automático (iPhone, ou Android que já instalou/escondeu): mostra o caminho certo.
+    installHelp(isIOS() ? 'ios' : Install.installed ? 'help' : 'menu');
   },
+  installHelp() { installHelp('help'); },
   ultraOn() { ultraModal(0); },
   ultraOff() { dispatch({ type: 'host:ultra', on: false }); },
   ultraStep(el) {
@@ -8528,7 +8701,7 @@ const Actions = {
   newMatch() { dispatch({ type: 'host:newMatch' }); },
   vote(el) { PlayBox.castVote(el.dataset.id); },
   choose(el) { PlayBox.submitAnswer({ choice: el.dataset.v }); },
-  fato(el) { PlayBox.submitAnswer({ value: el.dataset.v === '1' }); },
+  fato(el) { const g = Store.room?.game; PlayBox.submitAnswer({ value: el.dataset.v === '1', bet: g && g.id === 'fato' ? Games.fato.myBet(g) : 1 }); },
   help() { dispatch({ type: 'help' }); },
   gcat(el) { Store.local.gcat = el.dataset.v; render(); },
   plEdit() { Store.local.plEdit = !Store.local.plEdit; render(); },
@@ -8716,6 +8889,20 @@ document.addEventListener('input', e => {
     draftT = setTimeout(() => dispatch({ type: 'draft', answers: stopInputs() }), 250);
   }
 });
+// Barrinha do caos: o número muda enquanto arrasta; ao soltar, vale para a sala (e liga o "Caos total").
+document.addEventListener('input', e => {
+  const r = e.target.closest?.('[data-range="chaosLevel"]');
+  if (!r) return;
+  const v = +r.value, lab = r.parentElement.querySelector('.chaos-val');
+  r.style.setProperty('--p', (v - 1) / 9 * 100 + '%');
+  if (lab) { lab.textContent = `${v} · ${CHAOS_NAMES[v]}`; lab.className = 'chaos-val lv' + v; }
+});
+document.addEventListener('change', e => {
+  const r = e.target.closest?.('[data-range="chaosLevel"]');
+  if (!r || !isHost()) return;
+  dispatch({ type: 'host:set', key: 'chaosLevel', v: +r.value });
+  if (!chaosMode(Store.room)) dispatch({ type: 'host:set', key: 'botTalk', v: 'caos' });
+});
 document.addEventListener('keydown', e => {
   // Enter num campo do Stop pula para o próximo; no último, aperta Stop se puder.
   const t = e.target;
@@ -8794,13 +8981,36 @@ document.addEventListener('visibilitychange', () => {
 });
 
 // ---- PWA: instalar como app e abrir sem internet (precisa do sw.js publicado junto do index.html)
-const Install = { evt: null };
+const Install = { evt: null, installed: false };
+const isAndroid = () => /android/i.test(navigator.userAgent);
+const isSamsung = () => /samsung|SM-[A-Z0-9]/i.test(navigator.userAgent);
+// Já instalado neste aparelho? (Chrome no Android responde pelo "related_applications" do manifesto.)
+navigator.getInstalledRelatedApps?.().then(list => { if (list?.length) { Install.installed = true; if (!Store.me) render(); } }).catch(() => {});
 const isStandalone = () => matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
 const isIOS = () => /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
 addEventListener('beforeinstallprompt', e => { e.preventDefault(); Install.evt = e; if (!Store.me) render(); });
-addEventListener('appinstalled', () => { Install.evt = null; toast('PlayBox instalado! Procure o ícone na tela inicial 🎉'); if (!Store.me) render(); });
-const installLinkHTML = () => !isStandalone() && (Install.evt || isIOS()) ? `<button type="button" class="linkish tour-link" data-act="install">📲 Instalar como app</button>` : '';
+addEventListener('appinstalled', () => { Install.evt = null; Install.installed = true; installHelp('done'); if (!Store.me) render(); });
+const installLinkHTML = () => isStandalone() ? ''
+  : Install.installed ? '<button type="button" class="linkish tour-link" data-act="installHelp">✅ App instalado: não achou o ícone?</button>'
+  : Install.evt || isIOS() || isAndroid() ? '<button type="button" class="linkish tour-link" data-act="install">📲 Instalar como app</button>' : '';
+// Ajuda de instalação: onde fica o ícone e a permissão que alguns celulares Android bloqueiam.
+function installHelp(kind) {
+  const ios = isIOS();
+  const head = kind === 'done' ? ['🎉', 'PlayBox instalado!'] : kind === 'menu' ? ['📲', 'Instalar pelo menu'] : ['🔎', 'Cadê o ícone?'];
+  const body = ios ? `<ol class="ins-steps"><li>Abra o PlayBox no <b>Safari</b>.</li><li>Toque em <b>Compartilhar</b> (o quadrado com a setinha para cima).</li><li>Escolha <b>Adicionar à Tela de Início</b> e toque em <b>Adicionar</b>.</li></ol>`
+    : kind === 'menu' ? `<ol class="ins-steps"><li>No Chrome, toque nos <b>três pontinhos ⋮</b> (canto de cima).${isSamsung() ? ' No <b>Samsung Internet</b>, toque em <b>≡</b> → <b>Adicionar página a</b> → <b>Tela inicial</b>.' : ''}</li><li>Escolha <b>Instalar app</b> (ou <b>Adicionar à tela inicial</b>).</li><li>Confirme em <b>Instalar</b>.</li></ol>`
+    : isSamsung() ? `<ol class="ins-steps"><li>Arraste a tela para cima (tela de apps) e procure <b>PlayBox</b>. Achou? Segure o ícone e toque em <b>Adicionar à tela inicial</b>.</li>
+       <li>Para os próximos irem direto: segure um espaço vazio da tela inicial → <b>Configurações</b> → ligue <b>Adicionar novos apps à tela inicial</b>.</li>
+       <li>Não está nem na tela de apps? <b>Configurações → Aplicativos</b> → procure <b>PlayBox</b> → <b>Desinstalar</b>. Depois instale de novo pelo <b>Chrome</b> (⋮ → <b>Instalar app</b>).</li>
+       <li>Usa o <b>Samsung Internet</b>? Toque em <b>≡</b> → <b>Adicionar página a</b> → <b>Tela inicial</b>.</li></ol>`
+    : `<ol class="ins-steps"><li>O ícone <b>PlayBox</b> pode ir só para a <b>lista de apps</b> (arraste a tela para cima e pesquise “PlayBox”).</li>
+       <li>Em <b>Xiaomi, Redmi, POCO, Oppo, Realme, Vivo e Huawei</b>, o Chrome precisa de permissão: <b>Configurações → Apps → Chrome → Permissões</b> (ou “Outras permissões”) → <b>Atalhos na tela inicial → Permitir</b>.</li>
+       <li>O Chrome diz que “já está instalado” mas você não acha? Vá em <b>Configurações → Apps</b>, procure <b>PlayBox</b>, desinstale e instale de novo por aqui.</li></ol>`;
+  $('#modalRoot').innerHTML = `<div class="modal" data-act="closeModal"><div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="insTitle" data-keep-open>
+    <div class="tour-e" aria-hidden="true">${head[0]}</div><h2 id="insTitle">${head[1]}</h2>${body}
+    <button type="button" class="btn primary pill" data-act="closeModal">Entendi</button></div></div>`;
+}
 async function boot() {
   Object.values(Games).forEach(addBetPhase);
   Store.local.profile = loadProfile();
