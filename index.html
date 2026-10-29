@@ -509,6 +509,21 @@ button.game-card:disabled{filter:grayscale(.9) brightness(.45);cursor:not-allowe
 .ff:disabled{cursor:default}
 .ff:disabled:not(.on){opacity:.3}
 .ff.on{box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--ink)}
+/* Quiz */
+.qz-opts{display:grid;grid-template-columns:1fr;gap:10px;margin:14px 0}
+@media (min-width:560px){.qz-opts{grid-template-columns:1fr 1fr}}
+.qz-opt{display:flex;align-items:center;gap:12px;min-height:56px;padding:10px 14px;border-radius:16px;border:1px solid var(--line-2);background:rgba(11,11,15,.55);color:var(--ink);font-weight:700;font-size:1rem;text-align:left;transition:filter .15s,transform .12s,opacity .2s}
+.qz-opt:hover:not(:disabled){filter:brightness(1.15)}
+.qz-opt:active:not(:disabled){transform:scale(.98)}
+.qz-opt:disabled{cursor:default}
+.qz-l{flex:none;display:grid;place-items:center;width:32px;height:32px;border-radius:999px;background:color-mix(in srgb,var(--g) 30%,transparent);font-weight:900}
+.qz-opts:not(.is-answer) .qz-opt:disabled:not(.on){opacity:.3}
+.qz-opt.on{border-color:var(--g);background:color-mix(in srgb,var(--g) 22%,var(--bg-2));box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--g)}
+.qz-opts.is-answer .qz-opt{opacity:.4}
+.qz-opt.ok{opacity:1!important;border-color:var(--ok);background:color-mix(in srgb,var(--ok) 22%,var(--bg-2))}
+.qz-opt.ok .qz-l{background:var(--ok);color:var(--on-color)}
+.qz-opt.bad{opacity:1!important;border-color:var(--coral);background:color-mix(in srgb,var(--coral) 18%,var(--bg-2))}
+.qz-opt.bad .qz-l{background:var(--coral);color:var(--on-color)}
 .mult-wrap{display:grid;justify-items:center;gap:8px}
 .mult-row{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;width:min(280px,100%);padding:4px;border-radius:999px;background:var(--bg-2);border:1px solid var(--line)}
 .mult-row span{display:grid;place-items:center;height:32px;border-radius:999px;font-weight:700;font-size:.88rem;color:var(--dim);transition:background .2s,color .2s}
@@ -977,6 +992,59 @@ body.fx-shake #app{animation:fxShake .6s}
 @keyframes fxAch{0%{transform:translateX(-50%) scale(.3) rotate(-8deg);opacity:0}12%{transform:translateX(-50%) scale(1.08) rotate(2deg);opacity:1}20%{transform:translateX(-50%) scale(1) rotate(0)}85%{opacity:1;transform:translateX(-50%) scale(1)}100%{opacity:0;transform:translateX(-50%) scale(.9) translateY(-20px)}}
 .fx-roulette{position:fixed;inset:0;display:grid;place-items:center;background:rgba(5,5,10,.55);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);animation:screenIn .2s ease;transition:opacity .4s}
 .fx-roulette.out{opacity:0}
+.rp-veil{position:fixed;inset:0;z-index:45;display:grid;place-items:center;padding:52px 16px 24px;background:radial-gradient(circle at 50% 42%,color-mix(in srgb,var(--c,#6366F1) 42%,transparent),rgba(5,5,10,.93) 66%);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);animation:screenIn .25s ease;transition:opacity .3s;overflow:hidden}
+.rp-veil.out{opacity:0}
+.rp-bars{position:absolute;top:16px;left:16px;right:64px;display:flex;gap:5px;z-index:2}
+.rp-bars i{flex:1;height:4px;border-radius:4px;background:rgba(255,255,255,.22);overflow:hidden}
+.rp-bars b{display:block;height:100%;width:0;background:#fff;border-radius:4px}
+.rp-bars i.done b{width:100%}
+.rp-bars i.on b{animation:rpBar var(--t,4.8s) linear forwards}
+@keyframes rpBar{to{width:100%}}
+.rp-x{position:absolute;top:6px;right:10px;z-index:3}
+.rp-tap{position:absolute;top:0;bottom:0;width:50%;background:none;border:0;padding:0;z-index:1;-webkit-tap-highlight-color:transparent}
+.rp-prev{left:0;cursor:w-resize}.rp-next{right:0;cursor:e-resize}
+.rp-card{position:relative;display:grid;justify-items:center;gap:10px;text-align:center;width:min(600px,100%);max-height:100%;pointer-events:none}
+.rp-card.in{animation:rpIn .55s cubic-bezier(.2,.9,.3,1.2) both}
+@keyframes rpIn{from{opacity:0;transform:translateY(26px) scale(.93)}}
+.rp-tag{margin:0;padding:6px 14px;border-radius:999px;background:color-mix(in srgb,var(--c) 28%,transparent);border:1px solid color-mix(in srgb,var(--c) 60%,transparent);font-size:.78rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
+.rp-art{display:grid;place-items:center;min-height:40px}
+.rp-title{margin:0;font-size:clamp(1.7rem,7vmin,3.3rem);font-weight:900;line-height:1.1;overflow-wrap:anywhere;text-shadow:0 0 40px color-mix(in srgb,var(--c) 60%,transparent)}
+.rp-text{margin:0;max-width:44ch;color:var(--muted);font-size:clamp(1rem,3.2vmin,1.25rem)}
+.rp-e{display:block;font-size:clamp(4rem,18vmin,7.5rem);line-height:1.05;animation:rpBob 2.2s ease-in-out infinite}
+@keyframes rpBob{50%{transform:translateY(-8px) rotate(-4deg)}}
+.rp-cv{display:block;width:min(460px,86vw,calc(52vh * 1.333));height:auto;aspect-ratio:4/3;border-radius:18px;background:#fff;box-shadow:0 18px 60px -12px color-mix(in srgb,var(--c) 70%,transparent);transform:rotate(-1.5deg)}
+.rp-games{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;max-width:420px}
+.rp-games span{display:grid;place-items:center;width:46px;height:46px;border-radius:14px;background:var(--gc);color:#fff;box-shadow:0 6px 18px -6px var(--gc);animation:rpIn .5s both}
+.rp-games span:nth-child(2n){animation-delay:.08s}.rp-games span:nth-child(3n){animation-delay:.16s}
+.rp-tiles{display:flex;gap:6px}
+.rp-tiles b{display:grid;place-items:center;width:clamp(42px,11vmin,62px);aspect-ratio:1;border-radius:10px;background:#22C55E;color:#fff;font-size:clamp(1.4rem,6vmin,2.3rem);font-weight:900;text-transform:uppercase;animation:rpFlip .5s both;animation-delay:calc(var(--i) * .13s)}
+@keyframes rpFlip{from{transform:rotateX(90deg);background:#3f3f46}}
+.rp-medals{list-style:none;margin:0;padding:0;display:grid;gap:10px;width:min(440px,90vw)}
+.rp-medals li{display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;column-gap:12px;align-items:center;text-align:left;padding:10px 14px;border-radius:16px;background:var(--surface-solid);border:1px solid var(--line);animation:rpIn .5s both}
+.rp-medals li:nth-child(2){animation-delay:.15s}.rp-medals li:nth-child(3){animation-delay:.3s}.rp-medals li:nth-child(4){animation-delay:.45s}
+.rp-medals span{grid-row:span 2;font-size:2rem}
+.rp-medals small{color:var(--muted)}
+.rp-top3{display:flex;align-items:flex-end;justify-content:center;gap:clamp(12px,5vw,36px);padding-top:30px}
+.rp-top3 > div{display:grid;justify-items:center;gap:6px;animation:rpIn .6s both}
+.rp-p2{animation-delay:.3s!important}.rp-p3{animation-delay:.5s!important}
+.rp-top3 small{font-weight:800;color:var(--muted);max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rp-p1{position:relative}
+.rp-crown{position:absolute;top:-30px;left:50%;transform:translateX(-50%);color:#FBBF24;animation:rpBob 1.6s ease-in-out infinite}
+.rp-crown svg{width:34px;height:34px}
+.is-final .rp-title{color:#FBBF24}
+@media (prefers-reduced-motion:reduce){.rp-card.in,.rp-e,.rp-tiles b,.rp-crown{animation:none}}
+.go-veil{position:fixed;inset:0;z-index:32;display:grid;place-items:center;background:radial-gradient(circle at 50% 45%,color-mix(in srgb,var(--gc) 35%,transparent),rgba(5,5,10,.82) 60%);-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);animation:screenIn .2s ease;transition:opacity .35s}
+.go-veil.out{opacity:0}
+.go-box{display:grid;justify-items:center;gap:2px;text-align:center;padding:16px}
+.go-ic{font-size:2.4rem;line-height:1}
+.go-ic svg{width:2.6rem;height:2.6rem}
+.go-name{font-size:clamp(1.2rem,4.5vmin,2rem);font-weight:900;letter-spacing:.02em}
+.go-n{display:block;font-size:clamp(6rem,32vmin,15rem);font-weight:900;line-height:1;color:#fff;text-shadow:0 0 50px var(--gc),0 6px 0 rgba(0,0,0,.35);font-variant-numeric:tabular-nums}
+.go-n.pop{animation:goPop .95s cubic-bezier(.2,.9,.3,1.25) both}
+.go-n.go{color:#FBBF24;text-shadow:0 0 60px #F59E0B,0 6px 0 rgba(0,0,0,.35)}
+.go-sub{font-weight:800;color:var(--muted);min-height:1.2em}
+@keyframes goPop{0%{transform:scale(2.4);opacity:0}22%{transform:scale(1);opacity:1}80%{opacity:1}100%{transform:scale(.88);opacity:.55}}
+@media (prefers-reduced-motion:reduce){.go-n.pop{animation:none}}
 .rl-box{display:grid;justify-items:center;gap:6px;padding:22px 30px;border-radius:26px;background:var(--surface-solid);border:2px solid rgba(251,191,36,.6);box-shadow:0 0 70px -10px rgba(251,191,36,.55);min-width:min(300px,86vw);text-align:center}
 .rl-e{display:grid;place-items:center;width:96px;height:96px;border-radius:24px;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.35);font-size:3.6rem;line-height:1}
 .rl-e.done{animation:tourPop .5s cubic-bezier(.3,1.8,.5,1);box-shadow:0 0 30px rgba(251,191,36,.6)}
@@ -2242,8 +2310,12 @@ function engineStart(s, gameId, rounds) {
   // Alguns jogos longos (como o Lobisomem) limitam o número de rodadas.
   s.game = { id: gameId, round: 0, total: Games[gameId].rounds ? Math.min(Games[gameId].rounds, rounds) : rounds, phase: null, phaseStart: 0, deadline: null, dur: 0, data: {}, earned: {}, roundDelta: {}, used: [], roster: [] };
   engineNextRound(s);
+  // Contagem antes do jogo: o relógio da primeira etapa só começa depois do "VAI!".
+  const cd = cfg(s, 'countdown');
+  if (cd && s.game.phase !== 'final') { s.game.cd = now() + cd * 1000; s.game.cdLen = cd; shiftTimers(s.game, cd * 1000); }
   botsGreet(s);
 }
+const counting = g => !!(g?.cd && now() < g.cd);
 function engineNextRound(s) {
   const g = s.game;
   g.round++; g.roundDelta = {};
@@ -2278,6 +2350,7 @@ function enginePhase(s, name) {
     if (modeOf(s) === 'apostas') settleBets(s);
     roundRevealExtras(s);
     roundAchievements(s, s.game);
+    replayCapture(s);
     if (modeOf(s) === 'territorio') conquer(s);
     botsReact(s);
   }
@@ -5692,6 +5765,98 @@ Object.assign(Games.quemdisse, { cat: 'social' }); Object.assign(Games.mimica, {
 Object.assign(Games.detalhe, { cat: 'rapidez' }); Object.assign(Games.ritmo, { cat: 'rapidez' }); Object.assign(Games.vod, { cat: 'social' });
 Games.mimica.secret = g => g.phase === 'pick' ? g.data.opts.map(i => EMOJI_Q[i].t) : g.phase === 'tell' ? [EMOJI_Q[g.data.qi].t] : [];
 
+/* ---------- 30. Quiz ---------- */
+// q: pergunta; o: alternativas; a: índice da certa em o; x: curiosidade mostrada na resposta.
+const QUIZ_Q = [
+  { q: 'Qual é o único mamífero capaz de voar de verdade, sem só planar?', o: ['Esquilo-voador', 'Morcego', 'Colugo', 'Ornitorrinco'], a: 1, x: 'O esquilo-voador e o colugo só planam. A asa do morcego é uma pele fininha esticada entre dedos bem compridos.' },
+  { q: 'Em que ano o Brasil ganhou sua primeira Copa do Mundo?', o: ['1950', '1958', '1962', '1970'], a: 1, x: 'Foi na Suécia: 5 x 2 na final. Pelé tinha 17 anos e fez dois gols.' },
+  { q: 'Em qual planeta um dia dura mais que um ano?', o: ['Mercúrio', 'Marte', 'Vênus', 'Netuno'], a: 2, x: 'Vênus leva uns 243 dias para girar em torno de si e só 225 para dar a volta no Sol. E lá o Sol nasce no oeste.' },
+  { q: 'Quantos ossos tem o corpo de uma pessoa adulta?', o: ['186', '206', '226', '300'], a: 1, x: 'Um bebê nasce com cerca de 300. Vários se juntam com o crescimento, como os do crânio.' },
+  { q: 'Qual país tem mais fusos horários, contando seus territórios?', o: ['Rússia', 'Estados Unidos', 'França', 'China'], a: 2, x: 'A França tem 12, graças às ilhas espalhadas pelo mundo. A China, enorme, usa um só.' },
+  { q: 'Qual destes animais, sem ser primata, tem digitais quase iguais às humanas?', o: ['Coala', 'Panda', 'Lontra', 'Guaxinim'], a: 0, x: 'As digitais do coala são tão parecidas com as nossas que é difícil diferenciar até no microscópio.' },
+  { q: 'Quanto tempo a luz do Sol leva para chegar à Terra?', o: ['8 segundos', '8 minutos', '8 horas', 'Chega na hora'], a: 1, x: 'Cerca de 8 minutos e 20 segundos. Quando você olha o Sol, vê como ele era 8 minutos atrás.' },
+  { q: 'Qual país tem mais pirâmides?', o: ['Egito', 'México', 'Sudão', 'Peru'], a: 2, x: 'O Sudão tem uns 200 a 250, quase o dobro do Egito. Foram feitas pelo antigo Reino de Kush.' },
+  { q: 'Qual destes animais sobreviveu exposto ao vácuo do espaço?', o: ['Barata', 'Tardígrado', 'Água-viva', 'Escorpião'], a: 1, x: 'Em 2007, tardígrados ficaram do lado de fora de uma nave. Muitos voltaram vivos e ainda tiveram filhotes.' },
+  { q: 'Qual é o maior planeta do Sistema Solar?', o: ['Saturno', 'Júpiter', 'Netuno', 'Urano'], a: 1, x: 'Caberiam mais de mil Terras dentro de Júpiter.' },
+  { q: 'Qual é a capital da Austrália?', o: ['Sydney', 'Melbourne', 'Canberra', 'Perth'], a: 2, x: 'Sydney e Melbourne brigavam pelo posto. Então construíram Canberra, no meio do caminho.' },
+  { q: 'Qual é o maior órgão do corpo humano?', o: ['Fígado', 'Pele', 'Intestino', 'Cérebro'], a: 1, x: 'A pele de um adulto pesa alguns quilos e se renova o tempo todo.' },
+  { q: 'Qual elemento químico tem o símbolo Au?', o: ['Prata', 'Ouro', 'Alumínio', 'Argônio'], a: 1, x: 'Au vem de "aurum", ouro em latim. A prata é Ag, de "argentum".' },
+  { q: 'Em que ano o ser humano pisou na Lua pela primeira vez?', o: ['1965', '1969', '1972', '1975'], a: 1, x: 'Neil Armstrong desceu da Apollo 11 em 20 de julho de 1969.' },
+  { q: 'Quem pintou a Mona Lisa?', o: ['Michelangelo', 'Leonardo da Vinci', 'Rafael', 'Van Gogh'], a: 1, x: 'Ela é pequena, uns 77 x 53 cm, e fica atrás de um vidro à prova de balas no Louvre.' },
+  { q: 'Qual é o maior oceano do mundo?', o: ['Atlântico', 'Índico', 'Pacífico', 'Ártico'], a: 2, x: 'O Pacífico é maior que todos os continentes juntos.' },
+  { q: 'Qual é o animal terrestre mais rápido?', o: ['Leão', 'Guepardo', 'Cavalo', 'Antílope'], a: 1, x: 'O guepardo passa de 100 km/h, mas só aguenta por poucos segundos.' },
+  { q: 'Quantas cordas tem um violão comum?', o: ['4', '5', '6', '7'], a: 2, x: 'O cavaquinho tem 4. Existe violão de 7 cordas, muito usado no choro.' },
+  { q: 'Qual língua tem mais falantes nativos no mundo?', o: ['Inglês', 'Espanhol', 'Mandarim', 'Hindi'], a: 2, x: 'O mandarim tem quase 1 bilhão de falantes nativos. O português fica entre as 10 primeiras.' },
+  { q: 'Em qual estado fica a maior parte do Pantanal?', o: ['Mato Grosso do Sul', 'Mato Grosso', 'Goiás', 'Tocantins'], a: 0, x: 'Cerca de 65% fica no Mato Grosso do Sul. Ele também chega à Bolívia e ao Paraguai.' },
+  { q: 'Qual gás as plantas tiram do ar para fazer fotossíntese?', o: ['Oxigênio', 'Gás carbônico', 'Nitrogênio', 'Hélio'], a: 1, x: 'Elas usam gás carbônico, água e luz para fazer açúcar, e soltam oxigênio.' },
+  { q: 'Medida do pé ao topo, contando a parte embaixo do mar, qual é a montanha mais alta?', o: ['Everest', 'Mauna Kea', 'K2', 'Aconcágua'], a: 1, x: 'O Mauna Kea, no Havaí, tem mais de 10 mil metros desde a base no fundo do oceano. O Everest ganha medindo a partir do nível do mar.' },
+  { q: 'Qual destes animais NÃO é um mamífero?', o: ['Golfinho', 'Baleia', 'Tubarão', 'Morcego'], a: 2, x: 'O tubarão é um peixe. Golfinhos e baleias respiram ar e amamentam os filhotes.' },
+  { q: 'Quem escreveu Dom Casmurro?', o: ['Machado de Assis', 'José de Alencar', 'Clarice Lispector', 'Monteiro Lobato'], a: 0, x: 'Até hoje ninguém sabe ao certo se Capitu traiu Bentinho.' },
+  { q: 'Quantas patas tem uma aranha?', o: ['6', '8', '10', '12'], a: 1, x: 'Insetos têm 6. Aranhas não são insetos: são aracnídeos.' },
+  { q: 'No primeiro jogo em que apareceu, Donkey Kong (1981), qual era a profissão do Mario?', o: ['Encanador', 'Carpinteiro', 'Bombeiro', 'Pedreiro'], a: 1, x: 'Ele era carpinteiro e se chamava Jumpman. Só virou encanador depois.' },
+  { q: 'Qual é o jogo mais vendido de todos os tempos?', o: ['Tetris', 'Minecraft', 'GTA V', 'Mario Kart 8'], a: 1, x: 'Minecraft já passou de 300 milhões de cópias.' },
+  { q: 'Qual é o Pokémon número 1 da Pokédex?', o: ['Pikachu', 'Bulbasaur', 'Charmander', 'Mew'], a: 1, x: 'O Pikachu, o mais famoso de todos, é só o número 25.' },
+  { q: 'Quantos jogadores de cada time ficam em quadra no vôlei?', o: ['5', '6', '7', '11'], a: 1, x: 'No vôlei de praia são só 2 de cada lado.' },
+  { q: 'Qual é o maior deserto do mundo?', o: ['Saara', 'Antártida', 'Gobi', 'Atacama'], a: 1, x: 'Deserto é lugar onde quase não chove, não importa o calor. A Antártida é o maior; o Saara é o maior deserto quente.' },
+  { q: 'Quantos anos durou a Guerra dos Cem Anos?', o: ['100', '116', '99', '150'], a: 1, x: 'Foi de 1337 a 1453, entre Inglaterra e França, com várias pausas.' },
+  { q: 'Qual é a capital do Canadá?', o: ['Toronto', 'Vancouver', 'Ottawa', 'Montreal'], a: 2, x: 'Toronto é a maior cidade, mas a capital é Ottawa.' },
+  { q: 'Quantas teclas tem um piano comum?', o: ['66', '76', '88', '100'], a: 2, x: 'São 52 brancas e 36 pretas.' },
+  { q: 'Qual animal tem o maior coração do mundo?', o: ['Elefante', 'Baleia-azul', 'Girafa', 'Tubarão-baleia'], a: 1, x: 'O coração da baleia-azul pode pesar uns 180 kg.' },
+  { q: 'Em que ano os portugueses chegaram ao Brasil?', o: ['1492', '1500', '1530', '1822'], a: 1, x: 'Cabral chegou em 22 de abril de 1500. Em 1492, Colombo chegou à América Central.' },
+  { q: 'Quais planetas do Sistema Solar têm anéis?', o: ['Só Saturno', 'Saturno e Júpiter', 'Júpiter, Saturno, Urano e Netuno', 'Todos os planetas'], a: 2, x: 'Os quatro gigantes têm anéis. Os de Saturno só são os mais brilhantes.' },
+  { q: 'Qual é a letra mais usada na língua portuguesa?', o: ['A', 'E', 'O', 'S'], a: 0, x: 'O A aparece em cerca de 14% das letras de um texto. O E vem logo atrás.' },
+  { q: 'Quantos minutos tem um dia?', o: ['1.140', '1.440', '1.240', '1.400'], a: 1, x: '24 horas vezes 60 minutos: 1.440. Ou 86.400 segundos.' },
+  { q: 'Para a botânica, o tomate é...', o: ['Legume', 'Fruta', 'Verdura', 'Raiz'], a: 1, x: 'Ele nasce da flor e tem sementes, então é fruto. Na cozinha, a gente usa como legume.' },
+  { q: 'Qual rio passa por mais países?', o: ['Nilo', 'Amazonas', 'Danúbio', 'Reno'], a: 2, x: 'O Danúbio passa por 10 países e por 4 capitais, como Viena e Budapeste.' },
+];
+
+Games.quiz = {
+  id: 'quiz', name: 'Quiz', tag: 'Quatro alternativas', icon: 'bulb', color: '#10B981', lip: '#047857', min: 1,
+  how: 'Uma pergunta com quatro alternativas por rodada. Acertar vale pontos conforme a velocidade: x3 no começo, x2 no meio e x1 no fim. Errar não tira pontos.',
+  first: 'answer',
+  init(g) { g.data = { qi: drawItem(g, QUIZ_Q), ord: shuffle([0, 1, 2, 3]), answers: {} }; },
+  phases: {
+    answer: { label: 'Escolha uma', dur: 15, bot: [2, 12], next: 'reveal', allIn: (g, s) => active(g, s).every(id => id in g.data.answers) },
+    reveal: { label: 'Resposta', dur: 10, enter(g, s) {
+      const q = QUIZ_Q[g.data.qi], d = {};
+      Object.entries(g.data.answers).forEach(([pid, a]) => { if (g.data.ord[a.v] === q.a) add(d, pid, fatoMult(a.t, Games.quiz.phases.answer.dur)); });
+      updateScores(s, d);
+    } },
+  },
+  handle(g, s, pid, a) {
+    const v = +a.value;
+    if (!inRoster(g, pid) || g.phase !== 'answer' || a.type !== 'submit' || pid in g.data.answers || !(v >= 0 && v < 4)) return false;
+    g.data.answers[pid] = { v, t: now() - g.phaseStart }; return true;
+  },
+  done(g, pid) { return g.phase === 'answer' && pid in g.data.answers; },
+  bot(g) {
+    const right = g.data.ord.indexOf(QUIZ_Q[g.data.qi].a);
+    return { type: 'submit', value: Math.random() < botP(.65) ? right : pick([0, 1, 2, 3].filter(k => k !== right)) };
+  },
+  ui: { pick(el) { dispatch({ type: 'submit', value: +el.dataset.v }); } },
+  view(g, s, me) {
+    const q = QUIZ_Q[g.data.qi], ord = g.data.ord, mine = g.data.answers[me], can = inRoster(g, me);
+    const right = ord.indexOf(q.a), L = 'ABCD';
+    const P = `<blockquote class="ff-quote">${esc(q.q)}</blockquote>`;
+    const opt = (k, cls, attrs) => `<button class="qz-opt ${cls}" ${attrs}><span class="qz-l">${L[k]}</span><span>${esc(q.o[ord[k]])}</span></button>`;
+    if (g.phase === 'answer') {
+      const locked = mine ? fatoMult(mine.t, g.dur) : 0;
+      return P + `<div class="qz-opts">${ord.map((_, k) => opt(k, mine && mine.v === k ? 'on' : '', `data-act="g:pick" data-v="${k}" ${mine || !can ? 'disabled' : ''}`)).join('')}</div>
+        <div class="mult-wrap"><span class="hint">${mine ? 'Você garantiu' : 'Responda rápido: vale agora'}</span>
+          <div class="mult-row" data-mult-start="${g.phaseStart}" data-mult-dur="${g.dur}" ${mine ? 'data-frozen="1"' : ''}>${[3, 2, 1].map(m => `<span data-m="${m}" class="${m === locked ? 'now' : ''}">x${m}</span>`).join('')}</div></div>
+        ${mine ? `<p class="hint center">Você escolheu <b>${L[mine.v]}</b> em ${(mine.t / 1000).toFixed(1).replace('.', ',')} s.</p>` : ''}`;
+    }
+    const rows = Object.entries(g.data.answers).sort((a, b) => a[1].t - b[1].t).map(([pid, a]) => `<li class="res-row">${avatar(s.players[pid], 'sm')}
+      <span class="res-who"><span class="res-name">${esc(nameOf(s, pid))}</span>${a.v === right ? '<span class="tag tag-good">Acertou</span>' : '<span class="tag tag-bad">Errou</span>'}</span>
+      <span class="res-val">${L[a.v]}<span class="res-sub">${(a.t / 1000).toFixed(1).replace('.', ',')} s</span></span>${deltaBadge(g.roundDelta[pid])}</li>`).join('');
+    return P + `<div class="qz-opts is-answer">${ord.map((_, k) => opt(k, k === right ? 'ok' : mine && mine.v === k ? 'bad' : '', 'disabled')).join('')}</div>
+      <p class="lede">${esc(q.x)}</p>
+      <ul class="res-list">${rows || '<li class="res-row">Ninguém respondeu a tempo.</li>'}</ul>`;
+  },
+};
+GAME_ORDER.push('quiz');
+Games.quiz.cat = 'saber';
+
 /* =====================================================================
    Extras da partida: medalhas, melhores momentos, números de cada um,
    imagens para compartilhar, narração, vibração, temas, conteúdo da sala,
@@ -5725,7 +5890,39 @@ function matchMedals(s) {
     return { m, n, ids: e.filter(([, v]) => v[m.k] === n).map(([pid]) => pid) };
   }).filter(Boolean);
 }
-function addMoment(s, m) { const a = s.match.moments || (s.match.moments = []); a.push(m); if (a.length > 10) a.shift(); }
+function addMoment(s, m) {
+  const a = s.match.moments || (s.match.moments = []);
+  m.key = m.key || m.k; m.g = m.g || s.game?.id;
+  // Um de cada tipo: fica o mais forte (sc maior) ou, sem nota, o mais recente.
+  const i = a.findIndex(x => (x.key || x.k) === m.key);
+  if (i >= 0) { if ((a[i].sc ?? -Infinity) > (m.sc ?? Infinity)) return; a.splice(i, 1); }
+  a.push(m); if (a.length > 18) a.shift();
+}
+// ---- Replay da partida: guarda os lances mais legais de cada rodada para o resumo no pódio
+function replayCapture(s) {
+  const g = s.game, d = g.data || {}, P = id => s.players[id], human = id => P(id) && !P(id).isBot ? 1 : 0;
+  const top = Object.entries(g.roundDelta || {}).filter(([id, n]) => n > 0 && P(id)).sort((a, b) => b[1] - a[1])[0];
+  if (top && top[1] >= 3) addMoment(s, { k: 'jump', pid: top[0], n: top[1], sc: top[1] + human(top[0]) * .5 });
+  const hot = Object.entries(s.match.streak || {}).filter(([id, n]) => n >= 3 && P(id)).sort((a, b) => b[1] - a[1])[0];
+  if (hot) addMoment(s, { k: 'fire', pid: hot[0], n: hot[1], sc: hot[1] });
+  if (g.id === 'desenho' && d.word && (d.order || []).length && (d.strokes || []).length >= 2) {
+    const size = JSON.stringify(d.strokes).length;
+    // Desenho gigante não vai para o resumo (deixaria a sala pesada na rede).
+    if (size < 60000) addMoment(s, { k: 'drawd', pid: d.drawer, word: d.word, n: d.order.length, strokes: d.strokes.slice(), sc: d.order.length + (size > 3000 ? 1 : 0) });
+  }
+  if (g.id === 'reflexo') {
+    const f = Object.entries(d.taps || {}).filter(([id, x]) => !x.early && x.ms < 9999 && P(id)).sort((a, b) => a[1].ms - b[1].ms)[0];
+    if (f && f[1].ms < 450) addMoment(s, { k: 'reflex', pid: f[0], ms: f[1].ms, sc: 1000 - f[1].ms + human(f[0]) * 200 });
+  }
+  if (g.id === 'termo') {
+    const f = Object.entries(d.solved || {}).filter(([id]) => P(id)).sort((a, b) => a[1].n - b[1].n)[0];
+    if (f && f[1].n <= 3) addMoment(s, { k: 'termo', pid: f[0], n: f[1].n, word: d.answer, sc: 10 - f[1].n + human(f[0]) });
+  }
+  if (g.id === 'mapa') {
+    const q = MAP_Q[d.qi], f = q && Object.entries(d.guesses || {}).filter(([id]) => P(id)).map(([id, p]) => [id, mapKm(p, q)]).sort((a, b) => a[1] - b[1])[0];
+    if (f && f[1] < 800) addMoment(s, { k: 'map', pid: f[0], km: Math.round(f[1]), place: q.t, e: q.e, sc: 2000 - f[1] + human(f[0]) * 300 });
+  }
+}
 function medalsHTML(s) {
   const list = matchMedals(s);
   if (!list.length) return '';
@@ -5742,17 +5939,111 @@ const momentLine = (s, m) => {
     case 'type': return `<b>Dedos mais rápidos</b><p>${nm(m.pid)} digitou a ${m.wpm} palavras por minuto.</p>`;
     case 'dare': return `<b>Coragem da noite</b><p>${nm(m.pid)} topou: “${esc(m.text)}”</p>`;
     case 'auction': return `<b>Pior compra do leilão</b><p>${nm(m.pid)} pagou ${plural(m.bid, 'moeda', 'moedas')} por ${m.e} ${esc(m.name)}.</p>`;
+    case 'jump': return `<b>Rodada mais lucrativa</b><p>${nm(m.pid)} fez ${plural(m.n, 'ponto', 'pontos')} numa rodada só${Games[m.g] ? ` (${Games[m.g].name})` : ''}.</p>`;
+    case 'fire': return `<b>Em chamas</b><p>${nm(m.pid)} pontuou ${m.n} rodadas seguidas 🔥</p>`;
+    case 'reflex': return `<b>Reflexo de ninja</b><p>${nm(m.pid)} tocou em ${m.ms} ms.</p>`;
+    case 'termo': return `<b>Gênio do Termo</b><p>${nm(m.pid)} achou “${esc(m.word)}” em ${plural(m.n, 'chute', 'chutes')}.</p>`;
+    case 'map': return `<b>GPS humano</b><p>${nm(m.pid)} marcou ${m.e} ${esc(m.place)} a ${mapKmText(m.km)}.</p>`;
+    case 'drawd': return `<b>Desenho mais acertado</b><p>${nm(m.pid)} desenhou “${esc(m.word)}” e ${plural(m.n, 'pessoa acertou', 'pessoas acertaram')}.</p><canvas class="dw-board tel-cv mo-cv" width="1000" height="750" data-tel='${JSON.stringify(m.strokes || []).replace(/'/g, '&#39;')}' role="img" aria-label="Desenho"></canvas>`;
     case 'draw': return `<b>Desenho favorito do telefone</b><p>${nm(m.pid)} desenhou “${esc(m.phrase || '?')}”.</p><canvas class="dw-board tel-cv mo-cv" width="1000" height="750" data-tel='${JSON.stringify(m.strokes || []).replace(/'/g, '&#39;')}' role="img" aria-label="Desenho"></canvas>`;
     default: return '';
   }
 };
 function momentsHTML(s) {
   // Um momento de cada tipo (o mais recente), para a lista não ficar repetitiva.
-  const list = [...new Map((s.match.moments || []).filter(m => momentLine(s, m)).map(m => [m.k, m])).values()];
+  const list = [...new Map((s.match.moments || []).filter(m => m.k !== 'ach' && momentLine(s, m)).map(m => [m.key || m.k, m])).values()];
   if (!list.length) return '';
   return `<section class="panel moments" aria-labelledby="moTitle"><h2 class="panel-title" id="moTitle">Melhores momentos</h2>
     <ul class="mo-list">${list.map(m => `<li class="mo-item">${momentLine(s, m)}</li>`).join('')}</ul></section>`;
 }
+
+// Cada momento vira um slide do replay.
+const RP_ORDER = ['drawd', 'draw', 'lie', 'cap', 'map', 'reflex', 'termo', 'type', 'mane', 'auction', 'dare', 'jump', 'fire', 'ach'];
+function replaySlide(s, m) {
+  const P = s.players[m.pid], nm = esc(P?.name || 'Alguém'), av = P ? avatar(P, 'xl') : '', big = e => `<span class="rp-e">${esc(e)}</span>`;
+  const cv = st => `<canvas class="rp-cv" width="1000" height="750" data-tel='${JSON.stringify(st || []).replace(/'/g, '&#39;')}' role="img" aria-label="Desenho"></canvas>`;
+  const gm = Games[m.g], c = gm?.color || '#6366F1';
+  switch (m.k) {
+    case 'drawd': return { c, tag: 'Desenho mais acertado', art: cv(m.strokes), title: `“${esc(m.word)}”`, text: `por ${nm} · ${plural(m.n, 'pessoa acertou', 'pessoas acertaram')}`, t: 6000 };
+    case 'draw': return { c, tag: 'Obra-prima do telefone', art: cv(m.strokes), title: `“${esc(m.phrase || '?')}”`, text: `Desenho de ${nm}`, t: 6000 };
+    case 'lie': return { c, tag: 'A mentira que mais enganou', art: av, title: `“${esc(m.text)}”`, text: `${nm} enganou ${plural(m.n, 'pessoa', 'pessoas')}` };
+    case 'cap': return { c, tag: 'Legenda campeã', art: big(m.e), title: `“${esc(m.text)}”`, text: `by ${nm}` };
+    case 'map': return { c, tag: 'GPS humano', art: big(m.e), title: mapKmText(m.km), text: `foi o quanto ${nm} errou ${esc(m.place)}` };
+    case 'reflex': return { c, tag: 'Reflexo de ninja', art: av, title: `${m.ms} ms`, text: `${nm} tocou mais rápido que um piscar de olhos` };
+    case 'termo': return { c, tag: 'Gênio do Termo', art: `<div class="rp-tiles">${[...String(m.word || '')].map((l, i) => `<b style="--i:${i}">${esc(l)}</b>`).join('')}</div>`, title: `em ${plural(m.n, 'chute', 'chutes')}!`, text: `${nm} achou a palavra` };
+    case 'type': return { c, tag: 'Dedos mais rápidos', art: av, title: `${m.wpm} palavras/min`, text: `${nm} digitou como um foguete` };
+    case 'mane': return { c, tag: 'O chute mais doido', art: av, title: `${fmtNum(m.v)}?!`, text: `${nm} chutou isso para “${esc(m.q)}”. Era ${fmtNum(m.a)}.` };
+    case 'auction': return { c, tag: 'Pior compra do leilão', art: big(m.e), title: plural(m.bid, 'moeda', 'moedas'), text: `${nm} pagou isso por ${esc(m.name)}` };
+    case 'dare': return { c, tag: 'Coragem da noite', art: av, title: `“${esc(m.text)}”`, text: `${nm} topou o desafio` };
+    case 'jump': return { c, tag: 'Rodada mais lucrativa', art: av, title: `+${m.n} pontos`, text: `${nm} numa rodada só${gm ? ` de ${gm.name}` : ''}` };
+    case 'fire': return { c: '#F97316', tag: 'Em chamas', art: av, title: `🔥 ${m.n} seguidas`, text: `${nm} pontuou ${m.n} rodadas sem parar` };
+    case 'ach': return { c: '#FBBF24', tag: 'Conquista', art: big(m.e), title: esc(m.title), text: esc(m.desc) };
+    default: return null;
+  }
+}
+function replaySlides(s) {
+  const ids = s.order.filter(id => plays(s, id) && s.players[id]);
+  const ranked = ids.slice().sort((a, b) => s.players[b].score - s.players[a].score);
+  const played = (s.match.played || []).filter(id => Games[id]);
+  const ms = (s.match.moments || []).slice().sort((a, b) => RP_ORDER.indexOf(a.k) - RP_ORDER.indexOf(b.k));
+  const achs = ms.filter(m => m.k === 'ach').slice(-3);
+  const body = [...ms.filter(m => m.k !== 'ach'), ...achs].map(m => replaySlide(s, m)).filter(Boolean).slice(0, 10);
+  if (!body.length || !ranked.length) return [];
+  const out = [{ c: '#6366F1', tag: 'Replay da partida', art: `<div class="rp-games">${played.map(id => `<span style="--gc:${Games[id].color}" title="${esc(Games[id].name)}">${gameIcon(Games[id])}</span>`).join('')}</div>`,
+    title: 'Os melhores lances', text: `${plural(played.length || 1, 'jogo', 'jogos')} · ${plural(ids.length, 'jogador', 'jogadores')}. Bora relembrar?` }, ...body];
+  const medals = matchMedals(s).slice(0, 4);
+  if (medals.length) out.push({ c: '#A855F7', tag: 'Medalhas', art: `<ul class="rp-medals">${medals.map(({ m, ids: w }) => `<li><span>${m.e}</span><b>${m.name}</b><small>${w.map(pid => esc(s.players[pid].name)).join(', ')}</small></li>`).join('')}</ul>`, title: '', text: '' });
+  const [w, p2, p3] = ranked.map(id => s.players[id]);
+  out.push({ c: '#FBBF24', tag: 'E quem levou foi…', final: true, t: 6500,
+    art: `<div class="rp-top3">${p2 ? `<div class="rp-p2">${avatar(p2, 'lg')}<small>2º · ${esc(p2.name)}</small></div>` : ''}<div class="rp-p1"><span class="rp-crown">${icon('crown')}</span>${avatar(w, 'xl')}</div>${p3 ? `<div class="rp-p3">${avatar(p3, 'lg')}<small>3º · ${esc(p3.name)}</small></div>` : ''}</div>`,
+    title: `${esc(w.name)}!`, text: plural(w.score, 'ponto', 'pontos') });
+  return out;
+}
+const Replay = {
+  el: null, i: 0, list: [], timer: null, autoT: null,
+  open(s) {
+    const list = replaySlides(s);
+    if (list.length < 3) { toast('Ainda não tem lances suficientes para o replay'); return; }
+    this.close(); clearTimeout(this.autoT);
+    this.list = list;
+    const el = this.el = document.createElement('div');
+    el.className = 'rp-veil'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true'); el.setAttribute('aria-label', 'Replay da partida');
+    el.innerHTML = `<div class="rp-bars">${list.map(() => '<i><b></b></i>').join('')}</div>
+      <button type="button" class="icon-btn rp-x" data-act="rpClose" aria-label="Fechar o replay">${icon('close')}</button>
+      <button type="button" class="rp-tap rp-prev" data-act="rpPrev" aria-label="Lance anterior"></button><button type="button" class="rp-tap rp-next" data-act="rpNext" aria-label="Próximo lance"></button>
+      <div class="rp-card" aria-live="polite"></div>`;
+    document.body.appendChild(el);
+    this.go(0);
+  },
+  go(i) {
+    if (!this.el) return;
+    if (i >= this.list.length) return this.close();
+    i = Math.max(0, i); this.i = i;
+    const sl = this.list[i], dur = sl.t || 4800, el = this.el, card = el.querySelector('.rp-card');
+    clearTimeout(this.timer);
+    el.style.setProperty('--c', sl.c);
+    el.querySelectorAll('.rp-bars i').forEach((b, k) => { b.className = k < i ? 'done' : ''; if (k === i) { void b.offsetWidth; b.className = 'on'; b.style.setProperty('--t', dur + 'ms'); } });
+    card.className = 'rp-card' + (sl.final ? ' is-final' : '');
+    card.innerHTML = `<p class="rp-tag">${sl.tag}</p><div class="rp-art">${sl.art || ''}</div>${sl.title ? `<h2 class="rp-title">${sl.title}</h2>` : ''}${sl.text ? `<p class="rp-text">${sl.text}</p>` : ''}`;
+    void card.offsetWidth; card.classList.add('in');
+    card.querySelectorAll('canvas[data-tel]').forEach(cv => { cv.dataset.painted = '1'; try { padPaint(cv, JSON.parse(cv.dataset.tel) || []); } catch {} });
+    if (sl.final) { Sound.play('fanfare'); buzz([40, 30, 90]); fxConfetti($('#fxLayer')); } else Sound.play(i ? 'pop' : 'whoosh');
+    this.timer = setTimeout(() => this.go(this.i + 1), dur);
+  },
+  close() {
+    clearTimeout(this.timer); this.timer = null;
+    const el = this.el; this.el = null;
+    if (el) { el.classList.add('out'); setTimeout(() => el.remove(), 300); }
+  },
+  // Passa sozinho uma vez quando a partida chega ao pódio.
+  auto(s) {
+    const key = (s.match.id || s.pin) + ':' + (s.match.played || []).length;
+    if (Store.local.rpAuto === key) return;
+    Store.local.rpAuto = key;
+    if (replaySlides(s).length < 3) return;
+    this.autoT = setTimeout(() => { const r = Store.room; if (r?.screen === 'podium' && !this.el && !$('#modalRoot').innerHTML) this.open(r); }, 3500);
+  },
+};
 
 // Números de cada um, guardados só neste aparelho.
 const MyStats = {
@@ -6103,6 +6394,7 @@ function roundAchievements(s, g) {
   if (winners.length === 1) { if (run.id === winners[0]) run.n++; else { run.id = winners[0]; run.n = 1; } if (run.n === 3) out.push({ e: '🎩', t: 'Hat-trick!', d: `${nm(winners[0])} venceu 3 rodadas seguidas` }); }
   else { run.id = null; run.n = 0; }
   out.slice(0, 2).forEach((a, i) => {
+    if (a.t !== 'Primeiro sangue') addMoment(s, { k: 'ach', key: 'ach:' + a.t, e: a.e, title: a.t, desc: a.d });
     pushChat(s, { sys: true, text: `${a.e} ${a.t} ${a.d}` });
     setTimeout(() => { if (!Store.room || !isHost()) return; const m = { kind: 'fx', pid: Store.room.hostId, t: 'ach', e: a.e, title: a.t, desc: a.d }; Transport.send(m); runFx(m); }, 900 + i * 2300);
   });
@@ -6511,7 +6803,7 @@ function hostHandle(from, a) {
     changed = giveKudos(s, from, a.to) || changed;
   } else if (a.type.startsWith('host:')) {
     if (from === s.hostId) changed = hostCommand(s, a) || changed;
-  } else if (s.game && s.game.phase && s.game.phase !== 'final' && !s.game.paused) {
+  } else if (s.game && s.game.phase && s.game.phase !== 'final' && !s.game.paused && !counting(s.game)) {
     if (a.type === 'bet') { if (Games[s.game.id].phases[s.game.phase]?.betting) changed = placeBet(s, from, a) || changed; }
     else if (a.type === 'help') changed = useHelp(s, from) || changed;
     else changed = Games[s.game.id].handle(s.game, s, from, a) || changed;
@@ -6554,6 +6846,8 @@ function hostCommand(s, a) {
       return true;
     case 'host:next':
       if (!s.game || s.game.phase === 'final') return false;
+      // Durante a contagem, "Pular" só pula a contagem.
+      if (counting(s.game)) { shiftTimers(s.game, now() - s.game.cd); delete s.game.cd; return true; }
       engineAdvance(s);
       return true;
     case 'host:lobby':
@@ -6667,7 +6961,7 @@ function hostCommand(s, a) {
       return true;
     }
     case 'host:pause':
-      if (!s.game || s.game.phase === 'final' || s.game.paused) return false;
+      if (!s.game || s.game.phase === 'final' || s.game.paused || counting(s.game)) return false;
       s.game.paused = { at: now() };
       return true;
     case 'host:resume': {
@@ -6742,7 +7036,8 @@ function shiftTimers(g, d) {
   const x = g.data || {};
   if (x.botStopAt) x.botStopAt += d;
   if (x.botAt) x.botAt += d;
-  if (x.bots) Object.values(x.bots).forEach(pl => { pl.times = pl.times.map(t => t + d); });
+  // Só o Termo guarda horários absolutos dos bots (os outros contam a partir do início da etapa).
+  if (x.bots) Object.values(x.bots).forEach(pl => { if (Array.isArray(pl?.times)) pl.times = pl.times.map(t => t + d); });
 }
 // Jogos em sequência: sorteia um jogo ainda não jogado; se acabaram, vai para o pódio.
 function autoNext(s) {
@@ -6784,7 +7079,7 @@ function hostTick() {
     if (!g.autoAt) { g.autoAt = now() + 9000; changed = true; }
     else if (now() >= g.autoAt) { autoNext(s); changed = true; }
   }
-  if (g && g.phase && g.phase !== 'final' && !g.paused) {
+  if (g && g.phase && g.phase !== 'final' && !g.paused && !counting(g)) {
     const mod = Games[g.id], ph = mod.phases[g.phase];
     if (ph.bot) {
       for (const id of g.roster) {
@@ -6858,6 +7153,7 @@ function onMessage(msg) {
     Store.room = msg.state;
     if (Store.hostLost) Store.hostLost = false;
     render();
+    cfxCatch(msg.state);
   } else if (msg.kind === 'fx') {
     if (msg.t) runFx({ ...msg, echo: msg.t !== 'rain' });
     else if (msg.pid !== me.id) spawnFx(msg.e, Store.room?.players[msg.pid]);
@@ -7088,6 +7384,11 @@ function measureStage() {
 function eventRoulette(g) {
   const key = `${g.id}:${g.round}:${g.phaseStart}`;
   if (Store.local.evShown === key || now() - g.phaseStart > 3500) return;
+  if (counting(g)) {
+    clearTimeout(Store.local.evWait);
+    Store.local.evWait = setTimeout(() => { const r = Store.room; if (r?.game?.ev && r.screen === 'game') eventRoulette(r.game); }, clamp(g.cd - now(), 0, 5000) + 1000);
+    return;
+  }
   Store.local.evShown = key;
   const layer = $('#fxLayer'), pool = Object.values(EVENTS).map(x => x.e), el = document.createElement('div');
   el.className = 'fx-roulette';
@@ -7104,12 +7405,45 @@ function eventRoulette(g) {
   };
   spin();
 }
+// Tela cheia com 3, 2, 1, VAI! (roda no aparelho; o host segura o jogo enquanto isso).
+function goCount(s) {
+  const g = s?.screen === 'game' ? s.game : null;
+  if (!g?.cd) { $$('.go-veil').forEach(e => e.remove()); return; }
+  const key = g.id + ':' + g.cd;
+  if (Store.local.goShown === key) return;
+  Store.local.goShown = key;
+  const left = clamp(g.cd - now(), 0, (g.cdLen || 3) * 1000);
+  if (left < 400) return;
+  $$('.go-veil').forEach(e => e.remove());
+  const el = document.createElement('div'), mod = Games[g.id];
+  el.className = 'go-veil'; el.setAttribute('role', 'status'); el.setAttribute('aria-live', 'assertive');
+  el.style.setProperty('--gc', mod.color || '#6366F1');
+  el.innerHTML = `<div class="go-box"><span class="go-ic" aria-hidden="true">${gameIcon(mod)}</span><b class="go-name">${esc(mod.name)}</b><b class="go-n"></b><span class="go-sub">Prepare-se!</span></div>`;
+  document.body.appendChild(el);
+  const end = now() + left, n = el.querySelector('.go-n');
+  const step = () => {
+    if (!el.isConnected) return;
+    const r = Math.ceil((end - now()) / 1000);
+    if (r > 0) {
+      n.textContent = r; n.classList.remove('pop'); void n.offsetWidth; n.classList.add('pop');
+      Sound.play('tickHi'); buzz(30);
+      return setTimeout(step, Math.max(30, end - (r - 1) * 1000 - now()));
+    }
+    n.textContent = 'VAI!'; n.classList.remove('pop'); void n.offsetWidth; n.classList.add('pop', 'go');
+    el.querySelector('.go-sub').textContent = '';
+    Sound.play('start'); buzz([60, 40, 120]);
+    setTimeout(() => { el.classList.add('out'); setTimeout(() => el.remove(), 350); }, 700);
+  };
+  step();
+}
 function afterRender(s) {
   measureStage();
+  goCount(s);
   { const g = s?.game; if (g && g.ev && s.screen === 'game' && g.phase && g.phase !== 'final' && (g.phase === Games[g.id].first || Games[g.id].phases[g.phase]?.betting)) eventRoulette(g); }
   syncPinSlots();
   $$('canvas[data-tel]:not([data-painted])').forEach(cv => { cv.dataset.painted = '1'; try { padPaint(cv, JSON.parse(cv.dataset.tel) || []); } catch {} });
-  if (s?.screen === 'podium') MyStats.record(s);
+  if (s?.screen === 'podium') { MyStats.record(s); Replay.auto(s); }
+  else if (Replay.el) Replay.close();
   const g = s?.game;
   if (!g || s.screen !== 'game') return;
   if (g.id === 'stop') {
@@ -7399,7 +7733,7 @@ function viewGame(s) {
   const firstStep = g.round === 1 && (g.phase === mod.first || ph.betting);
   const reveal = g.phase === 'reveal';
   const showTimer = !!g.deadline && !ph.hideTimer;
-  const left = showTimer ? Math.max(0, g.deadline - now()) : 0;
+  const left = showTimer ? Math.min(g.dur * 1000, Math.max(0, g.deadline - now())) : 0;
   const timerAttrs = showTimer ? `data-deadline="${g.deadline}" data-dur="${g.dur}" style="--p:${g.dur ? left / (g.dur * 1000) : 0}"` : '';
   const rush = s.settings.rush;
   let body = ph.betting ? betView(g, s, me) : mod.view(g, s, me);
@@ -7519,7 +7853,7 @@ function viewPodium(s) {
     </div>
     ${terr ? `<section class="panel terr-final">${terrSVG(s)}</section>` : ''}
     ${highlightsHTML(s)}${medalsHTML(s)}${momentsHTML(s)}
-    <div class="row center pod-actions">${isHost() ? '<button class="btn primary pill" data-act="newMatch">Nova partida com a mesma sala</button>' : ''}<button class="btn pill" data-act="podiumPng">${icon('download')}Baixar imagem do pódio</button>${myRole() === 'tv' ? '' : '<button class="btn pill" data-act="leave">Sair da sala</button>'}</div>
+    <div class="row center pod-actions"><button class="btn pill rp-btn" data-act="replay">▶ Replay da partida</button>${isHost() ? '<button class="btn primary pill" data-act="newMatch">Nova partida com a mesma sala</button>' : ''}<button class="btn pill" data-act="podiumPng">${icon('download')}Baixar imagem do pódio</button>${myRole() === 'tv' ? '' : '<button class="btn pill" data-act="leave">Sair da sala</button>'}</div>
     <div class="confetti" aria-hidden="true">${conf}</div>
   </section>`;
 }
@@ -7539,7 +7873,11 @@ const CFG = {
   helpCost: { min: 1, max: 3, step: 1, def: 1, label: 'Custo das ajudas', fmt: v => plural(v, 'ponto', 'pontos') },
   eventChance: { min: 10, max: 80, step: 10, def: 30, label: 'Chance de evento surpresa', fmt: v => `${v}%` },
   chaosLevel: { min: 1, max: 10, step: 1, def: 5, label: 'Intensidade do caos dos bots' },
+  countdown: { min: 0, max: 5, step: 1, def: 3, label: 'Contagem antes de cada jogo', fmt: v => v ? `${v} s` : 'sem contagem' },
+  zoeiraCd: { min: .25, max: 3, step: .25, def: 1, label: 'Recarga da zoeira', fmt: v => `buzina ${secTxt(6000 * v)} · tomate ${secTxt(1200 * v)}` },
+  chaosCd: { min: 2, max: 60, step: 1, def: 15, label: 'Recarga do caos', fmt: v => `${v} s${v <= 5 ? ' 🔥' : ''}` },
 };
+const secTxt = ms => String(+(ms / 1000).toFixed(1)).replace('.', ',') + ' s';
 const CFG_ENUM = {
   botLevel: { label: 'Nível dos bots', def: 'normal', opts: { facil: 'Fácil', normal: 'Normal', dificil: 'Difícil', caotico: 'Caótico' } },
   botTalk: { label: 'Bots no chat', def: 'muito', opts: { pouco: 'Pouco', normal: 'Normal', muito: 'Muito', caos: 'Caos total' } },
@@ -7576,15 +7914,23 @@ function chaosRowHTML(s) {
     <div class="chaos-slider"><input type="range" min="1" max="10" step="1" value="${v}" data-range="chaosLevel" aria-label="Intensidade do caos dos bots" style="--p:${(v - 1) / 9 * 100}%"><b class="chaos-val lv${v}">${v} · ${CHAOS_NAMES[v]}</b></div>
     <small class="chaos-est">≈ ${String(L.msg).replace('.', ',')} mensagens por segundo · ${Math.round(L.rx * 2)} reações a cada 2 s</small></div>`;
 }
+// Barrinha genérica para um ajuste numérico da sala (o texto ao lado muda enquanto arrasta).
+function rangeRowHTML(s, k, title, hint) {
+  const c = CFG[k], v = cfg(s, k);
+  return `<div class="cfg-row is-col chaos-row"><span>${title}<small>${hint}</small></span>
+    <div class="chaos-slider"><input type="range" min="${c.min}" max="${c.max}" step="${c.step}" value="${v}" data-range="${k}" aria-label="${c.label}" style="--p:${(v - c.min) / (c.max - c.min) * 100}%"><b class="chaos-val">${c.fmt(v)}</b></div></div>`;
+}
 function customizePanelHTML(s) {
   const off = s.settings.off || [];
   const en = k => { const e = CFG_ENUM[k], v = cfg(s, k); return `<div class="cfg-row is-col"><span>${e.label}</span><div class="cat-chips wrap">${Object.entries(e.opts).map(([o, l]) => `<button class="cat-chip" data-act="cfgSet" data-k="${k}" data-v="${o}" aria-pressed="${v === o}">${l}</button>`).join('')}</div></div>`; };
   const sum = [`até ${maxP(s)} jogadores`, `${cfg(s, 'rounds')} rodadas`, cfg(s, 'goal') ? `meta ${cfg(s, 'goal')}` : '', `bots ${CFG_ENUM.botLevel.opts[cfg(s, 'botLevel')].toLowerCase()}`].filter(Boolean).join(' · ');
   return `<section class="panel fold ${foldOpen('cfg') ? 'is-open' : ''}" aria-labelledby="cfgTitle">${foldHead('cfg', 'cfgTitle', 'Personalizar a sala', sum)}<div class="fold-body" id="fold-cfg">
     <form class="cfg-title" data-form="title" novalidate><label for="roomTitle">Nome da sala</label><div class="cfg-inline"><input class="input" id="roomTitle" data-keep="roomTitle" maxlength="28" placeholder="Ex.: Noite dos campeões" value="${esc(s.settings.title || '')}"><button class="btn sm pill">Salvar</button></div></form>
-    ${['maxPlayers', 'rounds', 'timeMult', 'goal', 'helpCost', 'eventChance'].map(k => `<div class="cfg-row"><span>${CFG[k].label}</span>${cfgStepHTML(s, k)}</div>`).join('')}
+    ${['maxPlayers', 'rounds', 'timeMult', 'countdown', 'goal', 'helpCost', 'eventChance'].map(k => `<div class="cfg-row"><span>${CFG[k].label}</span>${cfgStepHTML(s, k)}</div>`).join('')}
     ${en('botLevel')}${en('botTalk')}${en('chatMode')}
     ${chaosRowHTML(s)}
+    ${rangeRowHTML(s, 'zoeiraCd', '😜 Recarga da zoeira', 'Quanto cada pessoa espera para repetir tomate, buzina, grito e dancinha.')}
+    ${rangeRowHTML(s, 'chaosCd', '🌪️ Recarga do caos', 'Espera de cada botão de caos (🎊 ⚡ 💣) por pessoa; o 🌀 espera o dobro. Os bots também respeitam.')}
     <div class="cfg-row ultra-row"><span>☢️ Bots ULTRA caóticos<small>${s.settings.ultra ? 'Ligado. Que os céus nos ajudem.' : 'Modo proibido (vem com avisos sérios).'}</small></span><button class="btn xs ${s.settings.ultra ? '' : 'ultra-btn'}" data-act="${s.settings.ultra ? 'ultraOff' : 'ultraOn'}">${s.settings.ultra ? 'Acalmar os bots' : 'Ligar'}</button></div>
     <div class="cfg-row"><span>Jogos fora do sorteio${off.length ? `: <b>${off.length}</b>` : ''}</span><button class="btn xs ${Store.local.offEdit ? 'primary' : ''}" data-act="offEdit">${Store.local.offEdit ? 'Pronto' : 'Escolher'}</button></div>
     ${Store.local.offEdit ? '<p class="hint">Toque nos jogos lá embaixo para tirar ou devolver ao sorteio (jogo surpresa, votação e sequência automática).</p>' : ''}
@@ -7834,10 +8180,12 @@ function botJokers(s, g) {
 const THROWS = ['🍅', '🥚', '🎈', '💐', '🧻', '🥧'];
 const EMOTES = ['💃', '🕺', '🤸', '🙇', '👋', '😎'];
 const CHAT_QUICK = ['KKKKKK', 'GG', 'Roubado!', 'Não acredito 😱', 'Eu sabia!', 'Bora!', 'F'];
-const FxRT = { last: {}, hype: [], lastRain: 0 };
+const FxRT = { last: {}, hype: [], lastRain: 0, seen: new Set() };
 const FX_GAP = { throw: 1200, horn: 6000, shout: 8000, emote: 1500, confetti: 15000, flash: 20000, bomb: 20000, spin: 30000 };
-// Entre um efeito de caos e outro (de qualquer pessoa ou bot), a sala respira um pouco.
-const CHAOS_ROOM_GAP = 6000;
+// Recarga de cada efeito, ajustável pelo host ("Recarga da zoeira" multiplica; "Recarga do caos" em segundos).
+const fxGap = (s, k) => !FX_GAP[k] ? 0 : isChaos(k) ? cfg(s, 'chaosCd') * 1000 * (k === 'spin' ? 2 : 1) : FX_GAP[k] * cfg(s, 'zoeiraCd');
+// Só os bots esperam a sala respirar entre um caos e outro: o botão de uma pessoa sempre funciona.
+const botChaosGap = s => Math.max(4000, cfg(s, 'chaosCd') * 600);
 const isChaos = k => CHAOS_FX.some(x => x[0] === k);
 const CHAOS_FX = [['confetti', '🎊', 'Confete'], ['flash', '⚡', 'Raio'], ['bomb', '💣', 'Bomba'], ['spin', '🌀', 'Girar a tela']];
 function hostFx(s, pid, a) {
@@ -7845,15 +8193,20 @@ function hostFx(s, pid, a) {
   if (!p || p.role === 'tv' || cfg(s, 'chatMode') === 'off' || !FX_GAP[a.t]) return;
   if (a.t !== 'emote' && s.settings.zoeira === false) return;
   const key = pid + ':' + a.t;
-  if (now() - (FxRT.last[key] || 0) < FX_GAP[a.t] * .8) return;
+  if (now() - (FxRT.last[key] || 0) < fxGap(s, a.t) * .8) return;
   let msg;
   if (a.t === 'throw') { if (!THROWS.includes(a.e) || !s.players[a.to] || a.to === pid) return; msg = { t: 'throw', e: a.e, to: a.to }; }
   else if (a.t === 'horn') msg = { t: 'horn' };
   else if (a.t === 'emote') { if (!EMOTES.includes(a.e)) return; msg = { t: 'emote', e: a.e }; }
-  else if (isChaos(a.t)) { if (now() - (FxRT.lastChaos || 0) < CHAOS_ROOM_GAP) return; msg = { t: a.t }; }
+  else if (isChaos(a.t)) { if (p.isBot && now() - (FxRT.lastChaos || 0) < botChaosGap(s)) return; msg = { t: a.t, id: /^[a-z0-9]{4,12}$/.test(a.id || '') ? a.id : uid(6) }; }
   else { let text = String(a.text || '').replace(/\s+/g, ' ').trim().slice(0, 40); if (!text) return; if (s.settings.family) text = familyClean(text); msg = { t: 'shout', text }; }
   FxRT.last[key] = now();
-  if (isChaos(a.t)) FxRT.lastChaos = now();
+  if (isChaos(a.t)) {
+    // Também vai junto do estado da sala: se a mensagem rápida se perder na rede, o efeito chega mesmo assim.
+    FxRT.lastChaos = now();
+    s.cfx = [...(s.cfx || []).filter(x => now() - x.at < 8000), { id: msg.id, t: msg.t, pid, at: now() }].slice(-6);
+    BotChatRT.dirty = true; chaosSoon();
+  }
   Transport.send({ kind: 'fx', pid, ...msg });
   if (pid !== Store.me?.id) runFx({ pid, ...msg });
   if (a.t === 'throw') {
@@ -7887,6 +8240,12 @@ function giveKudos(s, from, to) {
   return true;
 }
 const fxAnchor = pid => { const el = pid && $(`[data-pid="${pid}"] .av, [data-pid="${pid}"]`); if (!el || !el.offsetParent) return null; const r = el.getBoundingClientRect(); return r.width ? { x: r.left + r.width / 2, y: r.top + r.height / 2 } : null; };
+// Efeitos de caos guardados no estado: roda os que ainda não apareceram (ao entrar na sala, só marca como vistos).
+function cfxCatch(s) {
+  const list = s.cfx || [];
+  if (FxRT.cfxPin !== s.pin) { FxRT.cfxPin = s.pin; list.forEach(x => FxRT.seen.add(x.id)); return; }
+  list.forEach(x => { if (!FxRT.seen.has(x.id)) runFx({ pid: x.pid, t: x.t, id: x.id, echo: true }); });
+}
 function runFx(m) {
   const s = Store.room, layer = $('#fxLayer');
   if (!s || !layer) return;
@@ -7898,9 +8257,14 @@ function runFx(m) {
     return setTimeout(() => el.remove(), 2700);
   }
   if (m.t === 'burst') { if (!isHost()) (m.list || []).slice(0, 40).forEach((x, i) => setTimeout(() => spawnFx(x.e, Store.room?.players[x.pid]), i * 45)); return; }
+  if (isChaos(m.t) && m.id) {
+    if (FxRT.seen.has(m.id)) return;
+    FxRT.seen.add(m.id);
+    if (FxRT.seen.size > 300) FxRT.seen = new Set([...FxRT.seen].slice(-100));
+  }
   if (m.pid === Store.me?.id && m.echo) return;
-  // Sala cheia: com muita coisa voando ao mesmo tempo, as próximas ficam de fora (o grito sempre aparece).
-  if (layer.childElementCount > 24 && m.t !== 'shout') return;
+  // Sala cheia: com muita coisa voando ao mesmo tempo, as próximas ficam de fora (o grito e o caos sempre aparecem).
+  if (layer.childElementCount > 24 && m.t !== 'shout' && !isChaos(m.t)) return;
   const p = s.players[m.pid];
   if (m.t === 'throw') return throwFx(m.e, m.pid, m.to);
   if (m.t === 'kudos') { spawnFx('💖', s.players[m.to]); if (m.to === Store.me?.id) buzz(40); return; }
@@ -8351,13 +8715,14 @@ const Tour = {
 };
 function closeOverlays() {
   $('#modalRoot').innerHTML = '';
+  if (Replay.el) Replay.close();
   if (Chat.open) Actions.chat();
   const tray = $('#reactTray');
   if (tray && !tray.hidden) Actions.reactTray();
 }
 
 // Títulos dos destaques do pódio: quem mais pontuou em cada jogo.
-const TITLES = { mane: 'Rei do chute', provavel: 'Termômetro da galera', impostor: 'Mestre do blefe', geo: 'Viajante do mundo', stop: 'Dicionário ambulante', fato: 'Caçador de fakes', desenho: 'Picasso da noite', termo: 'Gênio das palavras', reflexo: 'Mão mais rápida', emoji: 'Decifrador de emojis', mente: 'Mente sintonizada', bomba: 'Sangue frio', mentira: 'Mentiroso profissional', legenda: 'Rei da legenda', preco: 'Olho clínico', linha: 'Historiador', digita: 'Dedos de fogo', proibida: 'Mestre das dicas', telefone: 'Artista do telefone', mapa: 'GPS humano', lobisomem: 'Sobrevivente da vila', quemdisse: 'Detetive da galera', mimica: 'Poeta dos emojis', leilao: 'Magnata do leilão', detalhe: 'Olho de águia', ritmo: 'Coração no compasso', vod: 'Coragem de sobra' };
+const TITLES = { mane: 'Rei do chute', provavel: 'Termômetro da galera', impostor: 'Mestre do blefe', geo: 'Viajante do mundo', stop: 'Dicionário ambulante', fato: 'Caçador de fakes', desenho: 'Picasso da noite', termo: 'Gênio das palavras', reflexo: 'Mão mais rápida', emoji: 'Decifrador de emojis', mente: 'Mente sintonizada', bomba: 'Sangue frio', mentira: 'Mentiroso profissional', legenda: 'Rei da legenda', preco: 'Olho clínico', linha: 'Historiador', digita: 'Dedos de fogo', proibida: 'Mestre das dicas', telefone: 'Artista do telefone', mapa: 'GPS humano', lobisomem: 'Sobrevivente da vila', quemdisse: 'Detetive da galera', mimica: 'Poeta dos emojis', leilao: 'Magnata do leilão', detalhe: 'Olho de águia', ritmo: 'Coração no compasso', vod: 'Coragem de sobra', quiz: 'Enciclopédia ambulante' };
 function highlightsHTML(s) {
   const byGame = s.match.byGame || {};
   const items = GAME_ORDER.filter(id => byGame[id]).map(id => {
@@ -8484,7 +8849,7 @@ let lastTickKey = '';
 function frame() {
   const gNow = Store.room?.game?.paused ? Store.room.game.paused.at : now();
   $$('.timer').forEach(el => {
-    const dl = +el.dataset.deadline, dur = +el.dataset.dur, left = Math.max(0, dl - gNow);
+    const dl = +el.dataset.deadline, dur = +el.dataset.dur, left = Math.min(dur * 1000, Math.max(0, dl - gNow));
     const secN = Math.ceil(left / 1000);
     if (secN > 0 && secN <= 5 && lastTickKey !== dl + ':' + secN) { lastTickKey = dl + ':' + secN; Sound.play(secN <= 3 ? 'tickHi' : 'tick'); if (secN <= 3) buzz(20); }
     el.style.setProperty('--p', dur ? left / (dur * 1000) : 0);
@@ -8712,10 +9077,14 @@ const Actions = {
   custOpen() { Store.local.custOpen = !Store.local.custOpen; render(); },
   narr() { Narrator.toggle(); render(); },
   vib() { try { localStorage.setItem('playbox:vib', vibOn() ? 'off' : 'on'); } catch {} buzz(60); render(); },
+  replay() { if (Store.room) Replay.open(Store.room); },
+  rpNext() { Replay.go(Replay.i + 1); },
+  rpPrev() { Replay.go(Replay.i - 1); },
+  rpClose() { Replay.close(); },
   podiumPng() { shareCanvas(podiumImage(Store.room), 'playbox-podio.png'); },
   throwAt(el) {
     const s = Store.room, id = el.dataset.id;
-    if (!s || id === Store.me.id || s.settings.zoeira === false || myRole() === 'tv' || cfg(s, 'chatMode') === 'off' || now() - (Actions.lastThrow || 0) < 1200) return;
+    if (!s || id === Store.me.id || s.settings.zoeira === false || myRole() === 'tv' || cfg(s, 'chatMode') === 'off' || now() - (Actions.lastThrow || 0) < fxGap(s, 'throw')) return;
     Actions.lastThrow = now();
     const e = Store.local.proj || '🍅';
     runFx({ pid: Store.me.id, t: 'throw', e, to: id });
@@ -8723,22 +9092,23 @@ const Actions = {
   },
   proj(el) { Store.local.proj = el.dataset.v; $$('[data-act="proj"]').forEach(b => b.classList.toggle('on', b.dataset.v === Store.local.proj)); },
   horn() {
-    if (Store.room?.settings.zoeira === false || now() - (Actions.lastHorn || 0) < 6000) return;
+    if (Store.room?.settings.zoeira === false || now() - (Actions.lastHorn || 0) < fxGap(Store.room, 'horn')) return;
     Actions.lastHorn = now(); runFx({ pid: Store.me.id, t: 'horn' }); dispatch({ type: 'fx', t: 'horn' });
   },
   zfx(el) {
     const k = el.dataset.v, s = Store.room;
-    if (!s || s.settings.zoeira === false || myRole() === 'tv' || !FX_GAP[k]) return;
-    const mine = FX_GAP[k] - (now() - ((Actions.lastZfx || {})[k] || 0)), room = CHAOS_ROOM_GAP - (now() - (FxRT.lastChaos || 0));
+    if (!s || myRole() === 'tv' || !isChaos(k)) return;
+    if (s.settings.zoeira === false || cfg(s, 'chatMode') === 'off') { toast('O host desligou a zoeira nesta sala'); return; }
+    const gap = fxGap(s, k), mine = gap - (now() - ((Actions.lastZfx || {})[k] || 0));
     if (mine > 0) { toast(`${el.textContent} recarregando: mais ${Math.ceil(mine / 1000)} s`); return; }
-    if (room > 0) { toast(`Calma! O caos volta em ${Math.ceil(room / 1000)} s`); return; }
     (Actions.lastZfx = Actions.lastZfx || {})[k] = now();
     el.classList.remove('is-cool'); void el.offsetWidth; el.classList.add('is-cool');
-    el.style.setProperty('--cd', FX_GAP[k] + 'ms');
-    runFx({ pid: Store.me.id, t: k }); dispatch({ type: 'fx', t: k });
+    el.style.setProperty('--cd', gap + 'ms');
+    const id = uid(6);
+    runFx({ pid: Store.me.id, t: k, id }); dispatch({ type: 'fx', t: k, id });
   },
   emote(el) {
-    if (now() - (Actions.lastEmote || 0) < 1500) return;
+    if (now() - (Actions.lastEmote || 0) < fxGap(Store.room, 'emote')) return;
     Actions.lastEmote = now(); runFx({ pid: Store.me.id, t: 'emote', e: el.dataset.v }); dispatch({ type: 'fx', t: 'emote', e: el.dataset.v });
   },
   chatQuick(el) { dispatch({ type: 'chat', text: el.dataset.v }); },
@@ -8891,15 +9261,23 @@ document.addEventListener('input', e => {
 });
 // Barrinha do caos: o número muda enquanto arrasta; ao soltar, vale para a sala (e liga o "Caos total").
 document.addEventListener('input', e => {
-  const r = e.target.closest?.('[data-range="chaosLevel"]');
+  const r = e.target.closest?.('[data-range]');
   if (!r) return;
+  const k = r.dataset.range, c = CFG[k];
+  if (k !== 'chaosLevel') {
+    const v = +r.value, lab = r.parentElement.querySelector('.chaos-val');
+    r.style.setProperty('--p', (v - c.min) / (c.max - c.min) * 100 + '%');
+    if (lab) lab.textContent = c.fmt(v);
+    return;
+  }
   const v = +r.value, lab = r.parentElement.querySelector('.chaos-val');
   r.style.setProperty('--p', (v - 1) / 9 * 100 + '%');
   if (lab) { lab.textContent = `${v} · ${CHAOS_NAMES[v]}`; lab.className = 'chaos-val lv' + v; }
 });
 document.addEventListener('change', e => {
-  const r = e.target.closest?.('[data-range="chaosLevel"]');
+  const r = e.target.closest?.('[data-range]');
   if (!r || !isHost()) return;
+  if (r.dataset.range !== 'chaosLevel') { dispatch({ type: 'host:set', key: r.dataset.range, v: +r.value }); return; }
   dispatch({ type: 'host:set', key: 'chaosLevel', v: +r.value });
   if (!chaosMode(Store.room)) dispatch({ type: 'host:set', key: 'botTalk', v: 'caos' });
 });
@@ -8907,6 +9285,7 @@ document.addEventListener('keydown', e => {
   // Enter num campo do Stop pula para o próximo; no último, aperta Stop se puder.
   const t = e.target;
   if (e.key === 'Escape') { closeOverlays(); return; }
+  if (Replay.el && (e.key === 'ArrowRight' || e.key === 'ArrowLeft' || e.key === ' ')) { e.preventDefault(); Replay.go(Replay.i + (e.key === 'ArrowLeft' ? -1 : 1)); return; }
   if (e.key === 'Enter' && t.id === 'ultraIn') { e.preventDefault(); $('#modalRoot .ultra-yes')?.click(); return; }
   if ((e.key === 'ArrowLeft' || e.key === 'ArrowRight') && $('#modalRoot .tour-card')) { e.preventDefault(); Tour.open(Tour.i + (e.key === 'ArrowRight' ? 1 : -1)); return; }
   const gm = Store.room?.screen === 'game' && Store.room.game;
