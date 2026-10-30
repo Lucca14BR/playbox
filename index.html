@@ -681,7 +681,7 @@ body.in-game .tm-board{--tile:clamp(26px,calc((var(--sbh) - 3 * var(--key) - 92p
 body.in-game .tm-row{grid-template-columns:repeat(5,var(--tile));gap:5px}
 body.in-game .tm-tile{font-size:calc(var(--tile) * .5);border-radius:9px}
 body.in-game .tm-k{height:var(--key)}
-@media (min-width:900px) and (max-height:900px){ body.in-game .tm-board{--tile:clamp(30px,calc((var(--sbh) - 40px) / 6.4),60px)} }
+@media (min-width:900px){ body.in-game .tm-board{--tile:clamp(30px,calc((var(--sbh) - 40px) / 6.4),60px)} }
 /* Jogos que passavam da tela: cada um encolhe conforme a área medida */
 body.in-game .sp-pair{max-width:calc((var(--sbh) - 92px) / .7 * 2 + 10px)}
 body.in-game .mm-pal{max-height:max(100px,calc(var(--sbh) - 235px))}
@@ -759,7 +759,7 @@ body.in-game .postcard{width:min(100%,max(180px,calc((var(--sbh) - 225px) * 1.6)
 .fold:not(.is-open) .fold-body{display:none}
 .fold .fold-body{margin-top:14px}
 /* Termo em tela larga e baixa: tabuleiro ao lado do teclado */
-@media (min-width:900px) and (max-height:900px){
+@media (min-width:900px){
   body.in-game .stage-body:has(> .tm-board:first-child){display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:28px;align-items:center;align-content:center}
   body.in-game .stage-body:has(> .tm-board:first-child) > *{grid-column:2;margin-top:10px}
   body.in-game .stage-body:has(> .tm-board:first-child) > .tm-board{grid-column:1;grid-row:1 / span 4;margin-top:0}
@@ -2037,6 +2037,88 @@ html.tv-role .fab,html.tv-role .react-wrap,html.tv-role .top-right .btn{display:
 .cg-vote{margin-left:auto;width:34px;height:34px;border:0;border-radius:50%;background:rgba(255,255,255,.1);color:#fff;font-size:1rem;cursor:pointer}
 .cg-vote.on{background:#E11D48}
 body.in-game #cgBoard{width:min(100%,calc((var(--sbh) - 160px) * 4 / 3));min-width:min(100%,200px)}
+/* Notebook/Chromebook (largo e baixo): sem a barra do topo durante o jogo (som e sair ficam na barra do jogo),
+   avisos na mesma linha do nome do jogo e espaçamentos menores: a área do jogo cresce uns 110 px. */
+@media (min-width:900px) and (max-height:820px){
+  body.in-game .topbar{display:none}
+  body.in-game.in-room #app{padding-top:8px;padding-bottom:8px}
+  body.in-game .screen.game{height:calc(100dvh - 20px);min-height:400px}
+  body.in-game .gt-snd{display:inline-grid;width:32px;height:32px}
+  body.in-game .game-top{margin-bottom:8px}
+  body.in-game .stage{padding-top:10px;padding-bottom:10px}
+  body.in-game .stage-head{min-height:40px}
+  body.in-game .stage-head .sh-sub{font-size:.78rem}
+  body.in-game .stage-pills{margin:-40px 150px 0 300px;min-height:40px;align-items:center;justify-content:center;flex-wrap:nowrap;overflow:hidden;pointer-events:none}
+  body.in-game .stage-pills > *{pointer-events:auto;margin:0}
+  body.in-game .stage-body{margin-top:8px}
+  body.in-game .hostbar{margin-top:6px}
+}
+/* Desenho, Telefone e Às Cegas em tela larga: o quadro ocupava 30 linhas da grade e cada linha vazia somava
+   10 px de espaço (quase 300 px de rolagem à toa). Agora o espaço fica só entre os itens da coluna da direita. */
+@media (min-width:760px) and (min-aspect-ratio:5/4){
+  body.in-game .stage-body:has(> .dw-board-wrap){row-gap:0}
+  body.in-game .stage-body:has(> .dw-board-wrap) > :not(.dw-board-wrap){margin-bottom:10px!important}
+  body.in-game .stage-body:has(> .dw-board-wrap) .dw-word b{font-size:clamp(1.1rem,3.6vh,1.8rem);line-height:1.15}
+}
+/* Carta do Impostor e cartão do Quem Sou Eu? do tamanho da área do jogo */
+body.in-game .role-deck{width:min(210px,58vw,max(110px,calc((var(--sbh) - 290px) * .75)))}
+body.in-game .role-wrap{gap:10px}
+body.in-game .qs-card{width:min(240px,72%,max(160px,calc(var(--sbh) * .5)))}
+@media (max-height:820px){
+  body.in-game .qs-card{margin:12px auto 8px;padding:10px 12px}
+  body.in-game .qs-e{font-size:clamp(2rem,8vmin,3.2rem)}
+  body.in-game .qs-sugg{margin:4px 0}
+}
+body.in-game .mm{height:calc(var(--sbh,560px) - 24px);overflow:clip}
+/* A página em si não rola durante o jogo (só a área do meio, quando precisa). */
+html.in-room body.in-game{overflow:hidden}
+/* Quem Sou Eu?: campo e botão na mesma linha, sugestões numa fileira que rola para o lado no celular */
+body.in-game .stage-body:has(> .qs-card) .answer-form{display:flex;gap:8px;max-width:520px;margin-inline:auto}
+body.in-game .stage-body:has(> .qs-card) .answer-form .input{flex:1;min-width:0}
+body.in-game .stage-body:has(> .qs-card) .answer-form .btn{flex:none}
+@media (max-width:600px){
+  body.in-game .screen.game{height:calc(100dvh - var(--top-h,50px) - 16px)}
+  body.in-game .qs-sugg{flex-wrap:nowrap;justify-content:flex-start;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+  body.in-game .qs-sugg::-webkit-scrollbar{display:none}
+  body.in-game .qs-sugg .cat-chip{flex:none}
+  body.in-game .qs-card{width:min(200px,60%);margin:12px auto 6px}
+  body.in-game #telBoard,body.in-game #cgBoard{width:min(100%,max(180px,calc((var(--sbh) - 300px) * 4 / 3)))}
+}
+/* Tablet em pé: placar mais baixo e ferramentas de desenho compactas (o quadro fica maior e tudo cabe). */
+@media (min-width:601px) and (max-width:899px){
+  body.in-game .strip{margin-top:10px;padding-top:8px;padding-bottom:8px}
+  body.in-game .strip .av-md{--s:34px}
+  body.in-game .stage-body{margin-top:10px}
+  body.in-game .dw-word{display:flex;align-items:baseline;justify-content:center;gap:8px;font-size:.9rem}
+  body.in-game .dw-word b{display:inline;margin:0;font-size:1.4rem}
+  body.in-game .dw-tools{padding:6px;gap:6px}
+  body.in-game .dw-row{flex-wrap:nowrap;justify-content:center;overflow-x:auto;scrollbar-width:none;gap:5px}
+  body.in-game .dw-row::-webkit-scrollbar{display:none}
+  body.in-game .dw-row > *{flex:none}
+  body.in-game .dw-size-row input[type=range]{flex:1;min-width:140px;max-width:320px}
+  body.in-game #dwBoard.can-draw{width:min(100%,max(220px,calc((var(--sbh) - 270px) * 4 / 3)))}
+  body.in-game #telBoard,body.in-game #cgBoard{width:min(100%,max(220px,calc((var(--sbh) - 320px) * 4 / 3)))}
+  body.in-game .postcard{width:min(100%,max(180px,calc((var(--sbh) - 290px) * 1.6)))}
+  body.in-game .tm-board{--tile:clamp(26px,calc((var(--sbh) - 3 * var(--key) - 150px) / 6.6),56px)}
+  body.in-game .stage-body > .tm-board ~ .hint{display:none}
+}
+/* Celular em pé: placar de baixo mais fino (a bolinha de "já respondeu" vai para o canto do avatar)
+   e as 4 alternativas do Quiz em 2 colunas. */
+@media (max-width:600px){
+  body.in-game .strip{padding-top:6px;padding-bottom:5px}
+  body.in-game .strip .sp{position:relative;gap:1px}
+  body.in-game .strip .sp-stat{position:absolute;top:-3px;left:calc(50% + 5px);width:16px;height:16px;margin:0}
+  body.in-game .strip .av-md{--s:26px!important}
+  body.in-game .qz-opts{grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
+  body.in-game .qz-opt{min-height:48px;padding:8px 10px;gap:8px;font-size:.88rem}
+  body.in-game .postcard{width:min(100%,max(170px,calc((var(--sbh) - 255px) * 1.6)))}
+}
+@media (max-width:600px) and (max-height:720px){
+  body.in-game .role-wrap > .hint{display:none}
+  body.in-game .stage-pills{margin-top:4px}
+}
+/* A barra de rolagem não aparece e some: a largura do jogo não fica pulando. */
+body.in-game .stage > .stage-body{scrollbar-gutter:stable}
 </style>
 </head>
 <body>
@@ -8212,6 +8294,44 @@ const waitCard = (main, sub) => `<div class="wait"><div class="wait-main">${main
 const deltaBadge = n => n ? `<span class="delta">+${n}</span>` : '<span></span>';
 
 let lastSig = '';
+// Troca os filhos de "old" pelos de "fresh", reaproveitando os que não mudaram.
+// A área que rola (.stage-body) fica sempre a mesma: só o conteúdo dela é trocado.
+function patchKids(old, fresh) {
+  const want = [...fresh.children], have = [...old.children];
+  const keepSb = have.find(el => el.classList.contains('stage-body'));
+  want.forEach((n, i) => {
+    const o = old.children[i];
+    if (n.classList.contains('stage-body') && keepSb) {
+      if (o !== keepSb) old.insertBefore(keepSb, o || null);
+      const inner = n.innerHTML;
+      if (keepSb.className !== n.className) keepSb.className = n.className;
+      if (keepSb.__h !== inner) { keepSb.innerHTML = inner; keepSb.__h = inner; }
+      return;
+    }
+    if (n.classList.contains('stage') && o?.classList.contains('stage')) {
+      if (o.className !== n.className) o.className = n.className;
+      if ((o.getAttribute('style') || '') !== (n.getAttribute('style') || '')) o.setAttribute('style', n.getAttribute('style') || '');
+      patchKids(o, n);
+      return;
+    }
+    const h = n.outerHTML;
+    if (o && o.__h === h) return;
+    n.__h = h;
+    if (o === keepSb) old.insertBefore(n, o); else if (o) old.replaceChild(n, o); else old.appendChild(n);
+  });
+  while (old.children.length > want.length) old.lastElementChild.remove();
+}
+function patchScreen(app, html) {
+  const tpl = document.createElement('template');
+  tpl.innerHTML = html;
+  const fresh = tpl.content, oScreen = [...app.children].find(el => el.matches('.screen.game')), nScreen = [...fresh.children].find(el => el.matches('.screen.game'));
+  if (!oScreen || !nScreen || app.children.length !== fresh.children.length || !oScreen.querySelector('.stage-body') || !nScreen.querySelector('.stage-body')) return false;
+  const cls = nScreen.className + (oScreen.classList.contains('enter') ? ' enter' : '');
+  if (oScreen.className !== cls) oScreen.className = cls;
+  if ((oScreen.getAttribute('style') || '') !== (nScreen.getAttribute('style') || '')) oScreen.setAttribute('style', nScreen.getAttribute('style') || '');
+  patchKids(oScreen, nScreen);
+  return true;
+}
 function render() {
   const s = Store.room, app = $('#app');
   soundCues(s);
@@ -8252,10 +8372,14 @@ function render() {
   app.__html = html;
   const kept = captureInputs(app);
   // Mesma tela e mesma fase: a área que rola continua onde estava (antes voltava ao topo a cada atualização).
-  const sbTop = sig === lastSig ? ($('.stage-body', app)?.scrollTop || 0) : 0;
-  app.innerHTML = html;
+  // Mesma fase do jogo: troca só os pedaços que mudaram. Recriar a área que rola cortava a rolagem
+  // no meio (no touchpad do Chromebook dava pulos) toda vez que alguém respondia.
+  if (!(sig === lastSig && sig.startsWith('game:') && patchScreen(app, html))) {
+    const sbTop = sig === lastSig ? ($('.stage-body', app)?.scrollTop || 0) : 0;
+    app.innerHTML = html;
+    if (sbTop) { const sb = $('.stage-body', app); if (sb) sb.scrollTop = sbTop; }
+  }
   restoreInputs(app, kept);
-  if (sbTop) { const sb = $('.stage-body', app); if (sb) sb.scrollTop = sbTop; }
   calmRender(app);
   if (sig !== lastSig) {
     // Pausar ou continuar não conta como tela nova: sem animação de entrada e sem voltar ao topo.
