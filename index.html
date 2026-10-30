@@ -1001,7 +1001,7 @@ body.fx-shake #app{animation:fxShake .6s}
 .fx-roulette{position:fixed;inset:0;display:grid;place-items:center;background:rgba(5,5,10,.55);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);animation:screenIn .2s ease;transition:opacity .4s}
 .fx-roulette.out{opacity:0}
 .go-veil.is-intro{z-index:46;padding:16px;overflow:auto}
-.go-card{display:grid;gap:12px;width:min(480px,100%);padding:20px;border-radius:24px;background:var(--surface-solid);border:1px solid color-mix(in srgb,var(--gc) 55%,transparent);box-shadow:0 30px 80px -20px color-mix(in srgb,var(--gc) 70%,transparent);animation:rpIn .45s cubic-bezier(.2,.9,.3,1.2) both}
+.go-card{display:grid;gap:12px;width:min(560px,100%);padding:18px;border-radius:24px;background:var(--surface-solid);border:1px solid color-mix(in srgb,var(--gc) 55%,transparent);box-shadow:0 30px 80px -20px color-mix(in srgb,var(--gc) 70%,transparent);animation:rpIn .45s cubic-bezier(.2,.9,.3,1.2) both}
 .go-head{display:flex;align-items:center;gap:12px}
 .go-head .go-ic{display:grid;place-items:center;width:52px;height:52px;flex:none;border-radius:16px;background:var(--gc);color:#fff;font-size:1.6rem}
 .go-head .go-ic svg{width:28px;height:28px}
@@ -1010,6 +1010,39 @@ body.fx-shake #app{animation:fxShake .6s}
 .go-steps{list-style:none;margin:0;padding:0;display:grid;gap:8px}
 .go-steps li{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:14px;background:color-mix(in srgb,var(--gc) 12%,transparent);animation:rpIn .45s both;animation-delay:calc(.15s + var(--i) * .12s)}
 .go-steps li > span{flex:none;font-size:1.5rem;line-height:1}
+/* Passo da vez aceso; os outros ficam mais apagados (mas legíveis) */
+.go-steps li{transition:opacity .35s,background .35s,transform .35s}
+.go-steps:has(li.on) li:not(.on){opacity:.55}
+.go-steps li.on{background:color-mix(in srgb,var(--gc) 30%,transparent);transform:scale(1.02)}
+/* Vídeo do tutorial: a tela de verdade do jogo, encolhida, jogando sozinha em loop */
+.go-demo{position:relative;overflow:hidden;border-radius:16px;background:#0B0B0F;border:1px solid color-mix(in srgb,var(--gc) 40%,var(--line));transition:opacity .45s}
+.go-demo.fade{opacity:0}
+.go-screen{position:absolute;left:0;top:0;transform-origin:0 0;pointer-events:none;user-select:none}
+.go-screen > .stage-body{width:100%;height:100%;overflow:hidden;padding:8px 10px;--key:clamp(34px,calc(var(--sbh) * .105),52px)}
+.go-live{position:absolute;left:8px;top:6px;z-index:2;padding:2px 8px;border-radius:999px;background:rgba(0,0,0,.6);color:#FCA5A5;font-size:.68rem;font-weight:800;letter-spacing:.04em}
+.go-cap{position:absolute;right:8px;bottom:6px;z-index:2;max-width:70%;padding:3px 10px;border-radius:999px;background:color-mix(in srgb,var(--gc) 80%,#000);color:#fff;font-size:.74rem;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.go-cap:empty{display:none}
+.go-finger{position:absolute;z-index:3;left:50%;top:50%;font-size:1.9rem;line-height:1;opacity:0;transform:translate(-30%,-10%);transition:left .55s cubic-bezier(.3,.8,.3,1),top .55s cubic-bezier(.3,.8,.3,1),opacity .25s;filter:drop-shadow(0 4px 8px rgba(0,0,0,.7));pointer-events:none}
+.go-finger.on{opacity:1}
+.go-finger.tap{animation:goTap .5s .55s ease}
+@keyframes goTap{50%{transform:translate(-30%,-10%) scale(.78)}}
+.go-screen .go-hit{outline:4px solid #FDE68A;outline-offset:2px}
+.go-btns{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px 14px}
+.go-slowers{margin:0;color:#FDE68A;font-size:.85rem}
+.go-slowers:empty{display:none}
+/* "Não entendi": um passo por tela, depois as dúvidas comuns */
+.go-slow,.go-faq{display:grid;gap:10px;justify-items:center;text-align:center;animation:rpIn .35s both}
+.go-slow-n{margin:0;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.go-slow-e{font-size:2.6rem;line-height:1}
+.go-slow-t{margin:0;font-size:1.15rem;font-weight:700;line-height:1.35;max-width:30ch}
+.go-slow-q{margin:0;font-weight:800;color:#FDE68A}
+.go-slow-btns{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+.go-faq{justify-items:stretch;text-align:left}
+.go-faq .go-slow-n{text-align:center}
+.go-faq details{padding:8px 12px;border-radius:12px;background:color-mix(in srgb,var(--gc) 12%,transparent)}
+.go-faq summary{cursor:pointer;font-weight:700}
+.go-faq details p{margin:6px 0 0;color:var(--muted);font-size:.92rem}
+.go-tip{margin:0;font-size:.88rem;text-align:center}
 .go-steps p{margin:0;font-size:.95rem;line-height:1.3}
 .go-foot{display:grid;justify-items:center;gap:10px;text-align:center}
 .go-foot .hint{margin:0}
@@ -2908,19 +2941,38 @@ function engineStart(s, gameId, rounds) {
   // Alguns jogos longos (como o Lobisomem) limitam o número de rodadas.
   s.game = { id: gameId, round: 0, total: Games[gameId].rounds ? Math.min(Games[gameId].rounds, rounds) : rounds, phase: null, phaseStart: 0, deadline: null, dur: 0, data: {}, earned: {}, roundDelta: {}, used: [], roster: [] };
   engineNextRound(s);
-  // Antes do jogo: tela de regras (espera quem nunca jogou neste aparelho tocar "Entendi", até 15 s)
-  // e depois a contagem. O relógio da primeira etapa só começa depois do "VAI!".
+  // Antes do jogo: tela de regras (espera quem nunca jogou neste aparelho tocar "Entendi", até 30 s; quem
+  // toca em "Não entendi" ganha mais tempo, até 1 min) e depois a contagem. O relógio só começa depois do "VAI!".
   const cd = cfg(s, 'countdown'), need = introNeed(s, s.game).length;
   if (s.game.phase !== 'final' && (cd || need)) {
     const wait = need ? INTRO_MAX : 0;
-    if (need) s.game.intro = { until: now() + wait, ready: {} };
+    if (need) s.game.intro = { until: now() + wait, start: now(), ready: {}, slow: {} };
     s.game.cd = now() + wait + cd * 1000; s.game.cdLen = cd;
     shiftTimers(s.game, wait + cd * 1000);
   }
   botsGreet(s);
 }
 const counting = g => !!(g?.cd && now() < g.cd);
-const INTRO_MAX = 15000;
+const INTRO_MAX = 30000, INTRO_CAP = 60000;
+// Mais tempo para as regras (sem passar de 1 minuto no total); o jogo inteiro anda junto.
+function introExtend(g, until) {
+  const it = g.intro, add = Math.min(until, it.start + INTRO_CAP) - it.until;
+  if (add <= 0) return false;
+  it.until += add; g.cd += add; shiftTimers(g, add);
+  return true;
+}
+// "Não entendi" segura o jogo por pelo menos mais 25 s; "Pedir ajuda" avisa no chat e dá mais 20 s.
+function introSlow(s, pid, ask) {
+  const g = s.game, it = g?.intro;
+  if (!it || it.done || !inRoster(g, pid) || it.ready[pid]) return false;
+  (it.slow = it.slow || {})[pid] = 1;
+  if (ask && !it.asked?.[pid]) {
+    (it.asked = it.asked || {})[pid] = 1;
+    pushChat(s, { sys: true, text: `🙋 ${s.players[pid]?.name || 'Alguém'} não entendeu o ${Games[g.id].name}. Alguém explica?` });
+  }
+  introExtend(g, Math.max(it.until, now() + 25000) + (ask ? 20000 : 0));
+  return true;
+}
 // Quem precisa ler as regras: as pessoas da rodada (bots, plateia e telão não seguram o jogo).
 const introNeed = (s, g) => (g?.roster || []).filter(id => { const p = s.players[id]; return p && !p.isBot && (p.connected || id === s.hostId); });
 function introEnd(g) {
@@ -7757,6 +7809,13 @@ Games.sino = {
       if (d.ring && !d.over) Games.sino.closeRing(g, s);
     } },
   },
+  // Vídeo do tutorial: "Você" já tem 3 iguais e a quarta vem chegando, para o sino tocar logo.
+  demoPrep(g, s, me) {
+    const d = g.data, others = d.seats.filter(id => id !== me), types = [...new Set(Object.values(d.hands).flat().concat(...Object.values(d.inbox)))];
+    const [A, B] = types, rest = shuffle(types.flatMap(t => [t, t, t, t]).filter((t, i, arr) => !(t === A && arr.slice(0, i).filter(x => x === A).length < 4) && !(t === B && arr.slice(0, i).filter(x => x === B).length < 1)));
+    d.hands[me] = [A, A, A, B]; d.inbox[me] = [A];
+    others.forEach((id, i) => { d.hands[id] = rest.slice(i * 4, i * 4 + 4); d.inbox[id] = []; });
+  },
   closeRing(g, s) {
     const d = g.data, r = d.ring, pts = { [r.first]: 3 };
     const late = d.seats.filter(id => s.players[id] && (s.players[id].isBot || s.players[id].connected) && !r.by.includes(id));
@@ -7801,7 +7860,7 @@ Games.sino = {
       if (snFour(h)) { if (snRing(g, s, id)) ch = true; continue; }
       if (h.length < 4) continue;
       // Passa a carta que ele tem menos (às vezes erra).
-      const k = Math.random() < botP(.8) ? snWorst(h) : Math.floor(Math.random() * 4);
+      const k = g.demo || Math.random() < botP(.8) ? snWorst(h) : Math.floor(Math.random() * 4);  // no vídeo do tutorial, sem erro de propósito
       if (snPass(g, id, k)) ch = true;
     }
     return ch;
@@ -9278,6 +9337,8 @@ function hostHandle(from, a) {
     if (s.screen === 'lobby') { (s.warm = s.warm || {})[from] = (s.warm[from] || 0) + clamp(a.n | 0, 0, 25); changed = true; }
   } else if (a.type === 'gready') {
     changed = introReady(s, from) || changed;
+  } else if (a.type === 'gslow' || a.type === 'ghelp') {
+    changed = introSlow(s, from, a.type === 'ghelp') || changed;
   } else if (a.type === 'joker') {
     changed = useJoker(s, from) || changed;
   } else if (a.type === 'kudos') {
@@ -9942,49 +10003,95 @@ function eventRoulette(g) {
 }
 // Tela cheia com 3, 2, 1, VAI! (roda no aparelho; o host segura o jogo enquanto isso).
 // Passo a passo curto de cada jogo (aparece antes do jogo e no botão "Como jogar").
+// Passo a passo de cada jogo: frases curtas, do jeito que se explica para alguém na sala.
 const GUIDE = {
-  mane: [['🔢', 'Chute um número para a pergunta.'], ['🤡', 'Antes da resposta, vote em quem chutou mais longe: o Mané.'], ['🏆', 'Mais perto vale +2. Acertar o Mané vale +1.']],
-  provavel: [['🤔', 'Aparece uma situação: quem é mais provável de…'], ['🗳️', 'Vote em segredo em alguém da sala.'], ['🏆', 'O mais votado leva +2. Quem votou com a maioria, +1.']],
-  impostor: [['🤫', 'Todo mundo recebe a mesma palavra, menos o impostor.'], ['💬', 'Cada um dá uma pista de uma palavra só. O impostor tem que blefar!'], ['🗳️', 'No fim, votem em quem é o impostor.']],
-  geo: [['🖼️', 'Aparece a imagem de um lugar.'], ['👆', 'Escolha uma das 4 opções antes do tempo acabar.'], ['🏆', 'Acertar vale +2, e o mais rápido ganha +1.']],
-  stop: [['🔤', 'Sai uma letra e 3 categorias.'], ['✍️', 'Escreva uma palavra com essa letra para cada categoria.'], ['✋', 'Completou? Aperte Stop e trava todo mundo. Resposta única vale 2.']],
-  fato: [['🧐', 'Aparece uma afirmação bizarra.'], ['✅', 'Diga se é Fato ou Fake. Quanto mais rápido, mais vale (x3, x2, x1).'], ['🎲', 'Tem certeza? Aposte x2 ou x3, mas errar com aposta tira pontos.']],
-  desenho: [['✏️', 'Um jogador desenha a palavra secreta.'], ['⌨️', 'O resto digita os chutes. Quem acerta primeiro ganha mais.'], ['🎨', 'Quem desenha ganha 1 ponto por acerto.']],
-  termo: [['🔠', 'Descubra a palavra de 5 letras em até 6 chutes.'], ['🟩', 'Verde: letra no lugar certo. Amarelo: existe, mas em outro lugar.'], ['🏆', 'Menos chutes valem mais. O primeiro a resolver ganha bônus.']],
-  reflexo: [['⏳', 'Espere a tela ficar azul.'], ['👆', 'Aí toque o mais rápido que puder.'], ['🔥', 'Tocou antes? Queimou a largada. Os 3 mais rápidos pontuam.']],
-  emoji: [['🧩', 'Os emojis escondem um filme ou expressão.'], ['⌨️', 'Digite o que você acha que é.'], ['💡', 'No meio do tempo aparece uma dica. O primeiro a acertar ganha 3.']],
-  mente: [['💭', 'Aparece um tema.'], ['✍️', 'Escreva uma resposta em segredo, tentando pensar igual à maioria.'], ['🤝', 'Cada pessoa que escreveu o mesmo que você vale 1 ponto.']],
-  bomba: [['💣', 'Quem está com a bomba digita uma palavra com a sílaba da vez.'], ['➡️', 'Palavra certa passa a bomba para o próximo.'], ['💥', 'Ninguém sabe quando explode! Quem estiver com ela fica sem ponto.']],
-  mentira: [['📜', 'Aparece um fato curioso com uma lacuna.'], ['🤥', 'Invente uma resposta falsa que pareça verdade.'], ['🔍', 'Depois ache a verdadeira (+2). Cada um que cair na sua mentira te dá +1.']],
-  legenda: [['🖼️', 'Aparece uma cena maluca.'], ['✍️', 'Escreva a legenda mais engraçada que conseguir.'], ['🗳️', 'A galera vota na melhor. Cada voto vale +1.']],
-  preco: [['🏷️', 'Aparece um produto.'], ['💰', 'Chute quanto custou, sem passar do valor.'], ['🏆', 'O mais perto leva +3. Acertar em cheio dá bônus.']],
-  linha: [['🔀', 'Cinco acontecimentos aparecem embaralhados.'], ['↕️', 'Coloque do mais antigo para o mais recente e envie.'], ['🏆', 'Cada um no lugar certo vale +1. Linha perfeita dá +2.']],
-  digita: [['⌨️', 'Todo mundo digita a mesma frase ao mesmo tempo.'], ['🔡', 'Acentos e maiúsculas não contam.'], ['🏁', 'O primeiro a terminar ganha +3.']],
-  proibida: [['🤐', 'Um jogador recebe uma palavra e 4 palavras proibidas.'], ['💬', 'Ele escreve dicas sem usar nenhuma delas.'], ['⌨️', 'O resto chuta. Quem acerta primeiro ganha mais.']],
-  telefone: [['✍️', 'Cada um escreve uma frase.'], ['🔁', 'Ela passa adiante: um desenha, o próximo adivinha pelo desenho, e assim vai.'], ['📖', 'No fim, o álbum mostra tudo. Vote no desenho favorito.']],
-  mapa: [['📍', 'Aparece um lugar famoso.'], ['🗺️', 'Toque no mapa onde ele fica (dá para dar zoom) e confirme.'], ['🏆', 'Até 300 km vale +5. Quanto mais longe, menos pontos.']],
-  lobisomem: [['🎭', 'Cada um recebe um papel secreto: lobisomem, vidente, médico ou aldeão.'], ['🌙', 'À noite, o lobo ataca, a vidente investiga e o médico protege.'], ['☀️', 'De dia, conversem no chat e votem para eliminar alguém.']],
-  quemdisse: [['✍️', 'Responda uma pergunta sobre você, em segredo.'], ['🕵️', 'Depois, adivinhe quem escreveu cada resposta.'], ['🏆', 'Acertar vale +1. Cada um que errar a sua te dá +1.']],
-  mimica: [['🎬', 'Um jogador escolhe um filme ou expressão.'], ['😀', 'Ele conta só com emojis, um por um.'], ['⌨️', 'O resto chuta. Quem acerta primeiro ganha mais.']],
-  leilao: [['🪙', 'Cada um começa com algumas moedas.'], ['📦', 'Vai a leilão um lote fechado, com uma dica do valor. O lance é secreto.'], ['⚠️', 'Quem dá o maior lance leva: pode valer pontos… ou ser um mico!']],
-  detalhe: [['👀', 'Duas cenas quase iguais.'], ['👆', 'Toque nas 5 diferenças, em qualquer uma das cenas.'], ['⚠️', 'Errou o lugar? O dedo trava por 1 segundo.']],
-  ritmo: [['🥁', 'Uma batida acende e toca no ritmo.'], ['👆', 'Toque no círculo bem no tempo de cada batida.'], ['🤫', 'Não toque nas pausas! Quanto mais certeiro, mais pontos.']],
-  vod: [['🎲', 'Na sua vez, escolha verdade ou desafio.'], ['🗣️', 'Responda ou cumpra em voz alta (ao vivo ou na chamada).'], ['🗳️', 'A galera vota se valeu: verdade +2, desafio +3.']],
-  quiz: [['❓', 'Uma pergunta com 4 alternativas.'], ['⚡', 'Quanto mais rápido acertar, mais vale (x3, x2, x1).'], ['😌', 'Errar não tira pontos.']],
-  mesa: [['🃏', 'Jogue uma carta da mesma cor ou do mesmo número da carta do meio.'], ['📥', 'Não tem? Compre no monte. Quem esvaziar a mão primeiro ganha.'], ['🍅', 'Especiais: Tomatada (+2), Redemoinho 🌀, Camaleão 🎨, Pula e Inverte.'], ['🔔', 'Alguém ficou com 1 carta? Toque na campainha primeiro: +1.']],
-  quemsou: [['❓', 'Uma pessoa fica na berlinda e não vê quem ela é. Todo mundo vê!'], ['💬', 'Ela faz perguntas de sim ou não, e a galera responde nos botões.'], ['🎯', 'Ela tem 3 chutes. Quem responde também ganha +1.']],
-  memoria: [['🃏', 'Um tabuleiro de cartas viradas, igual para todos.'], ['👆', 'Na sua vez, vire 2. Par igual é seu e você joga de novo.'], ['👀', 'Olhe as jogadas dos outros! O par da ⭐ vale +3.']],
-  cegas: [['🙈', 'Todo mundo desenha a mesma palavra, mas a tela fica tampada.'], ['✏️', 'Desenhe confiando na memória e aperte Pronto.'], ['❤️', 'Depois, vote no desenho mais parecido. Cada voto vale +1.']],
-  trilha: [['🎲', 'Todo mundo rola o dado ao mesmo tempo.'], ['❓', 'Depois vem uma pergunta: acertou, anda mais 2; errou, volta 1.'], ['🚀', 'Casas especiais: 🚀 atalho, 🕳️ buraco, ⭐ e 🎁 dão pontos, 🔁 troca de lugar.'], ['🏆', 'Cruzar a chegada vale +5. No fim da rodada, os 3 mais adiantados pontuam.']],
-  feira: [['🃏', 'Você recebe 5 objetos. Só você vê quanto cada um vale.'], ['🔁', 'Toque numa carta sua e numa da banca para oferecer uma troca.'], ['🤥', 'Pode mentir à vontade! Aceite ou recuse as ofertas que chegarem.'], ['💰', 'No fim, quanto mais valer a sua mão, mais pontos.']],
-  pilha: [['🎯', 'Sai um alvo. Vire cartas da sua pilha e pare quando quiser.'], ['💥', 'Passou do alvo? Estourou e fica sem nada.'], ['🃏', 'Especiais: ✖️2 dobra a próxima, 🔙 desfaz a última, 🫳 rouba de alguém.'], ['🏆', 'Na mosca vale +5. O mais perto ganha +3 e o segundo, +1.']],
-  sino: [['🃏', 'Você tem 4 cartas. Toque numa para passar ao vizinho.'], ['🔁', 'A carta que vem do outro lado entra na sua mão.'], ['🔔', 'Juntou 4 iguais? Toque o sino (+3). Os outros têm 3 segundos para tocar também.'], ['⚠️', 'Quem não tocar perde 2. Tocar sem 4 iguais tira 1.']],
-  passa: [['🍎', 'Você recebe 6 cartas de fruta.'], ['🔁', 'Guarde 1 e passe o resto para o vizinho. Repete até acabar.'], ['🏆', 'Combos: trio +4, par +1, uma de cada cor +3. A 🌟 dobra o melhor.']],
-  ilha: [['🏝️', 'Tem tesouros e armadilhas enterrados na ilha.'], ['⛏️', 'Todo mundo escolhe onde cavar ao mesmo tempo.'], ['🔥', 'Cada buraco mostra quantos passos faltam até o tesouro mais perto. Use as pistas de todos!'], ['💰', 'Tesouro vale +5. Armadilha 💣 tira 2.']],
-  vaza: [['🃏', 'Você recebe 5 cartas de 4 naipes, de 1 a 10.'], ['👑', 'Todo mundo joga uma carta ao mesmo tempo. O naipe que manda ganha de tudo; depois, vale a mais alta.'], ['📣', 'Jogou? Grite "Aumenta!": a vaza vale +2, e quem fugir te entrega 1 ponto.']],
-  ponte: [['🌉', 'Em cada fileira da ponte, uma das tábuas é falsa.'], ['⬅️', 'Todo mundo escolhe esquerda ou direita ao mesmo tempo.'], ['💥', 'Caiu? Você vê as tábuas falsas e pode dar dica… ou mentir.'], ['🏁', 'Cada fileira vale +1. Chegar ao fim vale +5.']],
-  linha4: [['🧱', 'Um tabuleiro gigante. Ninguém espera a vez!'], ['⏱️', 'Ponha uma peça onde quiser. Depois, espere 3 segundos para a próxima.'], ['🎉', 'Fechou 4 suas em linha? +3, e as peças somem. Atrapalhe os outros!']],
-  terra: [['🟩', 'Todo mundo escolhe uma casa do mapa em segredo, ao mesmo tempo.'], ['📐', 'Depois da primeira, as casas precisam encostar no seu território.'], ['✖', 'Duas pessoas na mesma casa? Ela vira terra de ninguém.'], ['🏆', 'Cada casa vale +1. A maior área ligada ganha +5 (empate: +2 para cada).']],
+  mane: [['🔢', 'Aparece uma pergunta. Chute um número.'], ['🤡', 'Depois, vote em quem chutou mais longe: o Mané.'], ['🏆', 'Chute mais perto: +2. Acertou o Mané: +1.']],
+  provavel: [['🤔', 'Aparece uma frase: "Quem é mais provável de…"'], ['🗳️', 'Vote em segredo em alguém da sala.'], ['🏆', 'O mais votado ganha +2. Votou junto com a maioria? +1.']],
+  impostor: [['🤫', 'Todo mundo recebe a mesma palavra. Menos o impostor!'], ['💬', 'Cada um dá uma dica de uma palavra. O impostor finge que sabe.'], ['🗳️', 'No fim, votem em quem é o impostor.']],
+  geo: [['🖼️', 'Aparece a foto de um lugar.'], ['👆', 'Toque na opção certa entre as 4.'], ['🏆', 'Acertou: +2. O mais rápido ganha +1 a mais.']],
+  stop: [['🔤', 'Sai uma letra e 3 temas (ex.: fruta, cor, nome).'], ['✍️', 'Escreva uma palavra com essa letra para cada tema.'], ['✋', 'Terminou? Aperte STOP e todo mundo para. Palavra que só você usou vale 2.']],
+  fato: [['🧐', 'Aparece uma frase maluca.'], ['✅', 'Responda: é Fato ou Fake? Rápido vale mais (x3, x2, x1).'], ['🎲', 'Tem certeza? Aposte. Mas errar com aposta tira pontos.']],
+  desenho: [['✏️', 'Uma pessoa desenha a palavra secreta.'], ['⌨️', 'O resto escreve o que acha que é.'], ['🏆', 'Acertou primeiro: mais pontos. Quem desenhou ganha 1 por acerto.']],
+  termo: [['🔠', 'Adivinhe a palavra de 5 letras. Você tem 6 tentativas.'], ['🟩', 'Verde: letra no lugar certo. Amarelo: a letra existe, mas em outro lugar.'], ['🏆', 'Menos tentativas valem mais.']],
+  reflexo: [['⏳', 'Espere a tela ficar azul.'], ['👆', 'Ficou azul? Toque o mais rápido que puder!'], ['🔥', 'Tocou antes da hora? Queimou. Os 3 mais rápidos ganham pontos.']],
+  emoji: [['🧩', 'Os emojis escondem um filme ou uma expressão.'], ['⌨️', 'Escreva o que você acha que é.'], ['💡', 'No meio do tempo aparece uma dica. O primeiro a acertar ganha 3.']],
+  mente: [['💭', 'Aparece um tema (ex.: "uma fruta").'], ['✍️', 'Escreva o que a maioria vai escrever.'], ['🤝', 'Cada pessoa que escreveu igual a você vale +1.']],
+  bomba: [['💣', 'A bomba está com você? Escreva uma palavra com a sílaba da vez.'], ['➡️', 'Palavra certa passa a bomba para o próximo.'], ['💥', 'Ninguém sabe quando explode! Quem estiver com ela fica sem ponto.']],
+  mentira: [['📜', 'Aparece uma curiosidade com uma parte faltando.'], ['🤥', 'Invente uma resposta falsa que pareça verdade.'], ['🔍', 'Depois, ache a verdadeira (+2). Quem cair na sua mentira te dá +1.']],
+  legenda: [['🖼️', 'Aparece uma cena maluca.'], ['✍️', 'Escreva a legenda mais engraçada.'], ['🗳️', 'A galera vota na melhor. Cada voto vale +1.']],
+  preco: [['🏷️', 'Aparece um produto.'], ['💰', 'Chute o preço. Não pode passar do valor!'], ['🏆', 'O mais perto sem passar ganha +3.']],
+  linha: [['🔀', 'Aparecem 5 acontecimentos fora de ordem.'], ['↕️', 'Arraste do mais antigo para o mais novo e envie.'], ['🏆', 'Cada um no lugar certo vale +1. Tudo certo: +2 a mais.']],
+  digita: [['⌨️', 'Todo mundo digita a mesma frase ao mesmo tempo.'], ['🔡', 'Acento e letra maiúscula não contam.'], ['🏁', 'Quem terminar primeiro ganha +3.']],
+  proibida: [['🤐', 'Uma pessoa recebe uma palavra e 4 palavras proibidas.'], ['💬', 'Ela dá dicas sem usar as proibidas.'], ['⌨️', 'O resto chuta. Quem acerta primeiro ganha mais.']],
+  telefone: [['✍️', 'Cada um escreve uma frase.'], ['🔁', 'A frase passa adiante: um desenha, o próximo adivinha pelo desenho…'], ['📖', 'No fim, vejam o álbum e votem no desenho favorito.']],
+  mapa: [['📍', 'Aparece um lugar famoso.'], ['🗺️', 'Toque no mapa onde ele fica e confirme. Dá para dar zoom.'], ['🏆', 'Quanto mais perto, mais pontos. Até 300 km vale +5.']],
+  lobisomem: [['🎭', 'Cada um recebe um papel secreto: lobisomem, vidente, médico ou aldeão.'], ['🌙', 'À noite: o lobo ataca, a vidente espia e o médico protege.'], ['☀️', 'De dia: conversem e votem para tirar alguém do jogo.']],
+  quemdisse: [['✍️', 'Responda uma pergunta sobre você, em segredo.'], ['🕵️', 'Depois, adivinhe quem escreveu cada resposta.'], ['🏆', 'Acertou: +1. Cada um que errar a sua te dá +1.']],
+  mimica: [['🎬', 'Uma pessoa escolhe um filme ou uma expressão.'], ['😀', 'Ela conta só com emojis, um por vez.'], ['⌨️', 'O resto chuta. Quem acerta primeiro ganha mais.']],
+  leilao: [['🪙', 'Cada um começa com moedas.'], ['📦', 'Vai a leilão uma caixa fechada, com uma dica do valor. O lance é secreto.'], ['⚠️', 'Quem dá o maior lance leva. Pode valer pontos… ou ser um mico!']],
+  detalhe: [['👀', 'Aparecem duas cenas quase iguais.'], ['👆', 'Toque nas 5 diferenças.'], ['⚠️', 'Tocou no lugar errado? O dedo trava 1 segundo.']],
+  ritmo: [['🥁', 'Um círculo pisca no ritmo de uma batida.'], ['👆', 'Toque no círculo bem na hora de cada batida.'], ['🤫', 'Não toque nas pausas! Quanto mais certinho, mais pontos.']],
+  vod: [['🎲', 'Na sua vez, escolha verdade ou desafio.'], ['🗣️', 'Responda ou cumpra em voz alta.'], ['🗳️', 'A galera vota se valeu: verdade +2, desafio +3.']],
+  quiz: [['❓', 'Aparece uma pergunta com 4 respostas.'], ['⚡', 'Toque na certa. Rápido vale mais (x3, x2, x1).'], ['😌', 'Errar não tira pontos.']],
+  mesa: [['🃏', 'Jogue uma carta da mesma cor ou do mesmo número da carta do meio.'], ['📥', 'Não tem? Compre uma. Quem acabar com as cartas primeiro ganha.'], ['🍅', 'Especiais: 🍅 o próximo compra 2, 🌀 as mãos trocam, 🎨 você escolhe a cor.'], ['🔔', 'Alguém ficou com 1 carta? Toque no sino primeiro: +1.']],
+  quemsou: [['❓', 'Uma pessoa não sabe quem ela é. Todo mundo sabe!'], ['💬', 'Ela faz perguntas de sim ou não. A galera responde nos botões.'], ['🎯', 'Ela tem 3 chutes. Quem responde também ganha +1.']],
+  memoria: [['🃏', 'Cartas viradas para baixo, as mesmas para todos.'], ['👆', 'Na sua vez, vire 2. Iguais? O par é seu e você joga de novo.'], ['👀', 'Preste atenção nas jogadas dos outros! O par da ⭐ vale +3.']],
+  cegas: [['🙈', 'Todo mundo desenha a mesma palavra, mas sem ver o desenho.'], ['✏️', 'Desenhe de memória e aperte Pronto.'], ['❤️', 'Depois, vote no desenho que ficou mais parecido. Cada voto: +1.']],
+  trilha: [['🎲', 'Todo mundo rola o dado ao mesmo tempo.'], ['❓', 'Vem uma pergunta. Acertou: anda mais 2. Errou: volta 1.'], ['🚀', 'Casas especiais: 🚀 avança, 🕳️ volta, ⭐ 🎁 dão pontos, 🔁 troca de lugar.'], ['🏆', 'Chegou no fim: +5. Os 3 mais adiantados ganham pontos.']],
+  feira: [['🃏', 'Você recebe 5 objetos. Só você vê quanto cada um vale.'], ['🔁', 'Toque numa carta sua e numa de outra pessoa para propor uma troca.'], ['🤥', 'Pode mentir à vontade! Aceite ou recuse as trocas que chegarem.'], ['💰', 'No fim, quanto mais valer a sua mão, mais pontos.']],
+  terra: [['🟩', 'Todo mundo escolhe uma casa do mapa ao mesmo tempo, em segredo.'], ['📐', 'Depois da primeira, escolha casas encostadas nas suas.'], ['✖', 'Duas pessoas na mesma casa? Ela fica sem dono.'], ['🏆', 'Cada casa vale +1. O maior pedaço junto ganha +5.']],
+  pilha: [['🎯', 'Aparece um número alvo.'], ['🃏', 'Vire cartas: os números vão somando. Pare quando quiser.'], ['💥', 'Passou do alvo? Estourou e fica sem nada.'], ['🏆', 'Exato no alvo: +5. O mais perto ganha +3.']],
+  sino: [['🃏', 'Você tem 4 cartas. Toque numa para passar ao vizinho.'], ['🔁', 'Chega uma carta nova do outro lado.'], ['🔔', 'Juntou 4 iguais? Toque o sino: +3!'], ['⚠️', 'Alguém tocou? Toque também, rápido! O último perde 2.']],
+  passa: [['🍎', 'Você recebe 6 cartas de fruta.'], ['🔁', 'Guarde 1 e passe o resto para o vizinho. Repete até acabar.'], ['🏆', 'Junte 3 frutas iguais (+4), pares (+1) e as 4 cores (+3). 🌟 dobra.']],
+  ilha: [['🏝️', 'Tem tesouros e bombas escondidos na ilha.'], ['⛏️', 'Todo mundo escolhe onde cavar ao mesmo tempo.'], ['🔥', 'O número no buraco diz quantos passos faltam até um tesouro. Vermelho = perto!'], ['💰', 'Tesouro: +5. Bomba 💣: −2.']],
+  vaza: [['🃏', 'Você tem 5 cartas de 4 naipes, de 1 a 10.'], ['👑', 'Todo mundo joga uma ao mesmo tempo. O naipe que manda ganha; depois, a carta mais alta.'], ['📣', 'Jogou? Grite "Aumenta!": a vaza vale +2, e quem fugir te dá 1 ponto.']],
+  ponte: [['🌉', 'Em cada fileira da ponte, uma tábua pode ser falsa.'], ['⬅️', 'Escolha esquerda ou direita. Todo mundo pula junto.'], ['💥', 'Caiu? Você vê as tábuas falsas e pode dar dica… ou mentir!'], ['🏁', 'Cada fileira vale +1. Chegou no fim: +5.']],
+  linha4: [['🧱', 'Um tabuleiro gigante. Ninguém espera a vez!'], ['👆', 'Ponha uma peça onde quiser. Depois, espere 3 segundos.'], ['🎉', 'Fez 4 peças suas em fila? +3, e elas somem. Atrapalhe os outros!']],
+};
+// Dúvidas comuns de cada jogo (aparecem no "Não entendi").
+const GUIDE_FAQ = {
+  mane: [['Preciso acertar o número exato?', 'Não. Ganha quem chegar mais perto.'], ['O que é o Mané?', 'É quem chutou o número mais longe da resposta. Votar nele certo vale +1.']],
+  provavel: [['Posso votar em mim?', 'Pode, se achar que é você!'], ['Como ganho ponto votando?', 'Se o seu voto for no mais votado, você ganha +1.']],
+  impostor: [['Como sei se sou o impostor?', 'Sua carta diz "Você é o impostor" e não mostra a palavra.'], ['Que dica eu dou?', 'Uma palavra ligada à palavra secreta, sem entregar demais.'], ['E se eu for o impostor?', 'Escute as dicas dos outros e invente uma parecida.']],
+  geo: [['Posso trocar a resposta?', 'Não. Vale o primeiro toque, então pense antes.'], ['Errar tira ponto?', 'Não. Só deixa de ganhar.']],
+  stop: [['E se eu não souber uma palavra?', 'Deixe em branco e preencha as outras.'], ['Quem decide se a palavra vale?', 'A galera vota na validação, depois do Stop.']],
+  fato: [['O que é a aposta?', 'Se tiver certeza, aposte x2 ou x3. Acertou, ganha mais; errou, perde pontos.'], ['Responder rápido importa?', 'Sim! No começo vale x3, depois x2 e x1.']],
+  desenho: [['Não sei desenhar!', 'Não precisa ser bonito. Rabiscos simples ajudam muito.'], ['Posso escrever no desenho?', 'Não vale escrever letras ou a palavra.'], ['Como chuto?', 'Escreva no campo embaixo do desenho e envie. Pode chutar várias vezes.']],
+  termo: [['O que é a cor cinza?', 'A letra não existe na palavra.'], ['Posso usar qualquer palavra?', 'Precisa ser uma palavra de 5 letras.']],
+  reflexo: [['Quando eu toco?', 'Só quando a tela ficar azul.'], ['Toquei antes, e agora?', 'Queimou a largada nesta rodada. Na próxima, espere o azul!']],
+  emoji: [['Precisa escrever exato?', 'Acento e maiúscula não importam, mas o nome precisa estar certo.'], ['E a dica?', 'Aparece no meio do tempo, para ajudar quem travou.']],
+  mente: [['Qual a resposta certa?', 'Não tem! Vale a resposta que mais gente escrever.'], ['Dica?', 'Pense no mais óbvio. A primeira coisa que vem à cabeça.']],
+  bomba: [['O que é a sílaba?', 'Umas letras que sua palavra precisa ter. Ex.: "CA" → CAsa, peteCA.'], ['Posso repetir palavra?', 'Não. Palavra já usada não vale.']],
+  mentira: [['Como eu ganho ponto?', 'Achando a resposta verdadeira (+2) e enganando os outros com a sua (+1 cada).'], ['Que mentira eu escrevo?', 'Algo que pareça verdade. Curto e sério engana mais.']],
+  legenda: [['Posso votar na minha?', 'Não. Vote na que você mais gostou dos outros.'], ['Tem resposta certa?', 'Não! Ganha a mais engraçada para a galera.']],
+  preco: [['E se eu passar do preço?', 'Seu chute não vale nesta rodada.'], ['Precisa dos centavos?', 'Não. Um número inteiro já serve.']],
+  linha: [['Como mudo a ordem?', 'Arraste os cartões ou use as setinhas.'], ['Mais antigo fica em cima?', 'Sim: o mais antigo em cima e o mais novo embaixo.']],
+  digita: [['Errei uma letra, e agora?', 'Apague e corrija. Só termina quando a frase estiver certa.'], ['Acento conta?', 'Não. Pode digitar sem acento.']],
+  proibida: [['O que são as proibidas?', 'Palavras que quem dá a dica não pode escrever.'], ['Posso chutar várias vezes?', 'Pode! Quem acertar primeiro ganha mais.']],
+  telefone: [['Não sei desenhar!', 'Tudo bem. O mais divertido é a frase mudando no caminho.'], ['O que eu escrevo quando vejo um desenho?', 'O que você acha que o desenho mostra.']],
+  mapa: [['Como dou zoom?', 'Use os botões + e − ou faça pinça com dois dedos.'], ['Preciso confirmar?', 'Sim. Toque no lugar e depois em Confirmar.']],
+  lobisomem: [['Como sei meu papel?', 'Ele aparece só na sua tela, no começo.'], ['O que eu faço de dia?', 'Converse no chat e vote em quem acha que é o lobisomem.'], ['Saí do jogo, e agora?', 'Você assiste até o fim. Não conte nada!']],
+  quemdisse: [['Posso mentir na resposta?', 'Pode! Assim fica mais difícil adivinhar que foi você.'], ['Como ganho ponto?', 'Acertando quem escreveu cada resposta e enganando os outros com a sua.']],
+  mimica: [['Posso escrever palavras?', 'Não. Quem conta usa só emojis.'], ['Como chuto?', 'Escreva no campo e envie. Pode tentar várias vezes.']],
+  leilao: [['O que tem na caixa?', 'Ninguém sabe! A dica diz mais ou menos quanto vale.'], ['O que é mico?', 'Uma caixa que tira pontos de quem comprou.'], ['As moedas acabam?', 'Sim. Use com cuidado, elas valem para o jogo todo.']],
+  detalhe: [['Toco em qual cena?', 'Em qualquer uma das duas.'], ['Por que meu dedo travou?', 'Você tocou num lugar errado. Espere 1 segundo.']],
+  ritmo: [['Quando eu toco?', 'Quando o círculo acender, junto com a batida.'], ['E nas pausas?', 'Não toque! Tocar na pausa atrapalha a sua pontuação.']],
+  vod: [['Preciso cumprir o desafio?', 'É o combinado da brincadeira! Se não der, a galera vota.'], ['Quem decide se valeu?', 'A galera vota depois que você responde ou cumpre.']],
+  quiz: [['Errar tira ponto?', 'Não. Só deixa de ganhar.'], ['Rápido vale mais?', 'Sim! No começo vale x3, depois x2 e x1.']],
+  mesa: [['Quando eu compro carta?', 'Quando você não tem nenhuma carta que combine com a do meio.'], ['O que faz a 🌀?', 'Todo mundo passa a mão inteira de cartas para o vizinho.'], ['Para que serve o sino?', 'Quando alguém fica com 1 carta, quem tocar primeiro ganha +1.']],
+  quemsou: [['Que perguntas eu faço?', 'Perguntas de sim ou não. Ex.: "É uma pessoa?", "É brasileiro?"'], ['Como respondo para o outro?', 'Toque em Sim, Não ou Talvez.']],
+  memoria: [['Errei o par, e agora?', 'As cartas viram de novo e a vez passa. Lembre onde estavam!'], ['Posso jogar fora da minha vez?', 'Não. Espere aparecer "Sua vez".']],
+  cegas: [['Por que não vejo meu desenho?', 'É o desafio! Desenhe de memória.'], ['Em qual eu voto?', 'No desenho que ficou mais parecido com a palavra. Não vale votar no seu.']],
+  trilha: [['Preciso rolar o dado?', 'Sim, toque em Rolar. Se esquecer, o dado rola sozinho.'], ['O que faz a 🔁?', 'Você troca de lugar com quem está logo na sua frente.'], ['Errar a pergunta é ruim?', 'Você volta 1 casa, mas ainda anda o número do dado.']],
+  feira: [['Como faço uma troca?', 'Toque numa carta sua, depois numa carta de outra pessoa, e em Oferecer troca.'], ['Como sei se a carta do outro é boa?', 'Não sabe! Só o dono vê o valor. Confie… ou não.'], ['Posso recusar?', 'Pode. Toque em Recusar ou deixe o tempo acabar.']],
+  terra: [['Onde posso escolher?', 'As casas acesas. Depois da primeira, só as encostadas nas suas.'], ['O que é o ✖?', 'Uma casa que duas pessoas escolheram juntas. Ela fica sem dono.']],
+  pilha: [['Quando é bom parar?', 'Quando faltar pouco para o alvo. Uma carta pode valer até 10.'], ['O que faz o 🫳?', 'Rouba a última carta de outra pessoa e soma na sua.'], ['E o ✖️2?', 'A próxima carta que você virar vale o dobro.']],
+  sino: [['Qual carta eu passo?', 'A que você tem menos. Guarde as que estão se juntando.'], ['Alguém tocou o sino, e agora?', 'Toque também, bem rápido! Quem ficar por último perde 2.'], ['E se eu tocar sem ter 4 iguais?', 'Perde 1 e o sino trava por 3 segundos.']],
+  passa: [['Qual carta eu guardo?', 'A que ajuda a formar 3 iguais ou a juntar as 4 cores.'], ['Para onde vão as outras?', 'Para o vizinho. E você recebe as que sobraram do outro vizinho.']],
+  ilha: [['O que é o número no buraco?', 'Quantos passos faltam até o tesouro mais perto. 1 é muito perto!'], ['Posso usar o buraco dos outros?', 'Pode! Todo mundo vê as pistas de todo mundo.']],
+  vaza: [['Qual carta ganha?', 'Do naipe que manda, a mais alta. Se ninguém jogou esse naipe, a mais alta de todas.'], ['O que é "Aumenta!"?', 'A vaza passa a valer +2. Quem fugir te dá 1 ponto.'], ['Quando eu fujo?', 'Quando sua carta é fraca e você acha que vai perder.']],
+  ponte: [['Como sei qual tábua é firme?', 'No começo, é sorte! Depois, quem caiu pode dar dicas.'], ['As dicas são verdade?', 'Nem sempre. Quem caiu pode mentir!']],
+  linha4: [['Preciso esperar minha vez?', 'Não! Todo mundo joga junto. Só espere 3 segundos entre uma peça e outra.'], ['Vale na diagonal?', 'Vale: deitada, em pé ou na diagonal.']],
 };
 // Jogo sem passo a passo escrito: usa as frases da descrição.
 const guideOf = id => GUIDE[id] || String(Games[id]?.how || '').split(/(?<=[.!?])\s+/).filter(Boolean).slice(0, 4).map((x, i) => [['1️⃣', '2️⃣', '3️⃣', '4️⃣'][i], x]);
@@ -10004,6 +10111,170 @@ function goClose() {
   GoRT.el = null; GoRT.mode = null;
   if (el) { el.classList.add('out'); setTimeout(() => el.remove(), 350); }
 }
+/* ---------- Vídeo do tutorial ---------- */
+// Uma partida de mentira, com o código de verdade do jogo (regras, bots e tela), rodando em loop dentro da
+// tela de regras. Fica só neste aparelho: "Você" joga como um bot e um dedinho mostra onde tocar.
+const DEMO_BOTS = [['Bia', '🦊', '#F97316'], ['Léo', '🐸', '#22C55E'], ['Duda', '🦄', '#A855F7']];
+function demoNew(id) {
+  const meP = Store.room?.players?.[Store.me?.id];
+  const players = { 'demo-me': { id: 'demo-me', name: 'Você', avatar: meP?.avatar || '🙂', color: meP?.color || '#6366F1', isBot: true, connected: true, score: 0 } };
+  DEMO_BOTS.forEach(([name, av, color], i) => { players['demo-' + i] = { id: 'demo-' + i, name, avatar: av, color, isBot: true, connected: true, score: 0 }; });
+  const order = Object.keys(players);
+  const s = { players, order, hostId: 'demo-me', screen: 'game', settings: { ...(Store.room?.settings || {}) }, match: { played: [] }, chat: [] };
+  const g = s.game = { id, round: 1, total: 1, phase: null, phaseStart: 0, deadline: null, dur: 0, data: {}, earned: {}, roundDelta: {}, used: [], roster: order.slice(), demo: true };
+  Games[id].init(g, s);
+  // Alguns jogos arrumam a partida de mentira para o lance principal aparecer logo no vídeo.
+  Games[id].demoPrep?.(g, s, 'demo-me');
+  const D = { id, s, g, me: 'demo-me', acts: [] };
+  demoPhase(D, Games[id].first);
+  return D;
+}
+function demoPhase(D, name) {
+  const { g, s } = D, mod = Games[g.id], ph = mod.phases[name];
+  g.phase = name; g.phaseStart = now(); g.pkey = uid(8); g.dur = ph.dur || 0; g.deadline = null; g.rready = {};
+  ph.enter && ph.enter(g, s);
+  // Etapas curtas no vídeo: só o suficiente para ver a jogada acontecer.
+  const live = !ph.bot && !!mod.tick && name !== 'reveal';
+  D.len = name === 'reveal' ? 4500 : live ? 11000 : clamp((ph.dur || 10) * 350, 2800, 6500);
+  D.end = now() + D.len; D.allAt = 0;
+  // Cada um joga uma vez num momento sorteado; "Você" joga no meio da etapa.
+  D.acts = ph.bot ? g.roster.map(id => ({ id, at: now() + (id === D.me ? .4 : rand(.12, .8)) * D.len })) : [];
+}
+function demoStep(D) {
+  const { g, s } = D, mod = Games[g.id], ph = mod.phases[g.phase], t = now();
+  for (const a of D.acts) {
+    if (a.done || t < a.at) continue;
+    // Antes da sua jogada, o dedinho vai até o lugar e só depois a jogada acontece.
+    if (a.id === D.me && !a.plan) { a.plan = [].concat(mod.bot(g, s, a.id) || []); a.at = t + 800; return { tap: a.plan[0] }; }
+    a.done = true;
+    (a.plan || [].concat(mod.bot(g, s, a.id) || [])).forEach(x => { try { mod.handle(g, s, a.id, x); } catch {} });
+  }
+  if (mod.tick) { try { mod.tick(g, s); } catch {} }
+  if (!D.allAt && ph.allIn && D.acts.every(a => a.done) && ph.allIn(g, s)) D.allAt = t + 900;
+  if (t >= D.end || (D.allAt && t >= D.allAt)) {
+    const nx = g.phase === 'reveal' ? null : typeof ph.next === 'function' ? ph.next(g, s) : ph.next;
+    if (!nx) return 'again';
+    demoPhase(D, nx);
+  }
+  return null;
+}
+// Acha na tela do vídeo o botão da jogada (carta, casa, opção…) para o dedinho tocar.
+function demoTap(box, scr, a) {
+  if (!a) return;
+  const v = a.value ?? a.v, q = [];
+  if (a.k != null) q.push(`[data-k="${a.k}"]`);
+  if (a.i != null) q.push(`[data-i="${a.i}"]`);
+  if (v != null && typeof v !== 'object') q.push(`[data-v="${v}"]`);
+  if (a.target) q.push(`[data-id="${a.target}"]`);
+  if (a.give) q.push(`[data-c="${a.give}"]`);
+  q.push(`[data-act="g:${a.type}"]`, 'form .btn.game', 'form .btn', 'button.btn.game');
+  let el = null;
+  for (const sel of q) { try { el = scr.querySelector(sel); } catch {} if (el) break; }
+  // Resposta digitada aparece escrita no campo antes de enviar.
+  const inp = scr.querySelector('input.input, textarea'), txt = typeof a.text === 'string' ? a.text : typeof v === 'string' ? v : typeof v === 'number' ? String(v) : '';
+  if (inp && txt) inp.value = txt;
+  el = el || inp;
+  const f = box.querySelector('.go-finger');
+  if (!el || !f) return;
+  const B = box.getBoundingClientRect(), r = el.getBoundingClientRect();
+  f.style.left = (r.left - B.left + r.width / 2) + 'px'; f.style.top = (r.top - B.top + r.height * .6) + 'px';
+  f.classList.remove('tap'); void f.offsetWidth; f.classList.add('on', 'tap');
+  el.classList.add('go-hit');
+  clearTimeout(f.__t); f.__t = setTimeout(() => f.classList.remove('on', 'tap'), 1300);
+}
+// Quadros de desenho e mapa são pintados à parte (canvas): no vídeo, um rabisco de exemplo vai aparecendo
+// aos poucos, e o mapa mostra os países com os alfinetes dos palpites.
+const DEMO_DOODLE = [
+  { id: 'd1', k: 'r', p: [330, 330, 670, 620], col: '#2563EB', s: 14 }, { id: 'd2', k: 'l', p: [300, 340, 500, 170], col: '#DC2626', s: 14 },
+  { id: 'd3', k: 'l', p: [500, 170, 700, 340], col: '#DC2626', s: 14 }, { id: 'd4', k: 'r', p: [460, 480, 540, 620], col: '#92400E', s: 12 },
+  { id: 'd5', k: 'o', p: [90, 70, 220, 200], col: '#F59E0B', s: 14 }, { id: 'd6', k: 'f', p: [40, 680, 300, 660, 600, 690, 960, 665], col: '#16A34A', s: 18 },
+];
+function demoCanvas(sb, D) {
+  const g = D.g, t = clamp((now() - g.phaseStart) / Math.max(1, D.len * .7), 0, 1);
+  sb.querySelectorAll('canvas').forEach(cv => {
+    if (cv.classList.contains('map-cv')) return demoMap(cv, g, D);
+    try {
+      const list = cv.dataset.tel ? JSON.parse(cv.dataset.tel) || [] : [];
+      padPaint(cv, list.length ? list : DEMO_DOODLE.slice(0, Math.max(1, Math.ceil(t * DEMO_DOODLE.length))));
+    } catch {}
+  });
+}
+function demoMap(cv, g, D) {
+  const C = MapGeo.c110;
+  if (!C) { mapGet('c110'); }
+  const W = cv.width = 1000, H = cv.height = 500, ctx = cv.getContext('2d');
+  ctx.fillStyle = '#0B2A4A'; ctx.fillRect(0, 0, W, H);
+  (C || []).forEach(f => { ctx.fillStyle = MAP_TONES[f.tone] || '#2F5D45'; ctx.fill(f.path, 'evenodd'); });
+  const pin = (lat, lon, col, big) => { const [x, y] = mapXY(lat, lon); ctx.beginPath(); ctx.arc(x, y, big ? 13 : 9, 0, Math.PI * 2); ctx.fillStyle = col; ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = '#fff'; ctx.stroke(); };
+  Object.entries(g.data?.guesses || {}).forEach(([id, p]) => { if (p && p.lat != null) pin(p.lat, p.lon, D.s.players[id]?.color || '#fff'); });
+  const q = MAP_Q[g.data?.qi];
+  if (g.phase === 'reveal' && q) pin(q.lat, q.lon, '#FBBF24', true);
+}
+function demoMount(box, id) {
+  const scr = box.querySelector('.go-screen'), sb = scr.querySelector('.stage-body'), cap = box.querySelector('.go-cap');
+  // Mesmo tamanho da área do jogo de verdade (o layout fica igual), encolhido para caber na caixa.
+  const real = $('#app .stage-body'), small = innerWidth < 760;
+  // Largura limitada a 720 px: na tela larga sobra muito espaço vazio e o jogo ficaria miúdo no vídeo.
+  const vw = clamp(real?.clientWidth || (small ? 330 : 720), 300, 720), vh = Math.max(280, real?.clientHeight || (small ? 520 : 450));
+  scr.style.cssText = gameVars(Games[id]);  // cor do jogo nos botões e destaques, como na tela de verdade
+  scr.style.width = vw + 'px'; scr.style.height = vh + 'px';
+  scr.style.setProperty('--sbh', vh + 'px'); scr.style.setProperty('--sb-h', vh + 'px'); scr.style.setProperty('--sb-w', vw + 'px');
+  const fit = () => { if (!box.isConnected) return removeEventListener('resize', fit); const k = Math.min(box.clientWidth / vw, innerHeight * (small ? .32 : .4) / vh, 1); scr.style.transform = `scale(${k})`; box.style.height = Math.round(vh * k) + 'px'; };
+  fit(); addEventListener('resize', fit);
+  let D = null, last = '';
+  const start = () => { try { D = demoNew(id); last = ''; } catch (e) { D = null; box.hidden = true; console.warn('Vídeo do tutorial falhou:', id, e); } };
+  const paint = () => {
+    let html = '';
+    try { html = Games[id].view(D.g, D.s, D.me).replace(/\sid="[^"]*"/g, '').replace(/\sdata-autofocus/g, ''); } catch (e) { console.warn('Vídeo do tutorial:', id, e); }
+    if (html !== last) { sb.innerHTML = html; last = html; }
+    demoCanvas(sb, D);
+    const lbl = Games[id].phases[D.g.phase]?.label || '';
+    if (cap.textContent !== lbl) cap.textContent = lbl;
+  };
+  const loop = () => {
+    if (!box.isConnected || !D) return;
+    let r = null;
+    try { r = demoStep(D); } catch (e) { r = 'again'; }
+    if (r === 'again') {
+      // Fim da rodada de mentira: escurece rapidinho e recomeça.
+      box.classList.add('fade');
+      setTimeout(() => { box.classList.remove('fade'); start(); if (D) paint(); setTimeout(loop, 300); }, 550);
+      return;
+    }
+    paint();
+    if (r?.tap) demoTap(box, scr, r.tap);
+    setTimeout(loop, 220);
+  };
+  start();
+  if (D) { paint(); setTimeout(loop, 500); }
+}
+// Passos do tutorial: acende um de cada vez, na ordem.
+function goStepsCycle(card) {
+  const lis = [...card.querySelectorAll('.go-steps li')];
+  let i = 0;
+  const on = () => { if (!card.isConnected) return; if (card.querySelector('.go-steps')?.isConnected && lis.length) { lis.forEach((li, j) => li.classList.toggle('on', j === i)); i = (i + 1) % lis.length; } setTimeout(on, 3600); };
+  on();
+}
+// "Não entendi": explicação devagar (um passo por tela), depois dúvidas comuns e pedido de ajuda.
+function goHelpHTML(id, h) {
+  const steps = guideOf(id);
+  if (h.mode === 'slow') {
+    const i = clamp(h.i, 0, steps.length - 1), [e, x] = steps[i], lastStep = i === steps.length - 1;
+    return `<div class="go-slow"><p class="go-slow-n">Passo ${i + 1} de ${steps.length}</p><span class="go-slow-e" aria-hidden="true">${e}</span><p class="go-slow-t">${esc(x)}</p>
+      ${lastStep ? '<p class="go-slow-q">E agora, entendeu?</p><div class="go-slow-btns"><button type="button" class="btn primary pill" data-act="introOk">Sim, entendi!</button><button type="button" class="btn ghost pill" data-act="introFaq">Ainda não</button></div>'
+        : `<div class="go-slow-btns">${i ? '<button type="button" class="btn ghost pill" data-act="introPrev">◀ Voltar</button>' : ''}<button type="button" class="btn primary pill" data-act="introNext">Próximo ▶</button></div>`}</div>`;
+  }
+  const faq = GUIDE_FAQ[id] || [];
+  return `<div class="go-faq"><p class="go-slow-n">Dúvidas comuns</p>${faq.map(([q, a]) => `<details><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join('')}
+    <p class="go-tip">💡 A primeira rodada serve de treino: jogue assim mesmo, que na prática fica fácil.</p>
+    <div class="go-slow-btns"><button type="button" class="btn ghost pill" data-act="introAsk" ${h.asked ? 'disabled' : ''}>${h.asked ? 'Pedido enviado ✓' : '🙋 Pedir ajuda à galera'}</button></div></div>`;
+}
+function goHelpShow() {
+  const el = GoRT.el, g = Store.room?.game;
+  if (!el || !g) return;
+  const box = el.querySelector('.go-learn');
+  if (box) box.innerHTML = goHelpHTML(g.id, GoRT.help);
+}
 function goCount(s) {
   const g = s?.screen === 'game' ? s.game : null;
   if (!g?.cd) { if (GoRT.el) goClose(); GoRT.key = null; return; }
@@ -10018,10 +10289,14 @@ function goCount(s) {
       el.style.setProperty('--gc', mod.color || '#6366F1');
       const known = HowSeen.has(g.id);
       el.innerHTML = `<div class="go-card"><div class="go-head"><span class="go-ic" aria-hidden="true">${gameIcon(mod)}</span><div><b class="go-name">${esc(mod.name)}</b><small>${esc(mod.tag || '')}</small></div></div>
-        ${guideHTML(g.id)}<div class="go-foot">${plays ? `<button type="button" class="btn primary pill go-ok" data-act="introOk" ${known ? 'disabled' : ''}>${known ? 'Você já conhece · esperando a galera' : 'Entendi!'}</button>`
-          : `<p class="hint">${myRole() === 'tv' ? 'Leiam as regras! O jogo começa quando todo mundo tocar em Entendi.' : 'O jogo começa quando a galera tocar em Entendi.'}</p>`}
-        <div class="go-ready" aria-label="Quem já está pronto"></div><div class="go-bar"><i style="animation-duration:${clamp(g.intro.until - now(), 1000, INTRO_MAX)}ms"></i></div></div></div>`;
+        <div class="go-demo" aria-hidden="true"><div class="go-screen" inert><div class="stage-body"></div></div><span class="go-finger">👆</span><span class="go-live">● Exemplo</span><span class="go-cap"></span></div>
+        <div class="go-learn">${guideHTML(g.id)}</div><div class="go-foot">${plays ? `<div class="go-btns"><button type="button" class="btn primary pill go-ok" data-act="introOk" ${known ? 'disabled' : ''}>${known ? 'Você já conhece · esperando a galera' : 'Entendi!'}</button>${known ? '' : '<button type="button" class="linkish go-no" data-act="introNo">🤔 Não entendi</button>'}</div>`
+          : `<p class="hint">${myRole() === 'tv' ? 'Olhem o exemplo! O jogo começa quando todo mundo tocar em Entendi.' : 'O jogo começa quando a galera tocar em Entendi.'}</p>`}
+        <p class="go-slowers" aria-live="polite"></p><div class="go-ready" aria-label="Quem já está pronto"></div><div class="go-bar"><i style="animation-duration:${clamp(g.intro.until - now(), 1000, INTRO_CAP)}ms"></i></div></div></div>`;
       document.body.appendChild(el);
+      GoRT.help = null; GoRT.until = g.intro.until;
+      demoMount(el.querySelector('.go-demo'), g.id);
+      goStepsCycle(el.querySelector('.go-card'));
       Sound.play('phase');
       if (plays && known) setTimeout(() => dispatch({ type: 'gready' }), 0);
     } else GoRT.mode = null;
@@ -10032,6 +10307,16 @@ function goCount(s) {
       const box = GoRT.el.querySelector('.go-ready'), need = introNeed(s, g);
       const html = need.map(id => `<span class="${g.intro.ready[id] ? 'on' : ''}" title="${esc(nameOf(s, id))}">${avatar(s.players[id], 'sm')}</span>`).join('');
       if (box && box.__html !== html) { box.innerHTML = html; box.__html = html; }
+      // Quem tocou em "Não entendi" (o telão e a galera veem que o jogo está esperando alguém).
+      const sl = GoRT.el.querySelector('.go-slowers'), who = Object.keys(g.intro.slow || {}).filter(id => s.players[id] && !g.intro.ready[id]);
+      const st = who.length ? `🤔 Esperando ${who.map(id => id === me ? 'você' : esc(nameOf(s, id))).join(', ')} entender as regras…` : '';
+      if (sl && sl.__h !== st) { sl.innerHTML = st; sl.__h = st; }
+      // Ganhou mais tempo: a barrinha recomeça com o tempo novo.
+      if (GoRT.until !== g.intro.until) {
+        GoRT.until = g.intro.until;
+        const bar = GoRT.el.querySelector('.go-bar');
+        if (bar) bar.innerHTML = `<i style="animation-duration:${clamp(g.intro.until - now(), 1000, INTRO_CAP)}ms"></i>`;
+      }
       return;
     }
   }
@@ -11723,7 +12008,21 @@ const Actions = {
   narr() { Narrator.toggle(); render(); },
   vib() { try { localStorage.setItem('playbox:vib', vibOn() ? 'off' : 'on'); } catch {} buzz(60); render(); },
   replay() { if (Store.room) Replay.open(Store.room); },
-  introOk(el) { const g = Store.room?.game; if (!g) return; HowSeen.add(g.id); el.disabled = true; el.textContent = 'Pronto! Esperando a galera…'; buzz(30); dispatch({ type: 'gready' }); },
+  introOk(el) {
+    const g = Store.room?.game; if (!g) return;
+    HowSeen.add(g.id); buzz(30); dispatch({ type: 'gready' });
+    const ok = GoRT.el?.querySelector('.go-ok'), no = GoRT.el?.querySelector('.go-no');
+    if (ok) { ok.disabled = true; ok.textContent = 'Pronto! Esperando a galera…'; }
+    if (no) no.remove();
+    // Saiu do "Não entendi": volta para os passos normais.
+    if (GoRT.help) { GoRT.help = null; const box = GoRT.el?.querySelector('.go-learn'); if (box) box.innerHTML = guideHTML(g.id); }
+    if (el && el !== ok) el.disabled = true;
+  },
+  introNo(el) { GoRT.help = { mode: 'slow', i: 0 }; el.remove(); goHelpShow(); dispatch({ type: 'gslow' }); },
+  introNext() { if (GoRT.help) { GoRT.help.i++; goHelpShow(); } },
+  introPrev() { if (GoRT.help) { GoRT.help.i = Math.max(0, GoRT.help.i - 1); goHelpShow(); } },
+  introFaq() { GoRT.help = { mode: 'faq', asked: false }; goHelpShow(); dispatch({ type: 'gslow' }); },
+  introAsk() { if (!GoRT.help) return; GoRT.help.asked = true; goHelpShow(); buzz(30); dispatch({ type: 'ghelp' }); },
   howOpen() { const g = Store.room?.game; if (g) howOpen(g.id); },
   rpNext() { Replay.go(Replay.i + 1); },
   rpPrev() { Replay.go(Replay.i - 1); },
