@@ -1838,6 +1838,176 @@ html.tv-role .fab,html.tv-role .react-wrap,html.tv-role .top-right .btn{display:
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
   .confetti{display:none}
 }
+/* Mesa Maluca */
+.mm{--cw:clamp(44px,calc(var(--sbh,560px) * .125),84px);display:flex;flex-direction:column;gap:8px;height:calc(var(--sbh,560px) - 14px);min-height:250px}
+.mm.no-hand{--cw:clamp(50px,calc(var(--sbh,560px) * .15),96px)}
+.mm-top{flex:1;min-height:0;display:grid;grid-template-columns:auto 1fr;gap:10px}
+.mm-peek{--big:calc(var(--cw) * 1.85);width:calc(var(--cw) * 2.05);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center}
+.mm-peek-l{margin:0;font-size:.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.mm-peek-n{font-size:.88rem;line-height:1.15}
+.mm-peek small{font-size:.72rem;color:var(--muted);line-height:1.25}
+@media (max-height:760px){.mm-peek small{display:none}}
+.mm-card.is-big{--cw:var(--big);box-shadow:inset 0 0 0 calc(var(--cw) * .045) #fff,0 14px 34px -8px rgba(0,0,0,.7);transform:rotate(-3deg)}
+.mm-table{position:relative;min-height:0}
+.mm-felt{position:absolute;inset:8% 6%;border-radius:50%;background:radial-gradient(ellipse at 50% 38%,#20a066,#0f6b43 55%,#0a4430);box-shadow:inset 0 0 0 9px #6b4423,inset 0 0 0 12px #3b2412,inset 0 0 0 13px rgba(255,255,255,.12),inset 0 14px 40px rgba(0,0,0,.5),0 22px 50px -14px rgba(0,0,0,.8)}
+.mm-felt::after{content:'';position:absolute;inset:0;border-radius:50%;background:repeating-radial-gradient(circle at 50% 50%,rgba(255,255,255,.025) 0 2px,transparent 2px 6px);pointer-events:none}
+.mm-dir{position:absolute;inset:13%;border-radius:50%;border:2px dashed rgba(255,255,255,.14)}
+.mm-dir::before,.mm-dir::after{content:'➤';position:absolute;left:50%;color:rgba(255,255,255,.5);font-size:.9rem;line-height:1;animation:mmNudge 1.6s ease-in-out infinite}
+.mm-dir::before{top:-.55em;transform:translateX(-50%)}
+.mm-dir::after{bottom:-.55em;transform:translateX(-50%) rotate(180deg)}
+.mm-felt.rev .mm-dir::before{transform:translateX(-50%) rotate(180deg)}
+.mm-felt.rev .mm-dir::after{transform:translateX(-50%)}
+@keyframes mmNudge{50%{opacity:.15}}
+.mm-table.spin .mm-felt{animation:mmSwirl .9s ease}
+@keyframes mmSpin{to{transform:rotate(360deg)}}
+@keyframes mmSwirl{50%{transform:rotate(180deg) scale(.95)}100%{transform:rotate(360deg)}}
+.mm-seat{position:absolute;z-index:2;width:84px;display:grid;justify-items:center;gap:1px;transform:translate(-50%,-50%) scale(var(--seat,1));transition:opacity .3s,filter .3s}
+.mm-backs{display:flex;justify-content:center;height:24px;margin-bottom:-7px}
+.mm-backs i{width:15px;height:22px;margin:0 -4px;border-radius:3px;border:1.5px solid #fff;background:repeating-linear-gradient(45deg,#1E1B4B 0 3px,#4338CA 3px 6px);box-shadow:0 1px 3px rgba(0,0,0,.5);transform:rotate(calc(var(--k) * 13deg)) translateY(calc(var(--k) * var(--k) * 1.2px))}
+.mm-seat .av{position:relative;z-index:1;transition:box-shadow .3s}
+.mm-nm{max-width:82px;padding:1px 7px;border-radius:999px;background:rgba(0,0,0,.6);font-size:.7rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mm-n{position:absolute;top:12px;right:12px;z-index:2;min-width:20px;height:20px;padding:0 5px;border-radius:999px;display:grid;place-items:center;background:#fff;color:#111;font-size:.72rem;font-weight:900;box-shadow:0 2px 6px rgba(0,0,0,.45)}
+.mm-seat.is-turn .av{box-shadow:0 0 0 3px #FBBF24,0 0 22px 5px rgba(251,191,36,.75);animation:mmPulse 1.1s ease-in-out infinite}
+.mm-seat.is-turn .mm-nm{background:#FBBF24;color:#111}
+.mm-seat.is-one .mm-n{background:#EF4444;color:#fff;animation:mmPulse .7s infinite}
+.mm-seat.is-me .mm-backs{visibility:hidden}
+.mm-seat.is-off{opacity:.45;filter:grayscale(1)}
+@keyframes mmPulse{50%{transform:scale(1.1)}}
+.mm-center{position:absolute;left:50%;top:48%;z-index:1;display:flex;align-items:center;gap:calc(var(--cw) * .4);transform:translate(-50%,-50%)}
+.mm-deck{position:relative;width:var(--cw);aspect-ratio:5/7;padding:0;border:0;background:none;cursor:pointer}
+.mm-deck .mm-card{position:absolute;inset:0;width:100%;transition:transform .2s}
+.mm-deck .mm-card:nth-child(1){transform:translate(-4px,4px) rotate(-4deg)}
+.mm-deck .mm-card:nth-child(2){transform:translate(-2px,2px) rotate(-1.5deg)}
+.mm-deck:not(:disabled) .mm-card:nth-child(3){box-shadow:0 0 0 2px #FDE047,0 0 20px rgba(253,224,71,.6);animation:mmBob 1.4s ease-in-out infinite}
+.mm-deck:not(:disabled):hover .mm-card:nth-child(3){transform:translateY(-8px) rotate(3deg)}
+.mm-deck:disabled{cursor:default}
+.mm-deck small{position:absolute;left:0;right:0;bottom:-18px;text-align:center;font-size:.68rem;color:rgba(255,255,255,.7)}
+@keyframes mmBob{50%{translate:0 -4px}}
+.mm-pile{position:relative;width:var(--cw);aspect-ratio:5/7}
+.mm-pile::before{content:'';position:absolute;inset:-12px;border-radius:20px;box-shadow:0 0 0 3px var(--cc),0 0 30px 8px var(--cc);opacity:.7;transition:box-shadow .4s}
+.mm-pile .mm-card{position:absolute;inset:0;width:100%}
+.mm-pile .u0{transform:rotate(-15deg) translate(-7px,3px)}
+.mm-pile .u1{transform:rotate(10deg) translate(6px,-2px)}
+.mm-info{position:absolute;top:calc(100% + 16px);left:50%;display:flex;gap:6px;white-space:nowrap;transform:translateX(-50%)}
+.mm-color{padding:2px 10px;border-radius:999px;background:var(--cc);color:#fff;font-size:.7rem;font-weight:800;box-shadow:0 2px 6px rgba(0,0,0,.35)}
+.mm-stack{padding:2px 10px;border-radius:999px;background:#DC2626;color:#fff;font-size:.74rem;font-weight:900;animation:mmPulse .8s infinite}
+.mm-card{position:relative;display:block;width:var(--cw);aspect-ratio:5/7;border-radius:calc(var(--cw) * .12);overflow:hidden;color:#fff;font-weight:900;user-select:none;
+  background:radial-gradient(circle at 28% 18%,rgba(255,255,255,.3),transparent 46%),var(--cc);box-shadow:inset 0 0 0 calc(var(--cw) * .045) #fff,0 3px 8px rgba(0,0,0,.45)}
+.mm-tl,.mm-br{position:absolute;font-style:normal;font-size:calc(var(--cw) * .19);line-height:1;text-shadow:0 1px 0 rgba(0,0,0,.35)}
+.mm-tl{top:9%;left:12%}
+.mm-br{right:12%;bottom:9%;transform:rotate(180deg)}
+.mm-mid{position:absolute;left:50%;top:50%;width:56%;aspect-ratio:1;display:grid;place-items:center;border-radius:18%;background:#fff;transform:translate(-50%,-50%) rotate(45deg);box-shadow:0 2px 0 rgba(0,0,0,.18)}
+.mm-mid b{color:var(--cc);font-size:calc(var(--cw) * .34);line-height:1;transform:rotate(-45deg)}
+.mm-card.is-sp .mm-mid b{font-size:calc(var(--cw) * .28)}
+.mm-card.is-wild{background:conic-gradient(from 45deg,#8B5CF6 0 25%,#EC4899 0 50%,#06B6D4 0 75%,#F97316 0)}
+.mm-card.is-back{display:grid;place-items:center;background:repeating-linear-gradient(45deg,#1E1B4B 0 7px,#312E81 7px 14px);box-shadow:inset 0 0 0 calc(var(--cw) * .045) #fff,0 3px 8px rgba(0,0,0,.45)}
+.mm-card.is-back i{padding:6% 11%;border-radius:999px;background:linear-gradient(135deg,#EC4899,#8B5CF6);font-size:calc(var(--cw) * .22);font-style:normal;transform:rotate(-24deg);box-shadow:0 2px 6px rgba(0,0,0,.45)}
+.mm-card.is-mini{--cw:22px;box-shadow:inset 0 0 0 1px #fff}
+.mm-bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px;padding:6px 10px;border-radius:16px;background:var(--surface-solid);border:1px solid var(--line)}
+.mm-bar.is-me{border-color:#FBBF24;box-shadow:0 0 0 1px #FBBF24,0 0 26px -6px #FBBF24}
+.mm-status{display:flex;align-items:center;gap:8px;font-size:.9rem}
+.mm-t{color:var(--muted);font-size:.8rem;font-variant-numeric:tabular-nums}
+.mm-bell{display:flex;align-items:center;gap:6px;padding:8px 14px;border:0;border-radius:999px;background:linear-gradient(135deg,#FBBF24,#F97316);color:#111;font-weight:900;cursor:pointer;animation:mmBell .5s ease-in-out infinite}
+.mm-bell small{font-weight:700}
+.mm-bell:disabled{animation:none;opacity:.6}
+@keyframes mmBell{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(4deg) scale(1.06)}}
+.mm-bell-done,.mm-bell-me{color:#FBBF24;font-size:.85rem;font-weight:800}
+.mm-hand{flex:none;display:flex;align-items:flex-end;justify-content:safe center;height:calc(var(--cw) * 1.62);padding:0 10px calc(var(--cw) * .14)}
+.mm-hand.is-many{overflow-x:auto;overflow-y:hidden;scrollbar-width:thin;height:calc(var(--cw) * 1.75);padding-top:calc(var(--cw) * .3)}
+.mm-hc{position:relative;flex:none;padding:0;border:0;background:none;cursor:pointer;transform-origin:50% 130%;transform:rotate(var(--a)) translateY(var(--y));transition:transform .18s cubic-bezier(.2,.8,.3,1.3),filter .2s}
+.mm-hc + .mm-hc{margin-left:calc(var(--cw) * var(--ovl) * -1)}
+.mm-hc:hover,.mm-hc.sel{transform:rotate(var(--a)) translateY(calc(var(--y) - var(--cw) * .3));z-index:60!important}
+.mm-hc.going{transform:translateY(calc(var(--cw) * -.8)) scale(.9);opacity:.4}
+.mm-hand.is-turn .mm-hc.ok .mm-card{box-shadow:inset 0 0 0 calc(var(--cw) * .045) #fff,0 0 0 2px #FDE047,0 0 16px rgba(253,224,71,.65)}
+.mm-hand.is-turn .mm-hc.no{filter:brightness(.55) saturate(.6)}
+.mm-hc.sel .mm-card{box-shadow:inset 0 0 0 calc(var(--cw) * .045) #fff,0 0 0 3px #fff,0 10px 24px rgba(0,0,0,.6)}
+.mm-hc.new .mm-card{animation:mmNew .9s ease 2}
+.mm-hc.shake{animation:mmShake .35s}
+@keyframes mmNew{50%{box-shadow:inset 0 0 0 calc(var(--cw) * .045) #fff,0 0 0 3px #fff,0 0 26px #fff}}
+@keyframes mmShake{25%{translate:-6px 0}75%{translate:6px 0}}
+.mm-pick{position:absolute;inset:0;z-index:5;display:grid;place-content:center;justify-items:center;gap:10px;padding:12px;border-radius:24px;background:rgba(5,5,10,.65);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);text-align:center;animation:screenIn .2s ease}
+.mm-pick div{display:grid;grid-template-columns:repeat(2,minmax(96px,1fr));gap:8px}
+.mm-pick button[data-v]{padding:14px 10px;border:0;border-radius:14px;background:var(--cc);color:#fff;font-weight:900;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.3)}
+.mm-pick button[data-v]:hover{transform:translateY(-2px)}
+.mm-fly{position:fixed;z-index:34;--cw:clamp(46px,9vmin,80px);pointer-events:none}
+.mm-win{display:grid;justify-items:center;gap:6px;margin-bottom:8px}
+.mm-left{display:flex;flex-wrap:wrap;align-items:center;gap:2px;margin-top:3px}
+.mm-left small{font-size:.7rem;color:var(--muted)}
+@media (max-width:640px){
+  .mm{--cw:clamp(40px,calc(var(--sbh,520px) * .11),66px)}
+  .mm{height:calc(var(--sbh,520px) - 30px)}
+  .mm-top{grid-template-columns:1fr;position:relative}
+  .mm-peek{position:absolute;top:0;left:0;z-index:4;width:auto;gap:2px;--big:calc(var(--cw) * 1.05);pointer-events:none}
+  .mm-peek-l{font-size:.55rem}
+  .mm-peek small,.mm-peek-n{display:none}
+  .mm-felt{inset:12% 3%}
+  .mm-seat{width:62px}
+  .mm-nm{max-width:60px;font-size:.6rem}
+  .mm-n{top:10px;right:4px}
+}
+/* Quem Sou Eu? */
+.qs-who{margin:0 0 4px;font-size:.95rem}
+.qs-tries{margin-left:6px;letter-spacing:1px}
+.qs-card{position:relative;display:grid;justify-items:center;gap:2px;width:min(240px,72%);margin:14px auto 10px;padding:14px 12px 12px;border-radius:22px;background:linear-gradient(160deg,#0EA5E9,#6366F1);box-shadow:0 14px 40px -12px rgba(14,165,233,.75);transform:rotate(-2deg);animation:rpIn .45s both}
+.qs-card.is-hidden{background:linear-gradient(160deg,#334155,#1E293B);box-shadow:0 14px 40px -14px rgba(0,0,0,.8)}
+.qs-forehead{position:absolute;top:-18px;left:-14px;transform:rotate(-10deg)}
+.qs-e{font-size:clamp(2.6rem,11vmin,4.4rem);line-height:1.1}
+.qs-name{color:#fff;font-size:clamp(1.1rem,4.5vmin,1.6rem);font-weight:900;text-align:center}
+.qs-live{display:grid;justify-items:center;gap:8px;margin:8px 0;padding:12px;border-radius:18px;background:var(--surface-solid);border:1px solid var(--line)}
+.qs-live-q{margin:0;font-size:1.1rem;font-weight:800;text-align:center}
+.qs-btns{display:flex;gap:8px}
+.qs-b{padding:10px 18px;border:0;border-radius:14px;color:#fff;font-weight:900;cursor:pointer;opacity:.85;box-shadow:0 3px 0 rgba(0,0,0,.3);transition:transform .15s}
+.qs-b:hover{transform:translateY(-2px)}
+.b-s{background:#16A34A}.b-n{background:#DC2626}.b-t{background:#64748B}
+.qs-b.on{opacity:1;outline:3px solid #fff;outline-offset:2px;transform:scale(1.06)}
+.qs-sugg{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin:6px 0}
+.qs-guess{margin-top:6px}
+.qs-list{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:5px}
+.qs-q{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:12px;background:var(--surface-solid);border-left:4px solid #64748B;font-size:.88rem}
+.qs-q.a-s{border-left-color:#16A34A}.qs-q.a-n{border-left-color:#DC2626}
+.qs-txt{flex:1}
+.qs-ans{display:grid;justify-items:end;line-height:1.15;text-align:right}
+.qs-ans small{color:var(--muted);font-size:.68rem}
+.a-s .qs-ans b{color:#4ADE80}.a-n .qs-ans b{color:#F87171}
+/* Memória da Galera */
+.mem-bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px;margin-bottom:8px;padding:6px 10px;border-radius:14px;background:var(--surface-solid);border:1px solid var(--line);font-size:.9rem}
+.mem-bar.is-me{border-color:#F59E0B;box-shadow:0 0 24px -6px #F59E0B}
+.mem-last{color:var(--muted)}
+.mem-grid{display:grid;grid-template-columns:repeat(var(--cols),1fr);gap:clamp(4px,1vmin,8px);width:min(100%,calc((var(--sbh,520px) - 96px) / var(--rows) * var(--cols)));margin:0 auto}
+.mem-c{aspect-ratio:1;padding:0;border:0;background:none;perspective:600px;cursor:pointer;container-type:inline-size}
+.mem-c:disabled{cursor:default}
+.mem-in{position:relative;display:block;width:100%;height:100%;transform-style:preserve-3d;transition:transform .4s}
+.mem-c.up .mem-in{transform:rotateY(180deg)}
+.mem-c.up:not(.won) .mem-in{animation:memFlip .4s both}
+@keyframes memFlip{from{transform:rotateY(0)}to{transform:rotateY(180deg)}}
+.mem-back,.mem-face{position:absolute;inset:0;display:grid;place-items:center;border-radius:clamp(8px,1.6vmin,14px);-webkit-backface-visibility:hidden;backface-visibility:hidden}
+.mem-back{background:radial-gradient(circle at 30% 25%,rgba(255,255,255,.3),transparent 50%),linear-gradient(135deg,#F59E0B,#B45309);color:rgba(255,255,255,.85);font-size:44cqi;font-weight:900;box-shadow:inset 0 0 0 3px rgba(255,255,255,.25),0 3px 0 #78350F}
+.mem-c:not(:disabled):hover .mem-back{filter:brightness(1.18)}
+.mem-face{overflow:hidden;background:#fff;font-size:58cqi;line-height:1;transform:rotateY(180deg);box-shadow:0 3px 0 rgba(0,0,0,.25)}
+.mem-c.won .mem-face{background:color-mix(in srgb,var(--pc,#22C55E) 22%,#fff);box-shadow:inset 0 0 0 3px var(--pc,#22C55E)}
+.mem-c.miss .mem-face{animation:mmShake .35s .35s}
+.mem-star,.mem-who{position:absolute;font-size:.42em;font-style:normal}
+.mem-star{top:3px;right:5px}
+.mem-who{bottom:2px;left:4px}
+.mem-score{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:10px}
+.mem-score span{display:flex;align-items:center;gap:5px;padding:2px 9px 2px 2px;border-radius:999px;background:var(--surface-solid);font-size:.78rem}
+/* Desenho às Cegas */
+.cg-wrap{position:relative;display:block;width:fit-content;max-width:100%;margin:0 auto}
+.cg-blind{position:absolute;inset:0;display:grid;place-content:center;justify-items:center;gap:4px;border-radius:16px;pointer-events:none;color:#fff;text-align:center;background:repeating-linear-gradient(-45deg,#1C1C2B 0 18px,#262639 18px 36px)}
+.cg-eyes{font-size:clamp(2.5rem,10vmin,4.5rem);animation:rpBob 2s ease-in-out infinite}
+.cg-blind small{color:var(--muted)}
+.cg-mine{width:min(100%,420px);margin:0 auto}
+.cg-mine canvas{width:100%;height:auto}
+.cg-gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.cg-item{margin:0;padding:6px;border-radius:16px;background:var(--surface-solid);border:2px solid transparent;transition:border-color .2s}
+.cg-item.on{border-color:#E11D48}
+.cg-item.is-best{border-color:#FBBF24;box-shadow:0 0 30px -8px #FBBF24}
+.cg-item canvas{display:block;width:100%;height:auto;border-radius:10px}
+.cg-item figcaption{display:flex;align-items:center;gap:6px;margin-top:6px;font-size:.8rem}
+.cg-own{margin-left:auto;color:var(--muted)}
+.cg-vote{margin-left:auto;width:34px;height:34px;border:0;border-radius:50%;background:rgba(255,255,255,.1);color:#fff;font-size:1rem;cursor:pointer}
+.cg-vote.on{background:#E11D48}
+body.in-game #cgBoard{width:min(100%,calc((var(--sbh) - 160px) * 4 / 3));min-width:min(100%,200px)}
 </style>
 </head>
 <body>
@@ -5857,6 +6027,720 @@ Games.quiz = {
 GAME_ORDER.push('quiz');
 Games.quiz.cat = 'saber';
 
+/* ---------- 31. Mesa Maluca (cartas) ---------- */
+// Cartas são números: cor * 16 + índice em MM_V (cor 4 = Camaleão, sem cor).
+const MM_COL = [{ n: 'Roxo', c: '#8B5CF6' }, { n: 'Rosa', c: '#EC4899' }, { n: 'Ciano', c: '#06B6D4' }, { n: 'Laranja', c: '#F97316' }];
+const MM_V = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'pula', 'inv', 'tom', 'red', 'cam'];
+// Especiais: símbolo, nome e o que fazem.
+const MM_SP = {
+  pula: ['⊘', 'Pula', 'O próximo perde a vez.'],
+  inv: ['⇄', 'Inverte', 'A mesa muda de sentido.'],
+  tom: ['🍅', 'Tomatada', 'O próximo compra 2, ou devolve com outra Tomatada e as compras somam.'],
+  red: ['🌀', 'Redemoinho', 'Todas as mãos passam para o vizinho!'],
+  cam: ['🎨', 'Camaleão', 'Vale em qualquer cor: quem joga escolhe a próxima.'],
+};
+const MM_TURN = 15;
+const mmC = k => k >> 4, mmV = k => MM_V[k & 15], mmK = (c, v) => c * 16 + MM_V.indexOf(v);
+const mmName = k => { const v = mmV(k), c = mmC(k); return MM_SP[v] ? MM_SP[v][1] + (c < 4 ? ' ' + MM_COL[c].n.toLowerCase() : '') : `${v} ${MM_COL[c].n.toLowerCase()}`; };
+function mmDeck(n) {
+  const one = [];
+  for (let c = 0; c < 4; c++) {
+    for (let v = 1; v <= 9; v++) one.push(mmK(c, String(v)), mmK(c, String(v)));
+    ['pula', 'inv', 'tom'].forEach(v => one.push(mmK(c, v), mmK(c, v)));
+    one.push(mmK(c, 'red'));
+  }
+  for (let k = 0; k < 4; k++) one.push(mmK(4, 'cam'));
+  return shuffle(Array.from({ length: n }, () => one).flat());
+}
+// Pode jogar: mesma cor, mesmo número/símbolo ou Camaleão. Com Tomatada pendente, só outra Tomatada.
+function mmOk(d, k) {
+  if (d.stack) return mmV(k) === 'tom';
+  return mmC(k) === 4 || mmC(k) === d.color || mmV(k) === mmV(d.top);
+}
+// Próximo lugar na mesa (no sentido atual), pulando quem saiu.
+function mmStep(g, s, from, n = 1) {
+  const d = g.data, act = new Set(active(g, s));
+  if (!d.seats.some(id => act.has(id))) return from;
+  let i = Math.max(0, d.seats.indexOf(from));
+  for (let k = 0; k < n; k++) { let guard = 0; do { i = (i + d.dir + d.seats.length) % d.seats.length; } while (!act.has(d.seats[i]) && ++guard < 99); }
+  return d.seats[i];
+}
+function mmDraw(d, n) {
+  const out = [];
+  for (let k = 0; k < n; k++) {
+    if (!d.deck.length) { if (!d.disc.length) break; d.deck = shuffle(d.disc); d.disc = []; }
+    out.push(d.deck.pop());
+  }
+  return out;
+}
+function mmTurn(g, s, pid) {
+  const d = g.data;
+  d.turn = pid; d.drew = false; d.newCard = null;
+  d.turnAt = now() + (s.settings.rush ? 10 : MM_TURN) * 1000;
+  d.botAt = s.players[pid]?.isBot ? now() + rand(900, 2400) / botSpeed() : 0;
+}
+// Quem fica com uma carta só faz aparecer a campainha para todo mundo.
+function mmBellCheck(g, s) {
+  const d = g.data;
+  if (d.bell && !d.bell.by && d.hands[d.bell.pid]?.length !== 1) d.bell = null;
+  if (d.bell && !d.bell.by) return;
+  const one = d.seats.find(id => d.hands[id]?.length === 1 && s.players[id] && (!d.bell || d.bell.pid !== id));
+  if (one) d.bell = { pid: one, at: now(), by: null, botAt: now() + rand(900, 2800) / botSpeed() };
+}
+function mmPlay(g, s, pid, k, color) {
+  const d = g.data, hand = d.hands[pid];
+  if (pid !== d.turn || !hand || d.over) return false;
+  const i = hand.indexOf(k);
+  if (i < 0 || !mmOk(d, k)) return false;
+  hand.splice(i, 1);
+  d.disc.push(d.top); d.top = k;
+  const v = mmV(k), act = active(g, s);
+  d.color = mmC(k) === 4 ? (Number.isInteger(color) && color >= 0 && color < 4 ? color : 0) : mmC(k);
+  d.seq++; d.log = { pid, t: 'play', k };
+  if (!hand.length) { d.winner = pid; d.over = true; d.bell = null; return true; }
+  let next = mmStep(g, s, pid);
+  if (v === 'inv') { d.dir *= -1; next = act.length <= 2 ? pid : mmStep(g, s, pid); }
+  else if (v === 'pula') next = mmStep(g, s, pid, 2);
+  else if (v === 'tom') d.stack += 2;
+  else if (v === 'red') {
+    const live = d.seats.filter(id => act.includes(id) && d.hands[id]), moved = {};
+    live.forEach(id => { moved[mmStep(g, s, id)] = d.hands[id]; });
+    Object.assign(d.hands, moved);
+  }
+  mmBellCheck(g, s);
+  mmTurn(g, s, next);
+  return true;
+}
+// Comprar: com Tomatada pendente leva tudo e passa; senão compra 1 e, se der, pode jogar.
+function mmTake(g, s, pid) {
+  const d = g.data;
+  if (pid !== d.turn || d.over) return false;
+  if (d.stack) {
+    const n = d.stack;
+    d.stack = 0;
+    d.hands[pid].push(...mmDraw(d, n));
+    d.seq++; d.log = { pid, t: 'take', n };
+    mmBellCheck(g, s);
+    mmTurn(g, s, mmStep(g, s, pid));
+    return true;
+  }
+  if (d.drew) return false;
+  const got = mmDraw(d, 1);
+  d.hands[pid].push(...got);
+  d.seq++; d.log = { pid, t: 'take', n: got.length };
+  mmBellCheck(g, s);
+  if (got.length && mmOk(d, got[0])) {
+    d.drew = true; d.newCard = got[0]; d.turnAt = now() + 8000;
+    if (s.players[pid]?.isBot) d.botAt = now() + rand(500, 1200);
+  } else mmTurn(g, s, mmStep(g, s, pid));
+  return true;
+}
+function mmPass(g, s, pid) {
+  const d = g.data;
+  if (pid !== d.turn || !d.drew || d.over) return false;
+  d.seq++; d.log = { pid, t: 'pass' };
+  mmTurn(g, s, mmStep(g, s, pid));
+  return true;
+}
+function mmBotMove(g, s, pid) {
+  const d = g.data, hand = d.hands[pid] || [], ok = hand.filter(k => mmOk(d, k));
+  if (!ok.length) return d.drew ? mmPass(g, s, pid) : mmTake(g, s, pid);
+  const danger = (d.hands[mmStep(g, s, pid)] || []).length <= 2;
+  const score = k => (mmC(k) === 4 ? -5 : 0) + (danger && ['tom', 'pula', 'red'].includes(mmV(k)) ? 6 : 0) + Math.random() * 3;
+  const k = ok.sort((a, b) => score(b) - score(a))[0];
+  const cnt = [0, 0, 0, 0];
+  hand.forEach(x => { if (mmC(x) < 4) cnt[mmC(x)]++; });
+  return mmPlay(g, s, pid, k, cnt.indexOf(Math.max(...cnt)));
+}
+function mmCard(k, cls = '') {
+  if (k == null) return `<span class="mm-card is-back ${cls}" aria-hidden="true"><i>PB</i></span>`;
+  const c = mmC(k), v = mmV(k), sp = MM_SP[v], glyph = sp ? sp[0] : v, corner = v === 'tom' ? '+2' : glyph;
+  return `<span class="mm-card ${c === 4 ? 'is-wild' : ''} ${sp ? 'is-sp' : ''} ${cls}" style="--cc:${c === 4 ? '#1F2937' : MM_COL[c].c}"><em class="mm-tl">${corner}</em><span class="mm-mid"><b>${glyph}</b></span><em class="mm-br">${corner}</em></span>`;
+}
+const mmPeekHTML = (k, label) => `<p class="mm-peek-l">${label}</p>${mmCard(k, 'is-big')}<b class="mm-peek-n">${mmName(k)}</b>${MM_SP[mmV(k)] ? `<small>${MM_SP[mmV(k)][2]}</small>` : ''}`;
+function mmPeekSet(k, label) { const el = $('#mmPeek'); if (el && k != null) el.innerHTML = mmPeekHTML(k, label); }
+function mmSelect(k) { Store.local.mmSel = k; $$('.mm-hc').forEach(b => b.classList.toggle('sel', +b.dataset.k === k)); }
+// Carta voando da mão de quem jogou até o meio da mesa (ou do monte até quem comprou).
+function mmAnim(d, me) {
+  const lg = d.log, layer = $('#fxLayer'), pile = $('#mmPile');
+  if (!lg || !layer || !pile) return;
+  const seat = lg.pid === me && $('.mm-hand') ? $('.mm-hand') : $(`[data-mm-seat="${lg.pid}"]`);
+  const box = el => el?.getBoundingClientRect();
+  const fly = (html, from, to, delay, done) => {
+    if (!from || !to || !layer.animate || document.hidden) return done && done();
+    const el = document.createElement('div');
+    el.className = 'mm-fly'; el.innerHTML = html;
+    const tx = to.left + to.width / 2, ty = to.top + to.height / 2;
+    el.style.left = tx + 'px'; el.style.top = ty + 'px';
+    layer.appendChild(el);
+    const dx = from.left + from.width / 2 - tx, dy = from.top + from.height / 2 - ty;
+    const a = el.animate([
+      { transform: `translate(-50%,-50%) translate(${dx}px,${dy}px) rotate(-25deg) scale(.55)`, opacity: .3 },
+      { transform: 'translate(-50%,-50%) rotate(5deg) scale(1.1)', opacity: 1, offset: .8 },
+      { transform: 'translate(-50%,-50%) scale(1)', opacity: 1 }], { duration: 460, delay, easing: 'cubic-bezier(.2,.8,.3,1)', fill: 'both' });
+    // Se a animação não terminar (aba em segundo plano), some do mesmo jeito.
+    let ended = false;
+    const end = () => { if (ended) return; ended = true; el.remove(); done && done(); };
+    a.onfinish = end;
+    setTimeout(end, delay + 900);
+  };
+  if (lg.t === 'play') {
+    const top = pile.querySelector('.is-top');
+    if (top) top.style.visibility = 'hidden';
+    fly(mmCard(lg.k), box(seat), box(pile), 0, () => { if (top) top.style.visibility = ''; });
+    const v = mmV(lg.k);
+    Sound.play(v === 'tom' ? 'splat' : v === 'red' ? 'whoosh' : v === 'cam' ? 'reveal' : 'pop');
+    if (v === 'red') { const t = $('.mm-table'); if (t) { t.classList.remove('spin'); void t.offsetWidth; t.classList.add('spin'); } }
+  } else if (lg.t === 'take') {
+    for (let i = 0; i < Math.min(lg.n, 4); i++) fly(mmCard(null), box($('.mm-deck')), box(seat), i * 110);
+    Sound.play('click');
+  }
+}
+
+Games.mesa = {
+  id: 'mesa', name: 'Mesa Maluca', tag: 'Jogo de cartas', icon: 'cards', color: '#DC2626', lip: '#991B1B', min: 2, rounds: 2,
+  how: 'Jogue uma carta da mesma cor ou do mesmo número da carta do meio. Sem jogada? Compre uma. Quem esvaziar a mão primeiro ganha. Especiais: 🍅 Tomatada (o próximo compra 2), 🌀 Redemoinho (as mãos passam para o vizinho), 🎨 Camaleão (escolha a cor), ⊘ Pula e ⇄ Inverte. Quando alguém ficar com 1 carta, toque na 🔔 primeiro e ganhe +1.',
+  first: 'play',
+  init(g, s) {
+    const seats = shuffle(g.roster.filter(id => s.players[id])), per = seats.length > 12 ? 5 : 7;
+    const deck = mmDeck(Math.ceil((seats.length * per + 40) / 104)), hands = {};
+    seats.forEach(id => { hands[id] = deck.splice(deck.length - per, per); });
+    const top = deck.splice(Math.max(0, deck.findIndex(k => /\d/.test(mmV(k)))), 1)[0];
+    g.data = { seats, hands, deck, disc: [], top, color: mmC(top), dir: 1, stack: 0, seq: 0, log: null, turn: null, turnAt: 0, botAt: 0, drew: false, newCard: null, bell: null, winner: null, over: false };
+    mmTurn(g, s, seats[(g.round - 1) % seats.length]);
+  },
+  phases: {
+    play: { label: 'Descarte suas cartas', dur: 360, rush: false, next: 'reveal', allIn: g => g.data.over },
+    reveal: { label: 'Fim da mão', dur: 12, enter(g, s) {
+      const d = g.data, deltas = {};
+      const ranked = d.seats.filter(id => s.players[id] && d.hands[id]).sort((a, b) => d.hands[a].length - d.hands[b].length);
+      d.winner = d.winner || ranked[0] || null; d.over = true;
+      if (d.winner) add(deltas, d.winner, 5);
+      ranked.forEach(id => { if (id === d.winner) return; const n = d.hands[id].length, p = n <= 2 ? 3 : n <= 4 ? 2 : n <= 7 ? 1 : 0; if (p) add(deltas, id, p); });
+      updateScores(s, deltas);
+    } },
+  },
+  handle(g, s, pid, a) {
+    const d = g.data;
+    if (!inRoster(g, pid) || g.phase !== 'play') return false;
+    if (a.type === 'play') return mmPlay(g, s, pid, +a.k, +a.color);
+    if (a.type === 'take') return mmTake(g, s, pid);
+    if (a.type === 'pass') return mmPass(g, s, pid);
+    if (a.type === 'bell') {
+      const b = d.bell;
+      if (!b || b.by || b.pid === pid) return false;
+      b.by = pid; updateScores(s, { [pid]: 1 });
+      return true;
+    }
+    return false;
+  },
+  tick(g, s) {
+    const d = g.data;
+    if (g.phase !== 'play' || d.over) return false;
+    let ch = false;
+    if (!active(g, s).includes(d.turn)) { mmTurn(g, s, mmStep(g, s, d.turn)); ch = true; }
+    const b = d.bell;
+    if (b && !b.by) {
+      if (now() - b.at > 8000) { b.by = '-'; ch = true; }
+      else if (now() >= b.botAt) {
+        b.botAt = now() + 60000;
+        const bots = g.roster.filter(id => id !== b.pid && s.players[id]?.isBot);
+        if (bots.length && Math.random() < .75) { b.by = pick(bots); updateScores(s, { [b.by]: 1 }); ch = true; }
+      }
+    }
+    if (d.botAt && now() >= d.botAt && s.players[d.turn]?.isBot) { d.botAt = 0; mmBotMove(g, s, d.turn); return true; }
+    if (now() >= d.turnAt) {
+      // Acabou o tempo: compra (ou leva a Tomatada) e a vez passa.
+      const p = d.turn;
+      if (d.drew) mmPass(g, s, p);
+      else { mmTake(g, s, p); if (d.turn === p && d.drew) mmPass(g, s, p); }
+      return true;
+    }
+    return ch;
+  },
+  done() { return false; },
+  ui: {
+    card(el) {
+      const g = Store.room.game, d = g.data, k = +el.dataset.k, L = Store.local;
+      if (d.turn !== Store.me.id) { mmSelect(k); mmPeekSet(k, 'Sua carta'); return; }
+      if (!mmOk(d, k)) {
+        mmPeekSet(k, d.stack ? 'Só Tomatada agora!' : 'Não combina com a mesa');
+        Sound.play('wrong'); el.classList.remove('shake'); void el.offsetWidth; el.classList.add('shake');
+        return;
+      }
+      // No celular, o primeiro toque mostra a carta grande; o segundo joga.
+      const mouse = matchMedia('(hover: hover) and (pointer: fine)').matches;
+      if (!mouse && L.mmSel !== k) { mmSelect(k); mmPeekSet(k, 'Toque de novo para jogar'); return; }
+      if (mmC(k) === 4) { L.mmPick = k; render(); return; }
+      L.mmSel = null;
+      el.classList.add('going');
+      dispatch({ type: 'play', k });
+    },
+    col(el) { const L = Store.local, k = L.mmPick; L.mmPick = null; L.mmSel = null; if (k != null) dispatch({ type: 'play', k, color: +el.dataset.v }); render(); },
+    nocol() { Store.local.mmPick = null; render(); },
+    take() { dispatch({ type: 'take' }); },
+    pass() { dispatch({ type: 'pass' }); },
+    bell(el) { el.disabled = true; buzz(40); dispatch({ type: 'bell' }); },
+  },
+  view(g, s, me) {
+    const d = g.data, tv = myRole() === 'tv';
+    if (g.phase === 'reveal') {
+      const w = d.winner, rows = d.seats.filter(id => s.players[id] && d.hands[id]).sort((a, b) => d.hands[a].length - d.hands[b].length);
+      return `${w && s.players[w] ? `<div class="mm-win">${avatar(s.players[w], 'xl')}<p class="verdict center">${esc(nameOf(s, w))} ${d.hands[w].length ? 'terminou com menos cartas!' : 'bateu! 🃏'}</p></div>` : ''}
+        <ul class="res-list">${rows.map(id => `<li class="res-row">${avatar(s.players[id], 'sm')}<span class="res-who"><span class="res-name">${esc(nameOf(s, id))}</span>
+          <span class="mm-left">${d.hands[id].slice(0, 8).map(k => mmCard(k, 'is-mini')).join('')}${d.hands[id].length > 8 ? `<small>+${d.hands[id].length - 8}</small>` : ''}</span></span>
+          <span class="res-val">${plural(d.hands[id].length, 'carta', 'cartas')}</span>${deltaBadge(g.roundDelta[id])}</li>`).join('')}</ul>`;
+    }
+    const mine = d.hands[me], myTurn = d.turn === me, seats = d.seats.filter(id => s.players[id]), m = seats.length, mi = seats.indexOf(me);
+    const seatHTML = seats.map((id, j) => {
+      // Você fica embaixo; os outros em volta, na ordem da mesa.
+      const k = mi >= 0 ? (j - mi + m) % m : j, ang = (90 + k * 360 / m) * Math.PI / 180;
+      const x = 50 + 44 * Math.cos(ang), y = 50 + 41 * Math.sin(ang), p = s.players[id], n = (d.hands[id] || []).length, nb = Math.min(n, 5);
+      return `<div class="mm-seat ${id === d.turn ? 'is-turn' : ''} ${n === 1 ? 'is-one' : ''} ${id === me ? 'is-me' : ''} ${p.isBot || p.connected ? '' : 'is-off'}" data-mm-seat="${id}" style="left:${x.toFixed(1)}%;top:${y.toFixed(1)}%">
+        <span class="mm-backs" aria-hidden="true">${Array.from({ length: nb }, (_, i) => `<i style="--k:${i - (nb - 1) / 2}"></i>`).join('')}</span>
+        ${avatar(p, 'sm')}<b class="mm-nm">${id === me ? 'Você' : esc(p.name)}</b><span class="mm-n" title="${plural(n, 'carta', 'cartas')}">${n}</span></div>`;
+    }).join('');
+    const col = MM_COL[d.color] || MM_COL[0];
+    const center = `<div class="mm-center">
+      <button type="button" class="mm-deck" data-act="g:take" ${myTurn && (!d.drew || d.stack) ? '' : 'disabled'} aria-label="${d.stack ? `Comprar ${d.stack}` : 'Comprar uma carta'}">${mmCard(null)}${mmCard(null)}${mmCard(null)}<small>${d.deck.length}</small></button>
+      <div class="mm-pile" id="mmPile" style="--cc:${col.c}">${d.disc.slice(-2).map((k, i) => mmCard(k, 'is-under u' + i)).join('')}${mmCard(d.top, 'is-top')}</div>
+      <div class="mm-info"><span class="mm-color" style="--cc:${col.c}">${col.n}</span>${d.stack ? `<span class="mm-stack">🍅 +${d.stack}</span>` : ''}</div></div>`;
+    const pickHTML = myTurn && Store.local.mmPick != null ? `<div class="mm-pick" role="dialog" aria-label="Escolha a cor"><b>🎨 Escolha a próxima cor</b>
+      <div>${MM_COL.map((c, i) => `<button type="button" data-act="g:col" data-v="${i}" style="--cc:${c.c}">${c.n}</button>`).join('')}</div><button type="button" class="linkish" data-act="g:nocol">Cancelar</button></div>` : '';
+    const b = d.bell;
+    const bell = !b ? '' : b.by ? (b.by !== '-' && s.players[b.by] ? `<span class="mm-bell-done">🔔 ${esc(nameOf(s, b.by))} bateu primeiro! +1</span>` : '')
+      : b.pid === me ? '<span class="mm-bell-me">🔔 Você está com 1 carta!</span>'
+      : inRoster(g, me) ? `<button type="button" class="mm-bell" data-act="g:bell">🔔 Bater! <small>${esc(nameOf(s, b.pid))} tem 1 carta</small></button>`
+      : `<span class="mm-bell-me">🔔 ${esc(nameOf(s, b.pid))} tem 1 carta</span>`;
+    const status = myTurn ? (d.stack ? `<b>🍅 Tomatada!</b> Devolva com outra ou compre ${d.stack}` : d.drew ? 'Jogue a carta nova ou passe' : '<b>Sua vez!</b> Jogue uma carta ou compre')
+      : `Vez de <b>${esc(nameOf(s, d.turn))}</b>`;
+    const acts = myTurn ? (d.drew && !d.stack ? '<button type="button" class="btn sm pill" data-act="g:pass">Passar</button>' : `<button type="button" class="btn sm pill game" data-act="g:take">${d.stack ? `Comprar ${d.stack}` : 'Comprar'}</button>`) : '';
+    const bar = `<div class="mm-bar ${myTurn ? 'is-me' : ''}"><span class="mm-status">${s.players[d.turn] ? avatar(s.players[d.turn], 'sm') : ''}<span>${status}</span>
+      <span class="mm-t"><b data-countdown="${d.turnAt}">${Math.max(0, Math.ceil((d.turnAt - now()) / 1000))}</b>s</span></span>${acts}${bell}</div>`;
+    let hand = '';
+    if (mine) {
+      const sorted = [...mine].sort((a, c) => (mmC(a) - mmC(c)) || ((a & 15) - (c & 15))), n = sorted.length, spread = n > 12 ? 1.6 : n > 7 ? 3 : 5;
+      hand = `<div class="mm-hand ${myTurn ? 'is-turn' : ''} ${n > 12 ? 'is-many' : ''}" style="--ovl:${n > 14 ? .74 : n > 10 ? .64 : n > 7 ? .52 : .3}">${sorted.map((k, i) => {
+        const a = (i - (n - 1) / 2) * spread, ok = myTurn && mmOk(d, k);
+        return `<button type="button" class="mm-hc ${ok ? 'ok' : myTurn ? 'no' : ''} ${d.drew && k === d.newCard ? 'new' : ''}" data-act="g:card" data-k="${k}" style="--a:${a.toFixed(1)}deg;--y:${(a * a * .14).toFixed(1)}px;z-index:${i + 1}" aria-label="${mmName(k)}${ok ? ', pode jogar' : ''}">${mmCard(k)}</button>`;
+      }).join('')}</div>`;
+    }
+    return `<div class="mm ${tv ? 'is-tv' : ''} ${mine ? '' : 'no-hand'}" style="--seat:${m > 16 ? .66 : m > 9 ? .82 : 1}">
+      <div class="mm-top"><aside class="mm-peek" id="mmPeek" aria-live="polite">${mmPeekHTML(d.top, 'Na mesa')}</aside>
+        <div class="mm-table"><div class="mm-felt ${d.dir < 0 ? 'rev' : ''}"><span class="mm-dir" aria-hidden="true"></span></div>${seatHTML}${center}${pickHTML}</div></div>
+      ${bar}${hand}</div>`;
+  },
+  mount(g, s, me) {
+    const d = g.data, L = Store.local;
+    if (g.phase !== 'play') return;
+    const hand = $('.mm-hand');
+    if (hand && !hand.dataset.bound) {
+      hand.dataset.bound = '1';
+      hand.addEventListener('pointerover', e => { const b = e.target.closest('.mm-hc'); if (b && e.pointerType === 'mouse') mmPeekSet(+b.dataset.k, 'Sua carta'); });
+      hand.addEventListener('pointerleave', e => { if (e.pointerType !== 'mouse') return; const gd = Store.room?.game?.data; if (gd) mmPeekSet(L.mmSel ?? gd.top, L.mmSel != null ? 'Sua carta' : 'Na mesa'); });
+    }
+    if (L.mmSel != null && d.hands[me]?.includes(L.mmSel)) { mmSelect(L.mmSel); mmPeekSet(L.mmSel, 'Sua carta'); }
+    const key = g.round + ':' + g.pkey;
+    if (L.mmSeen?.key !== key) L.mmSeen = { key, seq: d.seq, turn: d.turn, bell: '' };
+    else if (d.seq > L.mmSeen.seq) { L.mmSeen.seq = d.seq; mmAnim(d, me); }
+    if (d.turn !== L.mmSeen.turn) {
+      L.mmSeen.turn = d.turn; L.mmSel = null; L.mmPick = null;
+      if (d.turn === me) { Sound.play('go'); buzz([30, 40, 30]); }
+    }
+    const bk = d.bell ? `${d.bell.pid}:${d.bell.at}:${d.bell.by || ''}` : '';
+    if (bk !== L.mmSeen.bell) {
+      if (d.bell && !d.bell.by) Sound.play('alarm');
+      else if (d.bell?.by && d.bell.by !== '-') Sound.play('points');
+      L.mmSeen.bell = bk;
+    }
+  },
+};
+
+/* ---------- 32. Quem Sou Eu? ---------- */
+// [emoji, nome, outros nomes aceitos (|), marcas]. Marcas: r real, p pessoa, a animal, h homem, m mulher, b brasileiro,
+// d desenho, f filme ou série, j videogame, c música, e esporte, v vivo, s superpoder, o objeto, k comida, l lugar,
+// w voa, i internet, g grande, t TV, n lenda ou livro. Os bots respondem as perguntas por elas.
+const QS_LIST = [
+  ['⚽', 'Pelé', 'edson arantes do nascimento', 'rphbe'], ['🤸‍♀️', 'Rebeca Andrade', 'rebeca', 'rpmbev'], ['🏎️', 'Ayrton Senna', 'senna', 'rphbe'],
+  ['⚽', 'Neymar', 'neymar jr|ney', 'rphbev'], ['⚽', 'Marta', 'rainha marta', 'rpmbev'], ['🎤', 'Anitta', '', 'rpmbcv'],
+  ['👑', 'Xuxa', 'rainha dos baixinhos', 'rpmbtv'], ['📺', 'Silvio Santos', 'silvio', 'rphbt'], ['🎤', 'Ivete Sangalo', 'ivete', 'rpmbcv'],
+  ['😂', 'Whindersson Nunes', 'whindersson', 'rphbiv'], ['📱', 'Felipe Neto', '', 'rphbiv'], ['✈️', 'Santos Dumont', '', 'rphbw'],
+  ['🎤', 'Taylor Swift', 'taylor', 'rpmcv'], ['🕺', 'Michael Jackson', '', 'rphc'], ['⚽', 'Lionel Messi', 'messi', 'rphev'],
+  ['⚽', 'Cristiano Ronaldo', 'cr7|cristiano', 'rphev'], ['🧠', 'Albert Einstein', 'einstein', 'rph'], ['🏃', 'Usain Bolt', 'bolt', 'rphev'],
+  ['💃', 'Shakira', '', 'rpmcv'], ['🎨', 'Tarsila do Amaral', 'tarsila', 'rpmb'],
+  ['🐭', 'Mickey Mouse', 'mickey', 'adhf'], ['🧽', 'Bob Esponja', 'bob|spongebob', 'adht'], ['⚡', 'Pikachu', '', 'adjt'],
+  ['🍄', 'Mario', 'super mario', 'phj'], ['🦔', 'Sonic', '', 'ahj'], ['🕷️', 'Homem-Aranha', 'homem aranha|spiderman|spider-man|peter parker', 'phsf'],
+  ['🦇', 'Batman', 'bruce wayne', 'phsf'], ['🛡️', 'Mulher-Maravilha', 'mulher maravilha|wonder woman', 'pmsf'], ['🦸', 'Superman', 'super-homem|super homem', 'phsfw'],
+  ['💚', 'Hulk', '', 'phsfg'], ['🤖', 'Homem de Ferro', 'iron man|tony stark', 'phsfw'], ['🧙', 'Harry Potter', 'harry', 'phfn'],
+  ['🟢', 'Shrek', '', 'phdfg'], ['❄️', 'Elsa', 'frozen', 'pmdfs'], ['👧', 'Mônica', 'turma da monica', 'pmbd'],
+  ['👦', 'Cebolinha', '', 'phbd'], ['🌪️', 'Saci-Pererê', 'saci|saci perere', 'phbn'], ['🐊', 'Cuca', '', 'ambnt'],
+  ['🐉', 'Goku', '', 'phdswt'], ['🍥', 'Naruto', '', 'phdst'], ['🍩', 'Homer Simpson', 'homer', 'phdt'],
+  ['🐷', 'Peppa Pig', 'peppa', 'amdt'], ['🐟', 'Nemo', 'procurando nemo', 'ahdf'], ['🐠', 'Dory', '', 'amdf'],
+  ['🦁', 'Simba', 'rei leao|o rei leao', 'ahdf'], ['💛', 'Minion', 'minions', 'df'], ['👽', 'Stitch', 'lilo e stitch', 'adf'],
+  ['🖤', 'Darth Vader', 'vader', 'phfs'], ['🟩', 'Yoda', 'mestre yoda', 'hfs'], ['🔍', 'Sherlock Holmes', 'sherlock', 'phnf'],
+  ['⛏️', 'Steve do Minecraft', 'steve|minecraft', 'phj'], ['🎅', 'Papai Noel', 'noel|bom velhinho', 'phnw'], ['🐰', 'Coelhinho da Páscoa', 'coelho da pascoa', 'an'],
+  ['🪵', 'Pinóquio', 'pinoquio', 'phdfn'], ['🍎', 'Branca de Neve', 'branca', 'pmdfn'], ['🐔', 'Galinha Pintadinha', 'galinha', 'ambdc'],
+  ['🦗', 'Chapolin Colorado', 'chapolin', 'phts'], ['🛢️', 'Chaves', 'chavo', 'pht'],
+  ['🦁', 'Leão', 'leao', 'ragv'], ['🦒', 'Girafa', '', 'ragv'], ['🐧', 'Pinguim', '', 'rav'], ['🦈', 'Tubarão', 'tubarao', 'ragv'],
+  ['🦫', 'Capivara', '', 'rabv'], ['🐘', 'Elefante', '', 'ragv'], ['🦅', 'Águia', 'aguia', 'rawv'], ['🐙', 'Polvo', '', 'rav'],
+  ['🐕', 'Cachorro', 'cao|cachorrinho', 'rav'], ['🐈', 'Gato', 'gatinho', 'rav'], ['🐢', 'Tartaruga', '', 'rav'], ['🦋', 'Borboleta', '', 'rawv'],
+  ['🦜', 'Arara', 'arara azul', 'rabwv'],
+  ['🍕', 'Pizza', '', 'rk'], ['🍫', 'Brigadeiro', '', 'rkb'], ['🥟', 'Coxinha', '', 'rkb'], ['🧀', 'Pão de queijo', 'pao de queijo', 'rkb'],
+  ['🍇', 'Açaí', 'acai', 'rkb'], ['📱', 'Celular', 'smartphone|telefone', 'ro'], ['☂️', 'Guarda-chuva', 'guarda chuva|sombrinha', 'ro'],
+  ['✈️', 'Avião', 'aviao', 'rowg'], ['🧊', 'Geladeira', '', 'rog'], ['🎸', 'Violão', 'violao', 'roc'], ['⚽', 'Bola de futebol', 'bola', 'roe'],
+  ['🗽', 'Cristo Redentor', 'cristo', 'rlbg'], ['🗼', 'Torre Eiffel', 'torre', 'rlg'], ['🌙', 'Lua', '', 'rg'], ['☀️', 'Sol', '', 'rg'], ['🌋', 'Vulcão', 'vulcao', 'rlg'],
+].map(([e, n, a, t]) => ({ e, n, a: a ? a.split('|') : [], t }));
+const QS_SUGG = ['É uma pessoa de verdade?', 'É um animal?', 'É brasileiro?', 'É homem?', 'É mulher?', 'É de desenho animado?', 'Aparece em filme?', 'É de videogame?',
+  'Tem superpoder?', 'É de comer?', 'É um objeto?', 'Pratica esporte?', 'Canta ou toca música?', 'Voa?', 'É grande?', 'É famoso na internet?', 'Está vivo?', 'Aparece na TV?'];
+// Palavras da pergunta → marca. A primeira que bater decide a resposta do bot; nenhuma bateu: "Talvez".
+const QS_RULES = [[/ficti|inventad|imaginari|nao existe/, '!r'], [/de verdade|\breal\b|existe/, 'r'], [/pessoa|humano|gente/, 'p'], [/animal|bicho/, 'a'],
+  [/\bhomem\b|menino|masculin|\bmacho\b/, 'h'], [/mulher|menina|feminin|femea/, 'm'], [/brasil/, 'b'], [/desenho|anima|cartoon|anime|gibi|quadrinho/, 'd'],
+  [/filme|cinema|serie/, 'f'], [/\bjogo|game/, 'j'], [/cant|music|banda/, 'c'], [/esporte|atleta|futebol|jogador|\bbola/, 'e'], [/vivo|viva\b/, 'v'],
+  [/super|poder|heroi/, 's'], [/objeto|coisa/, 'o'], [/comida|comer|\bcome\b|aliment|comest|doce|salgad/, 'k'], [/lugar|cidade|pais|monument/, 'l'],
+  [/voa|\basas?\b/, 'w'], [/internet|youtub|influenc|video/, 'i'], [/grande|enorme|gigante/, 'g'], [/\btv\b|televis|novela|programa/, 't'], [/lenda|folclor|livro|conto/, 'n']];
+function qsAnswer(ch, text) {
+  const q = norm(text);
+  // "Pessoa de verdade?" precisa das duas coisas (o Harry Potter é pessoa, mas não é real).
+  if (/pessoa|humano|gente/.test(q) && /de verdade|\breal\b|existe/.test(q)) return ch.t.includes('p') && ch.t.includes('r') ? 's' : 'n';
+  for (const [re, tag] of QS_RULES) if (re.test(q)) return tag[0] === '!' ? (ch.t.includes(tag[1]) ? 'n' : 's') : ch.t.includes(tag) ? 's' : 'n';
+  return 't';
+}
+const qsKey = x => norm(x).replace(/[^a-z0-9]/g, '');
+const qsMatch = (text, ch) => { const k = qsKey(text), main = qsKey(ch.n); return !!k && (k === main || ch.a.some(x => qsKey(x) === k) || (main.length >= 5 && k.includes(main))); };
+const QS_LBL = { s: 'Sim', n: 'Não', t: 'Talvez' };
+function qsTally(q) {
+  const c = { s: 0, n: 0, t: 0 };
+  Object.values(q.v).forEach(v => { c[v]++; });
+  const tot = c.s + c.n + c.t;
+  return { c, top: !tot ? null : c.s >= c.n && c.s >= c.t ? 's' : c.n >= c.t ? 'n' : 't' };
+}
+
+Games.quemsou = {
+  id: 'quemsou', name: 'Quem Sou Eu?', tag: 'Descubra quem você é', icon: 'question', color: '#0EA5E9', lip: '#0369A1', min: 2,
+  how: 'Uma pessoa por rodada fica na berlinda: todo mundo vê o personagem, menos ela. Ela faz perguntas de sim ou não, a galera responde, e ela tem 3 chutes. Quanto menos perguntas, mais pontos; quem respondeu ganha +1.',
+  first: 'ask',
+  init(g, s) {
+    const humans = g.roster.filter(id => !s.players[id]?.isBot);
+    const who = humans.length ? humans[(g.round - 1) % humans.length] : g.roster[(g.round - 1) % g.roster.length];
+    g.data = { who, ci: drawItem(g, QS_LIST), qs: [], tries: 3, guesses: [], solved: false, botQ: 0 };
+  },
+  phases: {
+    ask: { label: 'Perguntas de sim ou não', dur: 100, next: 'reveal', allIn: g => g.data.solved || g.data.tries <= 0 },
+    reveal: { label: 'Quem era?', dur: 10, enter(g, s) {
+      const d = g.data, deltas = {};
+      if (d.solved) add(deltas, d.who, Math.max(2, 7 - Math.ceil(d.qs.length / 3)));
+      const helped = new Set();
+      d.qs.forEach(q => Object.keys(q.v).forEach(id => helped.add(id)));
+      helped.forEach(id => { if (id !== d.who && s.players[id]) add(deltas, id, 1); });
+      updateScores(s, deltas);
+    } },
+  },
+  handle(g, s, pid, a) {
+    const d = g.data;
+    if (!inRoster(g, pid) || g.phase !== 'ask') return false;
+    if (pid === d.who) {
+      if (a.type === 'ask') {
+        const text = String(a.text || '').replace(/\s+/g, ' ').trim().slice(0, 80), last = d.qs[d.qs.length - 1];
+        if (text.length < 3 || d.qs.length >= 30 || (last && now() - last.at < 1500)) return false;
+        d.qs.push({ text, at: now(), v: {} });
+        return true;
+      }
+      if (a.type === 'guess') {
+        const t = String(a.text || '').replace(/\s+/g, ' ').trim().slice(0, 40);
+        if (!t || d.tries <= 0 || d.solved) return false;
+        const ok = qsMatch(t, QS_LIST[d.ci]);
+        d.guesses.push({ t, ok });
+        if (ok) d.solved = true; else d.tries--;
+        return true;
+      }
+      return false;
+    }
+    if (a.type === 'ans') {
+      const q = d.qs[a.i | 0];
+      if (!q || !QS_LBL[a.v]) return false;
+      q.v[pid] = a.v;
+      return true;
+    }
+    return false;
+  },
+  tick(g, s) {
+    const d = g.data;
+    if (g.phase !== 'ask' || d.solved || d.tries <= 0) return false;
+    const ch = QS_LIST[d.ci], q = d.qs[d.qs.length - 1];
+    let changed = false;
+    // Bots respondem a pergunta da vez, cada um no seu tempo (e de vez em quando se confundem).
+    if (q) g.roster.forEach((id, j) => {
+      if (!s.players[id]?.isBot || id === d.who || q.v[id] || now() - q.at < 1300 + (j * 900) % 3600) return;
+      q.v[id] = Math.random() < botP(.9) ? qsAnswer(ch, q.text) : pick(['s', 'n', 't']);
+      changed = true;
+    });
+    // Bot na berlinda: pergunta das sugestões e, depois de algumas respostas, chuta.
+    if (s.players[d.who]?.isBot) {
+      if (!d.botQ) d.botQ = now() + 3500;
+      else if (now() >= d.botQ) {
+        d.botQ = now() + rand(5000, 9000);
+        if (d.qs.length >= 4 && Math.random() < .4) {
+          const ok = Math.random() < botP(.45), t = ok ? ch.n : pick(QS_LIST.filter(x => x !== ch)).n;
+          d.guesses.push({ t, ok });
+          if (ok) d.solved = true; else d.tries--;
+        } else d.qs.push({ text: pick(QS_SUGG.filter(x => !d.qs.some(z => z.text === x))) || 'É famoso?', at: now(), v: {} });
+        changed = true;
+      }
+    }
+    return changed;
+  },
+  done(g, pid) { const d = g.data; if (g.phase !== 'ask') return false; if (pid === d.who) return d.solved; const q = d.qs[d.qs.length - 1]; return !!q && !!q.v[pid]; },
+  ui: {
+    ans(el) { dispatch({ type: 'ans', i: +el.dataset.i, v: el.dataset.v }); },
+    sugg(el) { dispatch({ type: 'ask', text: el.dataset.v }); },
+  },
+  forms: {
+    ask() { const i = $('#qsAsk'), t = (i.value || '').trim(); if (t.length < 3) { i.focus(); return; } dispatch({ type: 'ask', text: t }); i.value = ''; },
+    guess() { const i = $('#qsGuess'), t = (i.value || '').trim(); if (!t) { i.focus(); return; } dispatch({ type: 'guess', text: t }); i.value = ''; },
+  },
+  view(g, s, me) {
+    const d = g.data, ch = QS_LIST[d.ci], who = s.players[d.who], isMe = d.who === me, tv = myRole() === 'tv';
+    const row = q => { const T = qsTally(q); return `<li class="qs-q ${T.top ? 'a-' + T.top : ''}"><span class="qs-txt">${esc(q.text)}</span><span class="qs-ans">${T.top ? `<b>${QS_LBL[T.top]}</b><small>${T.c.s} sim · ${T.c.n} não · ${T.c.t} talvez</small>` : '<small>esperando…</small>'}</span></li>`; };
+    const hist = d.qs.length ? `<ol class="qs-list">${d.qs.map(row).reverse().join('')}</ol>` : '';
+    const hearts = `<span class="qs-tries" title="${plural(d.tries, 'chute restante', 'chutes restantes')}">${'❤️'.repeat(Math.max(0, d.tries))}${'🖤'.repeat(Math.max(0, 3 - d.tries))}</span>`;
+    const card = hidden => `<div class="qs-card ${hidden ? 'is-hidden' : ''}"><span class="qs-forehead">${who ? avatar(who, 'md') : ''}</span><span class="qs-e">${hidden ? '❓' : ch.e}</span><b class="qs-name">${hidden ? '???' : esc(ch.n)}</b></div>`;
+    if (g.phase === 'reveal') {
+      return card(false) + `<p class="verdict center">${d.solved ? `${esc(nameOf(s, d.who))} descobriu com ${plural(d.qs.length, 'pergunta', 'perguntas')}! 🎉` : `${esc(nameOf(s, d.who))} não descobriu 😅`}</p>
+        ${d.guesses.length ? `<p class="hint center">Chutes: ${d.guesses.map(x => `${x.ok ? '✅' : '❌'} ${esc(x.t)}`).join(' · ')}</p>` : ''}${hist}`;
+    }
+    if (isMe) {
+      const wrong = d.guesses.filter(x => !x.ok);
+      return `<p class="qs-who center"><b>Você está na berlinda!</b> ${hearts}</p>${card(true)}
+        <form class="answer-form center" data-form="g:ask" novalidate><label class="sr-only" for="qsAsk">Sua pergunta</label>
+          <input class="input" id="qsAsk" data-keep="qs-ask-${g.round}" maxlength="80" autocomplete="off" placeholder="Pergunta de sim ou não…"><button class="btn game pill">Perguntar</button></form>
+        <div class="qs-sugg">${QS_SUGG.filter(x => !d.qs.some(q => q.text === x)).slice(0, 6).map(x => `<button type="button" class="cat-chip" data-act="g:sugg" data-v="${esc(x)}">${esc(x)}</button>`).join('')}</div>
+        <form class="answer-form center qs-guess" data-form="g:guess" novalidate><label class="sr-only" for="qsGuess">Quem você é</label>
+          <input class="input" id="qsGuess" data-keep="qs-g-${g.round}" maxlength="40" autocomplete="off" placeholder="Eu sou…"><button class="btn pill">Chutar</button></form>
+        ${wrong.length ? `<p class="hint center">Não é: ${wrong.map(x => esc(x.t)).join(', ')}</p>` : ''}${hist}`;
+    }
+    const last = d.qs[d.qs.length - 1], can = inRoster(g, me), mine = last?.v[me];
+    const live = last ? `<div class="qs-live"><p class="qs-live-q">“${esc(last.text)}”</p>${can ? `<div class="qs-btns">${['s', 'n', 't'].map(v => `<button type="button" class="qs-b b-${v} ${mine === v ? 'on' : ''}" data-act="g:ans" data-i="${d.qs.length - 1}" data-v="${v}">${QS_LBL[v]}</button>`).join('')}</div>` : ''}</div>`
+      : `<p class="hint center">Esperando ${esc(nameOf(s, d.who))} perguntar<span class="dots"></span></p>`;
+    return `<p class="qs-who center"><b>${esc(nameOf(s, d.who))}</b> está na berlinda ${hearts}</p>${card(tv)}
+      <p class="hint center">${tv ? '🤫 O personagem aparece só nos celulares.' : 'Não conte! Responda as perguntas com sinceridade (ou quase).'}</p>${live}${hist}`;
+  },
+};
+Games.quemsou.secret = g => g.phase === 'ask' ? [QS_LIST[g.data.ci].n, ...QS_LIST[g.data.ci].a] : [];
+
+/* ---------- 33. Memória da Galera ---------- */
+const MEM_E = ['🍕', '🐸', '🚀', '🎸', '🦄', '🍩', '🐙', '⚽', '🌵', '🎩', '🍉', '🐼', '🎈', '🦖', '🍔', '🌈', '🐝', '🎲', '🍦', '🦊', '🧲', '🪐', '🐢', '🍓', '🎃', '🐳', '🔮', '🥑', '🦀', '🎯'];
+function memTurn(g, s, pid) {
+  const d = g.data;
+  d.turn = pid; d.flip = [];
+  d.turnAt = now() + (s.settings.rush ? 7 : 10) * 1000;
+  d.botAt = s.players[pid]?.isBot ? now() + rand(900, 1800) / botSpeed() : 0;
+}
+function memNext(g, s, from) {
+  const order = g.roster.filter(id => active(g, s).includes(id) || id === from);
+  return order[(order.indexOf(from) + 1) % order.length] || from;
+}
+// O bot lembra das cartas que já viu conforme o nível dele.
+function memBotPick(g) {
+  const d = g.data, open = d.cards.map((_, i) => i).filter(i => !(i in d.won) && !d.flip.includes(i));
+  const mem = open.filter(i => d.seen.includes(i) && Math.random() < botP(.6));
+  if (d.flip.length === 1) { const m = mem.find(i => d.cards[i] === d.cards[d.flip[0]]); if (m != null) return m; }
+  else for (const i of mem) if (mem.some(j => j !== i && d.cards[j] === d.cards[i])) return i;
+  const unseen = open.filter(i => !d.seen.includes(i));
+  const choice = pick(unseen.length ? unseen : open);
+  return choice == null ? -1 : choice;
+}
+
+Games.memoria = {
+  id: 'memoria', name: 'Memória da Galera', tag: 'Ache os pares', icon: 'pairs', color: '#F59E0B', lip: '#B45309', min: 1, rounds: 2,
+  how: 'Um tabuleiro de cartas viradas, igual para todo mundo. Na sua vez, vire 2: se forem iguais, o par é seu (+1, e o par da ⭐ vale +3) e você joga de novo. Errou? Todo mundo viu onde estavam, e a vez passa.',
+  first: 'play',
+  init(g, s) {
+    const pairs = clamp(6 + g.roster.length * 2, 8, 15), set = shuffle(MEM_E.map((_, i) => i)).slice(0, pairs);
+    g.data = { cards: shuffle([...set, ...set]), star: set[0], won: {}, flip: [], turn: null, turnAt: 0, hideAt: 0, botAt: 0, got: {}, seen: [], seq: 0, last: null, over: false };
+    memTurn(g, s, g.roster[(g.round - 1) % g.roster.length]);
+  },
+  phases: {
+    play: { label: 'Ache os pares', dur: 150, next: 'reveal', allIn: g => g.data.over },
+    reveal: { label: 'Placar da memória', dur: 9, enter(g, s) {
+      const d = g.data, best = Math.max(0, ...Object.values(d.got));
+      if (best) updateScores(s, Object.fromEntries(Object.keys(d.got).filter(id => d.got[id] === best && s.players[id]).map(id => [id, 2])));
+    } },
+  },
+  flipCard(g, s, pid, i) {
+    const d = g.data;
+    if (pid !== d.turn || d.hideAt || d.over || !(i >= 0 && i < d.cards.length) || i in d.won || d.flip.includes(i) || d.flip.length >= 2) return false;
+    d.flip.push(i);
+    if (!d.seen.includes(i)) d.seen.push(i);
+    d.seq++;
+    if (d.flip.length < 2) { if (s.players[pid]?.isBot) d.botAt = now() + rand(600, 1200) / botSpeed(); return true; }
+    const [a, b] = d.flip;
+    if (d.cards[a] === d.cards[b]) {
+      d.won[a] = d.won[b] = pid;
+      add(d.got, pid, 1);
+      updateScores(s, { [pid]: d.cards[a] === d.star ? 3 : 1 });
+      d.last = { pid, ok: true, e: d.cards[a] };
+      if (Object.keys(d.won).length >= d.cards.length) { d.over = true; d.flip = []; }
+      else memTurn(g, s, pid);
+    } else { d.hideAt = now() + 1400; d.last = { pid, ok: false }; }
+    return true;
+  },
+  handle(g, s, pid, a) {
+    if (!inRoster(g, pid) || g.phase !== 'play' || a.type !== 'flip') return false;
+    return this.flipCard(g, s, pid, a.i | 0);
+  },
+  tick(g, s) {
+    const d = g.data;
+    if (g.phase !== 'play' || d.over) return false;
+    if (d.hideAt) { if (now() < d.hideAt) return false; d.hideAt = 0; memTurn(g, s, memNext(g, s, d.turn)); return true; }
+    if (!active(g, s).includes(d.turn) || now() >= d.turnAt) { memTurn(g, s, memNext(g, s, d.turn)); return true; }
+    if (d.botAt && now() >= d.botAt && s.players[d.turn]?.isBot) {
+      d.botAt = 0;
+      const i = memBotPick(g);
+      return i >= 0 && this.flipCard(g, s, d.turn, i);
+    }
+    return false;
+  },
+  done() { return false; },
+  ui: { flip(el) { dispatch({ type: 'flip', i: +el.dataset.i }); } },
+  view(g, s, me) {
+    const d = g.data, myTurn = d.turn === me && g.phase === 'play', total = d.cards.length;
+    const cols = total <= 16 ? 4 : total <= 20 ? 5 : 6, rows = Math.ceil(total / cols);
+    const tiles = d.cards.map((e, i) => {
+      const won = d.won[i], up = !!won || d.flip.includes(i) || g.phase === 'reveal', p = won && s.players[won];
+      return `<button type="button" class="mem-c ${up ? 'up' : ''} ${won ? 'won' : ''} ${d.hideAt && d.flip.includes(i) ? 'miss' : ''}" data-act="g:flip" data-i="${i}" ${myTurn && !up && !d.hideAt ? '' : 'disabled'} ${p ? `style="--pc:${p.color}"` : ''} aria-label="${up ? MEM_E[e] : 'Carta virada'}">
+        <span class="mem-in"><span class="mem-back" aria-hidden="true">?</span><span class="mem-face">${MEM_E[e]}${e === d.star ? '<i class="mem-star">⭐</i>' : ''}${p ? `<i class="mem-who">${esc(p.avatar || '')}</i>` : ''}</span></span></button>`;
+    }).join('');
+    const ranked = Object.entries(d.got).filter(([id]) => s.players[id]).sort((a, b) => b[1] - a[1]);
+    const score = ranked.length ? `<div class="mem-score">${ranked.slice(0, 8).map(([id, n]) => `<span>${avatar(s.players[id], 'sm')}${esc(nameOf(s, id))} <b>${n}</b></span>`).join('')}</div>` : '';
+    if (g.phase === 'reveal') {
+      const best = ranked[0];
+      return `${best ? `<p class="verdict center">${esc(nameOf(s, best[0]))} achou mais pares (${best[1]})! +2</p>` : '<p class="verdict center">Fim da memória!</p>'}
+        <div class="mem-grid is-done" style="--cols:${cols};--rows:${rows}">${tiles}</div>${score}`;
+    }
+    const tp = s.players[d.turn], last = d.last && s.players[d.last.pid] ? (d.last.ok ? `${esc(nameOf(s, d.last.pid))} achou ${MEM_E[d.last.e]}!` : `${esc(nameOf(s, d.last.pid))} errou`) : '';
+    return `<div class="mem-bar ${myTurn ? 'is-me' : ''}">${tp ? avatar(tp, 'sm') : ''}<span>${myTurn ? '<b>Sua vez!</b> Vire 2 cartas' : `Vez de <b>${esc(nameOf(s, d.turn))}</b>`}</span>
+        <span class="mm-t"><b data-countdown="${d.turnAt}">${Math.max(0, Math.ceil((d.turnAt - now()) / 1000))}</b>s</span>${last ? `<small class="mem-last">${last}</small>` : ''}</div>
+      <div class="mem-grid" style="--cols:${cols};--rows:${rows}">${tiles}</div>${score}`;
+  },
+  mount(g, s, me) {
+    const d = g.data, L = Store.local, key = g.round + ':' + g.pkey;
+    if (L.memSeen?.key !== key) { L.memSeen = { key, seq: d.seq, turn: d.turn }; return; }
+    if (d.seq > L.memSeen.seq) { L.memSeen.seq = d.seq; Sound.play(d.flip.length === 1 ? 'click' : d.last?.ok ? 'correct' : 'wrong'); }
+    if (d.turn !== L.memSeen.turn) { L.memSeen.turn = d.turn; if (d.turn === me) { Sound.play('go'); buzz(40); } }
+  },
+};
+
+/* ---------- 34. Desenho às Cegas ---------- */
+Games.cegas = {
+  id: 'cegas', name: 'Desenho às Cegas', tag: 'Desenhe sem olhar', icon: 'blind', color: '#E11D48', lip: '#9F1239', min: 2,
+  how: 'Todo mundo desenha a mesma palavra ao mesmo tempo, mas sem ver o próprio traço: a tela fica tampada! No fim, os desenhos aparecem e cada um vota no mais parecido. Cada voto vale +1, e o mais votado ganha +2.',
+  first: 'draw',
+  init(g, s) {
+    const pool = drawPool(s), nc = (custom(s).words || []).length;
+    g.data = { word: pickFrom(g, pool, nc), art: {}, votes: {}, count: {} };
+  },
+  phases: {
+    draw: { label: 'Desenhe sem olhar!', dur: 35, bot: [10, 30], next: 'vote', allIn: (g, s) => active(g, s).every(id => g.data.art[id] && !g.data.art[id].draft) },
+    vote: { label: 'Qual ficou mais parecido?', dur: 25, bot: [3, 14], next: 'reveal', allIn: (g, s) => active(g, s).every(id => id in g.data.votes || !Games.cegas.opts(g, id).length) },
+    reveal: { label: 'Resultado', dur: 12, enter(g, s) {
+      const d = g.data, deltas = {}, c = {};
+      Object.values(d.votes).forEach(id => { add(c, id, 1); add(deltas, id, 1); });
+      const best = Math.max(0, ...Object.values(c));
+      if (best) Object.keys(c).filter(id => c[id] === best).forEach(id => add(deltas, id, 2));
+      d.count = c;
+      updateScores(s, deltas);
+    } },
+  },
+  opts(g, pid) { return Object.keys(g.data.art).filter(id => id !== pid && g.data.art[id].v.length); },
+  handle(g, s, pid, a) {
+    const d = g.data;
+    if (!inRoster(g, pid)) return false;
+    if (g.phase === 'draw' && (a.type === 'submit' || a.type === 'draft')) {
+      if (d.art[pid] && !d.art[pid].draft) return false;
+      d.art[pid] = { v: telClean(a.strokes), ...(a.type === 'draft' ? { draft: true } : {}) };
+      return true;
+    }
+    if (g.phase === 'vote' && a.type === 'vote') {
+      if (a.id === pid || !d.art[a.id]?.v.length) return false;
+      d.votes[pid] = a.id;
+      return true;
+    }
+    return false;
+  },
+  done(g, pid) { const d = g.data; return g.phase === 'draw' ? !!d.art[pid] && !d.art[pid].draft : g.phase === 'vote' ? pid in d.votes : false; },
+  bot(g, s, pid) {
+    if (g.phase === 'draw') return { type: 'submit', strokes: telScribble() };
+    if (g.phase === 'vote') { const o = this.opts(g, pid), hum = o.filter(id => !s.players[id]?.isBot); return o.length ? { type: 'vote', id: pick(hum.length && Math.random() < .7 ? hum : o) } : null; }
+    return null;
+  },
+  // Rascunho local (o host recebe de tempos em tempos, e tudo ao apertar Pronto).
+  pad(g) { const L = Store.local; if (!L.cg || L.cg.key !== g.pkey) L.cg = { key: g.pkey, strokes: [], redo: [], timer: null }; return L.cg; },
+  saveDraft(g) {
+    const T = this.pad(g);
+    clearTimeout(T.timer);
+    T.timer = setTimeout(() => { if (Store.room?.game?.phase === 'draw') dispatch({ type: 'draft', strokes: T.strokes }); }, 1200);
+  },
+  view(g, s, me) {
+    const d = g.data, mine = d.art[me], can = inRoster(g, me), cv = st => Games.telefone.canvas(st);
+    if (g.phase === 'draw') {
+      const word = `<p class="dw-word">Desenhe: <b>${esc(d.word)}</b></p>`;
+      if (!can) return word + waitCard('A galera está desenhando sem olhar', 'Já já aparece a galeria');
+      if (mine && !mine.draft) return word + `<p class="verdict center">Olha o que você fez 😂</p><div class="cg-mine">${cv(mine.v)}</div><p class="hint center">Esperando a galera terminar<span class="dots"></span></p>`;
+      return word + `<div class="dw-board-wrap cg-wrap"><canvas id="cgBoard" class="dw-board can-draw" width="1000" height="750" role="img" aria-label="Seu desenho, escondido até o fim"></canvas>
+        <div class="cg-blind" aria-hidden="true"><span class="cg-eyes">🙈</span><b>Desenhando às cegas</b><small id="cgCount">nenhum traço ainda</small></div></div>
+        ${padToolsHTML()}<button class="btn game big" data-act="g:send" style="display:flex;margin:10px auto 0">Pronto!</button>`;
+    }
+    const ids = Object.keys(d.art).filter(id => s.players[id] && d.art[id].v.length);
+    if (g.phase === 'vote') {
+      const vote = d.votes[me];
+      return `<p class="dw-word">Era: <b>${esc(d.word)}</b></p><h2 class="ask center">Qual ficou mais parecido?</h2>
+        <div class="cg-gallery">${ids.map((id, i) => `<figure class="cg-item ${vote === id ? 'on' : ''}" data-cg="${id}">${cv(d.art[id].v)}<figcaption><span>Desenho ${i + 1}</span>${id === me ? '<small class="cg-own">seu</small>'
+          : can ? `<button type="button" class="cg-vote ${vote === id ? 'on' : ''}" data-act="g:vote" data-id="${id}" aria-pressed="${vote === id}" aria-label="Votar no desenho ${i + 1}">❤</button>` : ''}</figcaption></figure>`).join('') || '<p class="hint center">Ninguém desenhou nada!</p>'}</div>`;
+    }
+    const c = d.count || {}, best = Math.max(0, ...Object.values(c));
+    return `<p class="dw-word">Era: <b>${esc(d.word)}</b></p><div class="cg-gallery">${ids.sort((a, b) => (c[b] || 0) - (c[a] || 0)).map(id => `<figure class="cg-item ${best && c[id] === best ? 'is-best' : ''}">${cv(d.art[id].v)}
+      <figcaption>${avatar(s.players[id], 'sm')}<span>${esc(nameOf(s, id))}</span><small class="cg-own">${best && c[id] === best ? '🏆 ' : ''}${plural(c[id] || 0, 'voto', 'votos')}</small>${deltaBadge(g.roundDelta[id])}</figcaption></figure>`).join('') || '<p class="hint center">Ninguém desenhou nada!</p>'}</div>`;
+  },
+  // Com o quadro aberto, nada redesenha a tela (senão o traço em andamento se perdia).
+  patch(g, s, me) {
+    const d = g.data;
+    if (g.phase === 'draw') {
+      if ($('#cgBoard') && !(d.art[me] && !d.art[me].draft)) return;
+      $('.stage-body').innerHTML = this.view(g, s, me);
+      this.mount(g, s, me);
+      return;
+    }
+    if (g.phase === 'vote') {
+      const v = d.votes[me];
+      $$('.cg-item').forEach(f => { const on = f.dataset.cg === v; f.classList.toggle('on', on); const b = f.querySelector('.cg-vote'); if (b) { b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); } });
+    }
+  },
+  mount(g, s, me) {
+    $$('canvas[data-tel]:not([data-painted])').forEach(c => { c.dataset.painted = '1'; try { padPaint(c, JSON.parse(c.dataset.tel) || []); } catch {} });
+    const cv = $('#cgBoard');
+    if (!cv) return;
+    const T = this.pad(g), count = () => { const el = $('#cgCount'); if (el) el.textContent = (T.strokes.length ? plural(T.strokes.length, 'traço', 'traços') : 'nenhum traço ainda') + (telPts(T.strokes) >= TEL_BUDGET ? ' · acabou a tinta!' : ''); };
+    padPaint(cv, T.strokes);
+    padBindTools();
+    count();
+    bindPad(cv, { live: false, minDist: 7, maxPts: 600, canStart: () => telPts(T.strokes) < TEL_BUDGET,
+      send: st => { T.strokes.push(st); T.redo = []; count(); this.saveDraft(g); } });
+  },
+  ui: {
+    ...padUi,
+    undo() { const g = Store.room.game, T = Games.cegas.pad(g), st = T.strokes.pop(); if (st) { T.redo.push(st); padPaint($('#cgBoard'), T.strokes); Games.cegas.saveDraft(g); } },
+    redo() { const g = Store.room.game, T = Games.cegas.pad(g), st = T.redo.pop(); if (st) { T.strokes.push(st); padPaint($('#cgBoard'), T.strokes); Games.cegas.saveDraft(g); } },
+    clear() { const g = Store.room.game, T = Games.cegas.pad(g); if (!T.strokes.length) return; T.redo = []; T.strokes = []; padPaint($('#cgBoard'), T.strokes); Games.cegas.saveDraft(g); },
+    send() { const g = Store.room.game, T = Games.cegas.pad(g); clearTimeout(T.timer); dispatch({ type: 'submit', strokes: T.strokes }); },
+    vote(el) { dispatch({ type: 'vote', id: el.dataset.id }); },
+  },
+};
+GAME_ORDER.push('mesa', 'quemsou', 'memoria', 'cegas');
+Object.assign(Games.mesa, { cat: 'social' });
+Object.assign(Games.quemsou, { cat: 'social' });
+Object.assign(Games.memoria, { cat: 'rapidez' });
+Object.assign(Games.cegas, { cat: 'desenho' });
+
 /* =====================================================================
    Extras da partida: medalhas, melhores momentos, números de cada um,
    imagens para compartilhar, narração, vibração, temas, conteúdo da sala,
@@ -7036,6 +7920,8 @@ function shiftTimers(g, d) {
   const x = g.data || {};
   if (x.botStopAt) x.botStopAt += d;
   if (x.botAt) x.botAt += d;
+  if (x.turnAt) x.turnAt += d;
+  if (x.hideAt) x.hideAt += d;
   // Só o Termo guarda horários absolutos dos bots (os outros contam a partir do início da etapa).
   if (x.bots) Object.values(x.bots).forEach(pl => { if (Array.isArray(pl?.times)) pl.times = pl.times.map(t => t + d); });
 }
@@ -7470,6 +8356,9 @@ function renderTop() {
 
 /* ---------- Ícones (SVG em linha, traço de 2px) ---------- */
 const ICONS = {
+  cards: '<rect x="3.2" y="5.5" width="10" height="14" rx="2" transform="rotate(-12 8.2 12.5)"/><rect x="10.8" y="4.5" width="10" height="14" rx="2" transform="rotate(10 15.8 11.5)"/>',
+  blind: '<path d="M2.8 12s3.4-6 9.2-6c1.5 0 2.9.4 4.1 1M21.2 12s-3.4 6-9.2 6c-1.5 0-2.9-.4-4.1-1"/><path d="M4 20 20 4"/>',
+  pairs: '<rect x="3" y="4" width="8" height="11" rx="1.8"/><rect x="13" y="9" width="8" height="11" rx="1.8"/><path d="M7 8.3v2.4M17 13.3v2.4"/>',
   question: '<circle cx="12" cy="12" r="9"/><path d="M9.2 9.3a2.9 2.9 0 0 1 5.6.9c0 1.9-2.8 2.6-2.8 2.6"/><path d="M12 16.7h.01" stroke-width="2.8"/>',
   users: '<circle cx="9" cy="8.5" r="3.2"/><path d="M3.2 19.5c.4-3.2 2.8-5.3 5.8-5.3s5.4 2.1 5.8 5.3"/><circle cx="16.8" cy="9.3" r="2.4"/><path d="M16.4 14.3c2.4.2 4.1 2 4.4 4.7"/>',
   mask: '<path fill="currentColor" stroke="none" fill-rule="evenodd" d="M2 8.5C2 7.1 3 6 4.4 6c2.4 0 4.3 1.3 7.6 1.3S17.2 6 19.6 6C21 6 22 7.1 22 8.5V10c0 4-2.9 7-6.4 7-1.9 0-2.6-1.7-3.6-1.7S10.3 17 8.4 17C4.9 17 2 14 2 10zM6.2 11.1c.8-1.6 2.9-1.9 4-.6-1 1.5-3.1 1.7-4 .6zm11.6 0c-.8-1.6-2.9-1.9-4-.6 1 1.5 3.1 1.7 4 .6z"/>',
