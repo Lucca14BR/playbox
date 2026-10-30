@@ -9893,6 +9893,8 @@ function render() {
       mod.patch(s.game, s, Store.me.id);
       const strip = $('.strip', app), sh = stripHTML(s, s.game, mod);
       if (strip && strip.__html !== sh) { strip.outerHTML = sh; const ns = $('.strip', app); if (ns) { ns.__html = sh; calmRender(ns); } }
+      // A tela de regras e a contagem também fecham por aqui (antes ficavam abertas até a etapa mudar).
+      goCount(s);
       return;
     }
     html = viewGame(s);
@@ -10121,7 +10123,7 @@ function demoNew(id) {
   DEMO_BOTS.forEach(([name, av, color], i) => { players['demo-' + i] = { id: 'demo-' + i, name, avatar: av, color, isBot: true, connected: true, score: 0 }; });
   const order = Object.keys(players);
   const s = { players, order, hostId: 'demo-me', screen: 'game', settings: { ...(Store.room?.settings || {}) }, match: { played: [] }, chat: [] };
-  const g = s.game = { id, round: 1, total: 1, phase: null, phaseStart: 0, deadline: null, dur: 0, data: {}, earned: {}, roundDelta: {}, used: [], roster: order.slice(), demo: true };
+  const g = s.game = { id, round: 1, total: 2, phase: null, phaseStart: 0, deadline: null, dur: 0, data: {}, earned: {}, roundDelta: {}, used: [], roster: order.slice(), demo: true };
   Games[id].init(g, s);
   // Alguns jogos arrumam a partida de mentira para o lance principal aparecer logo no vídeo.
   Games[id].demoPrep?.(g, s, 'demo-me');
@@ -10135,7 +10137,7 @@ function demoPhase(D, name) {
   ph.enter && ph.enter(g, s);
   // Etapas curtas no vídeo: só o suficiente para ver a jogada acontecer.
   const live = !ph.bot && !!mod.tick && name !== 'reveal';
-  D.len = name === 'reveal' ? 4500 : live ? 11000 : clamp((ph.dur || 10) * 350, 2800, 6500);
+  D.len = name === 'reveal' ? 6000 : live ? 16000 : clamp((ph.dur || 10) * 600, 4500, 10000);
   D.end = now() + D.len; D.allAt = 0;
   // Cada um joga uma vez num momento sorteado; "Você" joga no meio da etapa.
   D.acts = ph.bot ? g.roster.map(id => ({ id, at: now() + (id === D.me ? .4 : rand(.12, .8)) * D.len })) : [];
@@ -10153,8 +10155,10 @@ function demoStep(D) {
   if (!D.allAt && ph.allIn && D.acts.every(a => a.done) && ph.allIn(g, s)) D.allAt = t + 900;
   if (t >= D.end || (D.allAt && t >= D.allAt)) {
     const nx = g.phase === 'reveal' ? null : typeof ph.next === 'function' ? ph.next(g, s) : ph.next;
-    if (!nx) return 'again';
-    demoPhase(D, nx);
+    if (nx) demoPhase(D, nx);
+    // Fim da rodada: o vídeo mostra mais uma (como no jogo de verdade) antes de recomeçar.
+    else if (g.round < g.total) { g.round++; g.roundDelta = {}; mod.init(g, s); demoPhase(D, mod.first); }
+    else return 'again';
   }
   return null;
 }
@@ -10228,8 +10232,9 @@ function demoMount(box, id) {
     try { html = Games[id].view(D.g, D.s, D.me).replace(/\sid="[^"]*"/g, '').replace(/\sdata-autofocus/g, ''); } catch (e) { console.warn('Vídeo do tutorial:', id, e); }
     if (html !== last) { sb.innerHTML = html; last = html; }
     demoCanvas(sb, D);
-    const lbl = Games[id].phases[D.g.phase]?.label || '';
+    const lbl = Games[id].phases[D.g.phase]?.label || '', live = box.querySelector('.go-live'), lv = `● Exemplo · rodada ${D.g.round} de ${D.g.total}`;
     if (cap.textContent !== lbl) cap.textContent = lbl;
+    if (live && live.textContent !== lv) live.textContent = lv;
   };
   const loop = () => {
     if (!box.isConnected || !D) return;
