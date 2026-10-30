@@ -1,7 +1,7 @@
 // Service worker do PlayBox: deixa instalar como app, abre rápido e funciona sem internet
 // (jogar com outras pessoas precisa de rede; sozinho com bots funciona offline).
 // Ao publicar uma versão nova do index.html, quem abrir com internet já recebe a nova.
-const VERSION = 'playbox-v2';
+const VERSION = 'playbox-v3';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './playbox-icon-192.png', './playbox-logo.png', './playbox-maskable-192.png', './playbox-maskable-512.png'];
 // Bibliotecas, fontes e mapas que vêm de fora (MQTT, QR code, fontes do Google, contornos do mapa).
 const CDN = /^https:\/\/(cdn\.jsdelivr\.net|cdnjs\.cloudflare\.com|unpkg\.com|fonts\.googleapis\.com|fonts\.gstatic\.com)\//;
