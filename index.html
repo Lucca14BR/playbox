@@ -64,8 +64,6 @@ html.in-room,html.in-room body{overscroll-behavior-y:none}
 button,a,[data-act],input,textarea,label{touch-action:manipulation}
 body{
   min-height:100dvh;background-color:var(--bg);color:var(--ink);
-  background-image:radial-gradient(1000px 560px at 50% -240px,color-mix(in srgb,var(--glow) 24%,transparent),transparent 72%);
-  background-repeat:no-repeat;background-attachment:fixed;
   font-family:var(--font);font-size:1rem;line-height:1.55;-webkit-font-smoothing:antialiased;
   font-variant-numeric:tabular-nums;
 }
@@ -95,8 +93,10 @@ b,strong{font-weight:700}
 #app{padding:22px 16px 56px;max-width:1120px;margin:0 auto}
 .screen.enter{animation:screenIn .4s cubic-bezier(.2,.8,.2,1)}
 @keyframes screenIn{from{opacity:0;transform:translateY(10px)}}
+/* Sem desfoque no painel: atrás dele só há o fundo animado (já borrado), então o desfoque não aparecia, mas
+   tinha que ser refeito em todos os painéis a cada quadro. No Chromebook isso travava a rolagem do início e do lobby. */
 .panel{
-  background:var(--surface);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);
+  background:var(--surface);
   border:1px solid var(--line);border-radius:var(--r-xl);padding:20px;
 }
 .panel-title{font-size:1.02rem;font-weight:700;letter-spacing:-.01em}
@@ -561,7 +561,9 @@ button.game-card:disabled{filter:grayscale(.9) brightness(.45);cursor:not-allowe
 .dw-size i{display:block;width:var(--d);height:var(--d);border-radius:50%;background:var(--ink)}
 .dw-size.on{border-color:var(--g);background:color-mix(in srgb,var(--g) 18%,transparent)}
 .dw-guess{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
-.dw-tools{flex-direction:column;align-items:stretch;gap:9px}
+/* nowrap: com quebra ligada, a coluna ficava da largura da fileira de cores inteira (464 px no celular)
+   e o jogo rolava para o lado; sem ela cada fileira cabe na tela e rola sozinha quando precisa. */
+.dw-tools{flex-direction:column;flex-wrap:nowrap;align-items:stretch;gap:9px}
 .dw-row{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:7px}
 .dw-tool{display:grid;place-items:center;width:40px;height:40px;border-radius:12px;color:var(--muted);border:1px solid var(--line);background:rgba(255,255,255,.03);transition:background .15s,color .15s,border-color .15s}
 .dw-tool:hover{color:var(--ink)}
@@ -659,7 +661,9 @@ body.in-game .screen.game{--chrome-h:360px;display:flex;flex-direction:column;he
 body.in-game .screen.game > *{flex-shrink:0}
 body.in-game .screen.game > .stage{flex:1 1 auto;min-height:0;display:flex;flex-direction:column}
 body.in-game .stage > *{flex-shrink:0}
-body.in-game .stage > .stage-body{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:4px 6px 10px;margin-inline:-6px;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.18) transparent}
+/* Só rola para baixo: enfeites que passam da borda (carta girada do Impostor, "STOP!" crescendo) faziam a área
+   escorregar para o lado no celular. Fileiras que precisam rolar de lado têm a rolagem delas. */
+body.in-game .stage > .stage-body{flex:1 1 auto;min-height:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;padding:4px 6px 10px;margin-inline:-6px;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.18) transparent}
 body.in-game .hostbar{padding-right:64px}
 body.in-game .game-top{margin-bottom:10px}
 /* Quadros e mapas encolhem para caber na altura disponível */
@@ -867,6 +871,10 @@ body.in-game .postcard{width:min(100%,max(180px,calc((var(--sbh) - 225px) * 1.6)
 /* Logo depois de trocar a tela, o que está sob o mouse não refaz a transição (evita a "piscada") */
 html.calm :hover,html.calm :hover::before,html.calm :hover::after{transition:none!important}
 /* ---------- Visual: fundo vivo, brilhos e detalhes ---------- */
+/* Brilho do topo numa camada fixa (antes era background-attachment:fixed no body, que obriga o Chrome a
+   repintar a janela inteira a cada passo da rolagem em vez de só deslizar a página). */
+body::after{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;
+  background:radial-gradient(1000px 560px at 50% -240px,color-mix(in srgb,var(--glow) 24%,transparent),transparent 72%) no-repeat}
 body::before{content:"";position:fixed;inset:-25%;z-index:-1;pointer-events:none;will-change:transform;
   background:radial-gradient(30% 26% at 18% 28%,color-mix(in srgb,var(--glow) 22%,transparent),transparent 70%),
     radial-gradient(28% 24% at 82% 66%,rgba(236,72,153,.12),transparent 70%),
@@ -1960,6 +1968,8 @@ html.tv-role .fab,html.tv-role .react-wrap,html.tv-role .top-right .btn{display:
 .mm-pick button[data-v]:hover{transform:translateY(-2px)}
 .mm-fly{position:fixed;z-index:34;--cw:clamp(46px,9vmin,80px);pointer-events:none}
 .mm-win{display:grid;justify-items:center;gap:6px;margin-bottom:8px}
+/* Tela baixa: vencedor da Mesa Maluca numa linha só (o resultado passava 32 px da tela no Chromebook) */
+@media (max-height:820px){ body.in-game .mm-win{display:flex;align-items:center;justify-content:center;gap:12px} body.in-game .mm-win .av-xl{--s:48px} }
 .mm-left{display:flex;flex-wrap:wrap;align-items:center;gap:2px;margin-top:3px}
 .mm-left small{font-size:.7rem;color:var(--muted)}
 @media (max-width:640px){
@@ -2002,7 +2012,7 @@ html.tv-role .fab,html.tv-role .react-wrap,html.tv-role .top-right .btn{display:
 .mem-bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px;margin-bottom:8px;padding:6px 10px;border-radius:14px;background:var(--surface-solid);border:1px solid var(--line);font-size:.9rem}
 .mem-bar.is-me{border-color:#F59E0B;box-shadow:0 0 24px -6px #F59E0B}
 .mem-last{color:var(--muted)}
-.mem-grid{display:grid;grid-template-columns:repeat(var(--cols),1fr);gap:clamp(4px,1vmin,8px);width:min(100%,calc((var(--sbh,520px) - 96px) / var(--rows) * var(--cols)));margin:0 auto}
+.mem-grid{display:grid;grid-template-columns:repeat(var(--cols),1fr);gap:clamp(4px,1vmin,8px);width:min(100%,calc((var(--sbh,520px) - 136px) / var(--rows) * var(--cols)));margin:0 auto}
 .mem-c{aspect-ratio:1;padding:0;border:0;background:none;perspective:600px;cursor:pointer;container-type:inline-size}
 .mem-c:disabled{cursor:default}
 .mem-in{position:relative;display:block;width:100%;height:100%;transform-style:preserve-3d;transition:transform .4s}
@@ -2059,6 +2069,11 @@ body.in-game #cgBoard{width:min(100%,calc((var(--sbh) - 160px) * 4 / 3));min-wid
   body.in-game .stage-body:has(> .dw-board-wrap){row-gap:0}
   body.in-game .stage-body:has(> .dw-board-wrap) > :not(.dw-board-wrap){margin-bottom:10px!important}
   body.in-game .stage-body:has(> .dw-board-wrap) .dw-word b{font-size:clamp(1.1rem,3.6vh,1.8rem);line-height:1.15}
+  /* Batata-Bomba na sua vez: campo, ajuda e palavras usadas passavam 90 px da tela no Chromebook.
+     Bomba à esquerda, sílaba e campo à direita (mesmo truque do Desenho: sem espaço entre linhas vazias). */
+  body.in-game .stage-body:has(> .bm-stage){display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:22px;row-gap:0;align-content:center;align-items:center}
+  body.in-game .stage-body:has(> .bm-stage) > *{grid-column:2;margin-top:0!important;margin-bottom:12px}
+  body.in-game .stage-body:has(> .bm-stage) > .bm-stage{grid-column:1;grid-row:1 / span 8;margin-bottom:0}
 }
 /* Carta do Impostor e cartão do Quem Sou Eu? do tamanho da área do jogo */
 body.in-game .role-deck{width:min(210px,58vw,max(110px,calc((var(--sbh) - 290px) * .75)))}
@@ -2119,6 +2134,308 @@ body.in-game .stage-body:has(> .qs-card) .answer-form .btn{flex:none}
 }
 /* A barra de rolagem não aparece e some: a largura do jogo não fica pulando. */
 body.in-game .stage > .stage-body{scrollbar-gutter:stable}
+/* ---------- Trilha da Galera ---------- */
+.tr{display:grid;gap:12px}
+.tr-board{display:grid;grid-template-columns:repeat(var(--cols),minmax(0,1fr));grid-template-rows:repeat(var(--rows),minmax(0,1fr));gap:4px;aspect-ratio:2/1;width:min(100%,max(260px,calc((var(--sbh,520px) - 250px) * 2)));margin-inline:auto}
+.tr-sq{position:relative;display:grid;place-items:center;min-width:0;border-radius:10px;background:var(--bg-2);border:1px solid var(--line);overflow:hidden}
+.tr-sq.is-sp{background:color-mix(in srgb,var(--g) 13%,var(--bg-2))}
+.tr-sq.is-end{background:color-mix(in srgb,var(--g) 30%,var(--bg-2));border-color:var(--g)}
+.tr-sq.has-me{box-shadow:inset 0 0 0 2px #fff}
+.tr-n{position:absolute;left:4px;top:2px;font-size:.58rem;font-style:normal;font-weight:700;color:var(--muted)}
+.tr-e{font-size:clamp(.85rem,2.6vmin,1.4rem);line-height:1}
+.tr-toks{position:absolute;right:2px;bottom:2px;left:2px;display:flex;flex-wrap:wrap-reverse;justify-content:flex-end;gap:1px}
+.tr-tok{display:grid;place-items:center;width:clamp(14px,2.7vmin,22px);aspect-ratio:1;border-radius:50%;background:var(--pc);font-size:clamp(9px,1.6vmin,13px);line-height:1;box-shadow:0 0 0 1.5px rgba(0,0,0,.55)}
+.tr-tok.is-me{box-shadow:0 0 0 2px #fff;z-index:1}
+.tr-more{align-self:center;padding:0 3px;border-radius:6px;background:rgba(0,0,0,.65);color:#fff;font-size:.58rem;font-weight:800}
+.tr-side{display:flex;flex-direction:column;gap:10px;min-width:0}
+.tr-roll{display:grid;justify-items:center;gap:4px;width:100%;padding:16px;border-radius:20px;background:linear-gradient(140deg,var(--g),var(--gl));color:#fff;font-size:2.4rem;line-height:1;box-shadow:0 14px 30px -12px var(--g);transition:transform .08s}
+.tr-roll b{font-size:1.05rem}
+.tr-roll:active{transform:scale(.97)}
+.tr-die{display:inline-grid;place-items:center;width:64px;height:64px;border-radius:16px;background:#fff;color:#111;font-size:2rem;font-weight:900;line-height:1;box-shadow:0 6px 0 rgba(0,0,0,.3)}
+.tr-die.sm{width:24px;height:24px;border-radius:7px;font-size:.85rem;box-shadow:0 2px 0 rgba(0,0,0,.3);vertical-align:middle}
+.tr-die.is-roll{animation:trRoll .6s cubic-bezier(.2,.8,.3,1)}
+@keyframes trRoll{from{transform:rotate(-540deg) scale(.3)}}
+@media (prefers-reduced-motion:reduce){.tr-die.is-roll{animation:none}}
+.tr-rolled{display:grid;justify-items:center;gap:6px;text-align:center}
+.tr-q-sub{display:flex;align-items:center;gap:6px;font-size:.85rem;color:var(--muted)}
+.tr-q{padding:12px 14px;font-size:clamp(.95rem,2.6vmin,1.15rem)}
+body.in-game .tr-opts,.tr-opts{margin:0;gap:6px}
+.tr-opts .qz-opt{min-height:42px;padding:6px 10px}
+.tr-ans{font-size:.9rem}
+.tr-mvs{display:grid;gap:4px}
+.tr-mv{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;align-items:center;gap:8px;padding:4px 10px 4px 4px;border-radius:12px;background:var(--bg-2);border:1px solid var(--line);font-size:.85rem}
+.tr-mv.is-me{border-color:var(--g)}
+.tr-mv-n{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+.tr-mv-x{display:flex;align-items:center;gap:4px}
+.tr-mv-to{min-width:26px;text-align:right}
+@media (max-width:759px){ .tr-mv:nth-child(n+6){display:none} }
+@media (min-width:760px) and (min-aspect-ratio:5/4){
+  .tr{grid-template-columns:minmax(0,1.4fr) minmax(250px,1fr);align-items:start;column-gap:20px}
+  .tr-board{width:100%;max-width:calc((var(--sbh,520px) - 12px) * 2)}
+}
+
+/* ---------- Feira do Rolo ---------- */
+.fr{display:grid;gap:14px}
+.fr-me,.fr-market{display:grid;gap:10px;align-content:start;min-width:0}
+.fr-sum{font-size:.92rem;color:var(--muted)}
+.fr-sum b{color:var(--ink);font-size:1.2rem}
+.fr-row{display:flex;flex-wrap:wrap;gap:6px}
+.fr-card{display:grid;justify-items:center;gap:2px;width:76px;padding:7px 4px 6px;border-radius:14px;background:#FFF7ED;color:#431407;border:2px solid transparent;box-shadow:0 3px 0 rgba(0,0,0,.3);transition:transform .12s,box-shadow .12s}
+.fr-card:disabled{cursor:default}
+.fr-card.sel{border-color:var(--g);transform:translateY(-4px);box-shadow:0 0 0 3px color-mix(in srgb,var(--g) 45%,transparent),0 6px 0 rgba(0,0,0,.3)}
+.fr-e{font-size:1.7rem;line-height:1.1}
+.fr-n{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.66rem;font-weight:700;line-height:1.2}
+.fr-v{padding:0 6px;border-radius:999px;background:#FED7AA;color:#9A3412;font-size:.72rem;font-weight:900;line-height:1.5}
+.fr-v.neg{background:#FECACA;color:#991B1B}
+.fr-v.hi{background:#BBF7D0;color:#166534}
+.fr-v.unk{background:#E5E7EB;color:#6B7280}
+.fr-help{margin:0}
+.fr-title{font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.fr-stall{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:6px 8px;padding:8px;border-radius:14px;background:var(--bg-2);border:1px solid var(--line)}
+.fr-stall > b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.85rem}
+.fr-stall .fr-row{grid-column:1 / -1;gap:5px}
+.fr-stall .fr-card{width:62px;padding:5px 3px}
+.fr-stall .fr-e{font-size:1.35rem}
+.fr-offer{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:6px 10px;padding:10px;border-radius:16px;background:color-mix(in srgb,var(--g) 14%,var(--bg-2));border:1px solid var(--g);animation:pickerIn .2s ease}
+.fr-of-txt{font-size:.85rem;line-height:1.35}
+.fr-of-get{display:block}
+.fr-of-txt q{display:block;font-style:italic;color:var(--muted)}
+.fr-of-btns{grid-column:1 / -1;display:flex;gap:8px}
+.fr-of-btns .btn{flex:1}
+.fr-t{color:var(--muted)}
+.fr-out{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;padding:8px 12px;border-radius:14px;border:1px dashed var(--line-2);font-size:.85rem}
+.fr-compose{display:grid;gap:8px;padding:10px;border-radius:16px;background:var(--bg-2);border:1px solid var(--line-2)}
+.fr-lines{display:flex;flex-wrap:wrap;gap:5px}
+.fr-lines button{padding:4px 10px;border-radius:999px;border:1px solid var(--line-2);color:var(--muted);font-size:.75rem;font-weight:600}
+.fr-lines button.on{background:var(--g);border-color:var(--g);color:#fff}
+.fr-log{display:grid;gap:3px;font-size:.78rem;color:var(--muted)}
+.fr-mini{display:flex;flex-wrap:wrap;gap:4px 8px;margin-top:3px}
+.fr-mini span{display:inline-flex;align-items:center;gap:2px;font-size:.95rem}
+/* Celular: a banca vira fileiras que rolam de lado, e a oferta (a sua e as que chegam) fica grudada na tela */
+@media (max-width:759px), (max-aspect-ratio:5/4){
+  .fr-stall{grid-template-columns:auto minmax(0,1fr);padding:6px 8px}
+  .fr-stall .fr-row{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding:4px 2px 4px}
+  .fr-stall .fr-row::-webkit-scrollbar{display:none}
+  .fr-stall .fr-card{flex:none;width:58px}
+  .fr-hand{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding:4px 2px}
+  .fr-hand .fr-card{flex:none;width:64px}
+  .fr-me{order:1} .fr > .fr-help{order:2} .fr-market{order:3} .fr-compose{order:4}
+  .fr-incs,.fr-compose{position:sticky;z-index:2}
+  .fr-incs{top:0;display:grid;gap:6px}
+  .fr-incs .fr-offer{background:color-mix(in srgb,var(--g) 22%,var(--surface-solid));box-shadow:0 10px 30px -10px rgba(0,0,0,.9)}
+  .fr-compose{bottom:0;gap:6px;padding:8px 10px;background:var(--surface-solid);box-shadow:0 -10px 30px -10px rgba(0,0,0,.9)}
+  .fr-lines{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+  .fr-lines::-webkit-scrollbar{display:none}
+  .fr-lines button{flex:none}
+}
+.fr-incs{display:grid;gap:8px}
+@media (min-width:760px) and (min-aspect-ratio:5/4){
+  .fr{grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);column-gap:20px;align-items:start;align-content:start}
+  .fr-incs,.fr-me,.fr-compose,.fr > .fr-help{grid-column:1}
+  .fr-market{grid-column:2;grid-row:1 / span 6}
+  body.in-game .fr-market{max-height:calc(var(--sbh,520px) - 16px);overflow-y:auto;overscroll-behavior:contain;padding-right:4px;scrollbar-width:thin}
+}
+
+/* ---------- Terra de Ninguém ---------- */
+.tn{display:grid;gap:8px;justify-items:center}
+.tn-bar{width:100%;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:4px 12px;padding:6px 12px;border-radius:14px;background:var(--surface-solid);border:1px solid var(--line);font-size:.88rem}
+.tn-bar small{color:var(--muted)}
+.tn-grid{display:grid;grid-template-columns:repeat(var(--side),minmax(0,1fr));gap:2px;width:min(100%,max(220px,calc(var(--sbh,520px) - 110px)));aspect-ratio:1;padding:4px;border-radius:14px;background:rgba(20,83,45,.25);border:1px solid var(--line)}
+.tn-c{display:grid;place-items:center;min-width:0;aspect-ratio:1;padding:0;border-radius:4px;background:rgba(255,255,255,.06);font-size:clamp(9px,calc(var(--sbh,520px) / var(--side) * .42),20px);line-height:1;transition:transform .1s}
+.tn-c:disabled{cursor:default}
+.tn-c.ok{background:rgba(132,204,22,.2);box-shadow:inset 0 0 0 1px rgba(132,204,22,.5)}
+@media (hover:hover){ .tn-c.ok:hover{background:rgba(132,204,22,.45)} }
+.tn-c.is-me{background:var(--pc);box-shadow:inset 0 0 0 2px #fff}
+.tn-c.is-o{background:color-mix(in srgb,var(--pc) 72%,#000)}
+.tn-c.is-x{background:#1F2937;color:#6B7280;font-size:.65em}
+.tn-c.is-pick{background:#fff;box-shadow:0 0 0 2px var(--g);animation:tnPulse .7s ease-in-out infinite alternate}
+.tn-c.is-hit{animation:tnHit .6s ease}
+@keyframes tnPulse{to{transform:scale(.8)}}
+@keyframes tnHit{30%{transform:scale(1.4);background:#EF4444}}
+.tn-score{display:flex;flex-wrap:wrap;justify-content:center;gap:6px}
+.tn-score span{display:flex;align-items:center;gap:5px;padding:2px 9px 2px 2px;border-radius:999px;background:var(--surface-solid);font-size:.78rem}
+.tn-score span.is-me{box-shadow:inset 0 0 0 1px var(--g)}
+.tn-score small{color:var(--muted)}
+@media (min-width:760px) and (min-aspect-ratio:5/4){
+  .tn{grid-template-columns:min(calc(var(--sbh,520px) - 14px),62%) minmax(220px,1fr);grid-template-areas:"grid bar" "grid score";grid-template-rows:auto 1fr;justify-items:stretch;align-items:start;column-gap:20px}
+  .tn-grid{grid-area:grid;width:100%}
+  .tn-bar{grid-area:bar;flex-direction:column;align-items:flex-start}
+  .tn > .tn-score{grid-area:score;justify-content:flex-start}
+}
+
+/* ---------- Pilha no Alvo ---------- */
+.pl{display:grid;gap:10px}
+.pl-target{display:flex;align-items:baseline;justify-content:center;gap:8px}
+.pl-target span{font-size:1.6rem}
+.pl-target b{font-size:clamp(2.2rem,8vmin,3.2rem);font-weight:900;line-height:1;color:var(--g)}
+.pl-target small{color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.08em;font-size:.72rem}
+.pl-me{display:grid;gap:10px;padding:12px;border-radius:18px;background:var(--bg-2);border:1px solid var(--line-2)}
+.pl-me.is-bust{border-color:#EF4444;background:rgba(239,68,68,.08)}
+.pl-me.is-stop{border-color:var(--g)}
+.pl-cards{display:flex;flex-wrap:wrap;justify-content:center;gap:5px;min-height:62px;align-items:center}
+.pl-card{display:grid;place-items:center;width:42px;height:58px;border-radius:9px;background:#fff;color:#111;font-size:1.3rem;font-weight:900;box-shadow:0 3px 0 rgba(0,0,0,.3);animation:plIn .25s cubic-bezier(.2,.8,.3,1)}
+.pl-card.is-sp{background:linear-gradient(150deg,#FDE68A,#F59E0B);font-size:1rem}
+@keyframes plIn{from{transform:translateY(-14px) rotate(-12deg);opacity:0}}
+@media (prefers-reduced-motion:reduce){.pl-card{animation:none}}
+.pl-tot{display:grid;grid-template-columns:auto auto 1fr;align-items:center;gap:8px}
+.pl-tot b{font-size:1.8rem;font-weight:900;line-height:1}
+.pl-tot span:not(.pl-bar){color:var(--muted);font-size:.85rem}
+.pl-bar{position:relative;height:10px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden}
+.pl-bar i{position:absolute;inset:0 auto 0 0;border-radius:inherit;background:var(--g)}
+.pl-bar.bust i{background:#EF4444}
+.pl-note{font-size:.85rem;color:#FDE68A;text-align:center}
+.pl-btns{display:grid;grid-template-columns:1.4fr 1fr;gap:8px}
+.pl-list{display:grid;gap:4px}
+.pl-o{display:grid;grid-template-columns:auto minmax(0,7rem) 1fr auto 1.4em;align-items:center;gap:8px;padding:4px 10px 4px 4px;border-radius:12px;background:var(--bg-2);border:1px solid var(--line);font-size:.85rem}
+.pl-o.is-bust{opacity:.55}
+.pl-on{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+.pl-st{text-align:center}
+@media (min-width:760px) and (min-aspect-ratio:5/4){
+  .pl{grid-template-columns:minmax(0,1.2fr) minmax(220px,1fr);grid-template-rows:auto 1fr;column-gap:20px;align-items:start}
+  .pl-target{grid-column:1}
+  .pl > .pl-me,.pl > .wait{grid-column:1}
+  .pl-list{grid-column:2;grid-row:1 / span 2;max-height:calc(var(--sbh,520px) - 16px);overflow-y:auto}
+}
+
+/* ---------- Sino dos Pares ---------- */
+.sn{display:grid;gap:10px;justify-items:center;text-align:center}
+.sn-status{min-height:1.6em;font-size:.95rem}
+.sn-status.is-alarm{color:#FDE68A;animation:snShake .35s ease-in-out infinite alternate}
+@keyframes snShake{to{transform:scale(1.06)}}
+.sn-hand{display:flex;justify-content:center;gap:8px}
+.sn-card{display:grid;place-items:center;width:clamp(58px,17vw,84px);aspect-ratio:5/7;border-radius:14px;background:#fff;font-size:clamp(1.8rem,7vw,2.6rem);box-shadow:0 4px 0 rgba(0,0,0,.3);transition:transform .1s}
+.sn-card:not(:disabled):active{transform:translateY(-8px) rotate(6deg)}
+.sn-card:disabled{cursor:default}
+.sn-card.is-wait{background:rgba(255,255,255,.12);color:var(--muted);font-size:1.4rem}
+.sn-bell{display:grid;justify-items:center;gap:2px;width:min(100%,320px);padding:12px;border-radius:20px;background:var(--bg-2);border:2px solid var(--line-2);font-size:2rem;line-height:1}
+.sn-bell b{font-size:.95rem}
+.sn-bell.is-ready{border-color:var(--g);background:color-mix(in srgb,var(--g) 18%,var(--bg-2));animation:snShake .4s ease-in-out infinite alternate}
+.sn-bell.is-go{border-color:#FDE68A;background:linear-gradient(140deg,#F59E0B,#EF4444);color:#fff;animation:snShake .2s ease-in-out infinite alternate}
+.sn-bell:disabled{opacity:.6;cursor:default;animation:none}
+.sn-ring{display:flex;flex-wrap:wrap;justify-content:center;gap:6px}
+.sn-p{position:relative;opacity:.75}
+.sn-p.is-me{opacity:1}
+.sn-p.is-rang{opacity:1;filter:drop-shadow(0 0 6px #FDE68A)}
+.sn-p small{position:absolute;right:-6px;top:-8px;font-size:.8rem}
+.sn-mini{letter-spacing:2px}
+
+/* ---------- Passa-Passa ---------- */
+.pp{display:grid;gap:10px}
+.pp-ask{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:4px 10px}
+.pp-ask small,.pp-title{color:var(--muted);font-size:.78rem}
+.pp-title{font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+.pp-row{display:flex;flex-wrap:wrap;gap:8px}
+.pp-pick{padding:0;border-radius:14px;transition:transform .1s}
+.pp-pick:not(:disabled):hover,.pp-pick:not(:disabled):focus-visible{transform:translateY(-5px)}
+.pp-pick:disabled{opacity:.5;cursor:default}
+.pp-card{display:grid;place-items:center;width:62px;aspect-ratio:5/7;border-radius:12px;background:#fff;border:5px solid var(--cc);font-size:1.9rem;box-shadow:0 3px 0 rgba(0,0,0,.3)}
+.pp-card.is-star{border-color:#F59E0B;background:linear-gradient(150deg,#FEF3C7,#FDE68A)}
+.pp-row.sm{gap:4px}
+.pp-row.sm .pp-card{width:34px;border-width:3px;border-radius:8px;font-size:1.05rem}
+.pp-combos{display:flex;flex-wrap:wrap;gap:6px}
+.pp-combos > span:not(.hint){padding:3px 10px;border-radius:999px;background:color-mix(in srgb,var(--g) 18%,var(--bg-2));font-size:.82rem}
+.pp-res .res-sub{white-space:normal}
+@media (max-width:420px){ .pp-card{width:48px;font-size:1.5rem;border-width:4px} }
+
+/* ---------- Ilha do Tesouro ---------- */
+.il{display:grid;gap:8px;justify-items:center}
+.il-bar{width:100%;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:4px 12px;padding:6px 12px;border-radius:14px;background:var(--surface-solid);border:1px solid var(--line);font-size:.88rem}
+.il-bar small{color:var(--muted)}
+.il-leg{display:flex;align-items:center;gap:4px}
+.il-leg i{display:inline-block;width:10px;height:10px;border-radius:3px}
+.il-grid{display:grid;grid-template-columns:repeat(var(--side),minmax(0,1fr));gap:2px;width:min(100%,max(220px,calc(var(--sbh,520px) - 110px)));aspect-ratio:1;padding:5px;border-radius:18px;background:radial-gradient(circle at 50% 45%,#FDE68A 0 45%,#F59E0B 70%,#0EA5E9 71%);box-shadow:0 0 0 2px rgba(14,165,233,.5)}
+.il-c{display:grid;place-items:center;min-width:0;aspect-ratio:1;padding:0;border-radius:5px;background:rgba(120,53,15,.28);color:#fff;font-size:clamp(9px,calc(var(--sbh,520px) / var(--side) * .4),18px);font-weight:900;line-height:1}
+button.il-c:not(:disabled):hover{background:rgba(120,53,15,.5)}
+button.il-c:disabled{cursor:default}
+.il-c.is-pick{background:#fff;box-shadow:0 0 0 2px var(--g);animation:tnPulse .7s ease-in-out infinite alternate}
+.il-c.is-dug{background:#3F2A14}
+.il-c.is-me{box-shadow:inset 0 0 0 2px #fff}
+.il-c.is-gold{background:#FBBF24}
+.il-c.is-trap{background:#7F1D1D}
+.il-c.is-hidden{background:rgba(0,0,0,.25);opacity:.7}
+.il-c.h1,.il-leg .h1{background:#DC2626}
+.il-c.h2,.il-leg .h2{background:#EA580C}
+.il-c.h3,.il-leg .h3{background:#CA8A04}
+.il-c.h4,.il-leg .h4{background:#0369A1}
+@media (min-width:760px) and (min-aspect-ratio:5/4){
+  .il{grid-template-columns:min(calc(var(--sbh,520px) - 14px),62%) minmax(220px,1fr);grid-template-areas:"grid bar";justify-items:stretch;align-items:start;column-gap:20px}
+  .il-grid{grid-area:grid;width:100%}
+  .il-bar{grid-area:bar;flex-direction:column;align-items:flex-start}
+}
+
+/* ---------- Vaza Maluca ---------- */
+.vz{display:grid;gap:10px}
+.vz-trump{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:4px 10px}
+.vz-trump b{font-size:1.6rem;line-height:1}
+.vz-trump small{width:100%;text-align:center;color:var(--muted)}
+.vz-table{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;padding:12px;border-radius:22px;background:radial-gradient(ellipse at center,#4C1D95 0%,#2E1065 75%);box-shadow:inset 0 0 0 3px rgba(255,255,255,.08)}
+.vz-seat{display:grid;justify-items:center;gap:3px;min-width:74px;padding:6px;border-radius:14px;background:rgba(0,0,0,.25);font-size:.78rem;text-align:center}
+.vz-seat b{max-width:84px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vz-seat small{color:rgba(255,255,255,.6)}
+.vz-seat.is-me{box-shadow:inset 0 0 0 1px rgba(255,255,255,.5)}
+.vz-seat.is-win{background:rgba(250,204,21,.25);box-shadow:inset 0 0 0 2px #FACC15}
+.vz-st{min-height:42px;display:grid;place-items:center;font-size:1rem}
+.vz-card{display:grid;justify-items:center;align-content:center;gap:2px;width:52px;aspect-ratio:5/7;border-radius:10px;background:#fff;color:#111;box-shadow:0 3px 0 rgba(0,0,0,.3);line-height:1}
+.vz-card b{font-size:1.35rem;font-weight:900}
+.vz-card i{font-style:normal;font-size:1.1rem}
+.vz-card[data-s="0"] b{color:#DC2626}.vz-card[data-s="1"] b{color:#2563EB}.vz-card[data-s="2"] b{color:#16A34A}.vz-card[data-s="3"] b{color:#CA8A04}
+.vz-card.sm{width:34px;border-radius:7px}
+.vz-card.sm b{font-size:.95rem}
+.vz-card.sm i{font-size:.75rem}
+.vz-bar{text-align:center;font-size:.92rem}
+.vz-hand{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+.vz-pick{padding:0;border-radius:12px;transition:transform .1s}
+.vz-pick.is-trump .vz-card{box-shadow:0 0 0 3px #FACC15,0 3px 0 rgba(0,0,0,.3)}
+.vz-pick.on{transform:translateY(-10px)}
+.vz-pick:not(:disabled):hover{transform:translateY(-5px)}
+.vz-pick:disabled:not(.on){opacity:.55;cursor:default}
+.vz-acts{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px}
+.vz-raise{animation:snShake .5s ease-in-out infinite alternate}
+
+/* ---------- Ponte que Cai ---------- */
+.pt{display:grid;gap:12px}
+.pt-bridge{display:grid;gap:3px;width:min(100%,260px);margin-inline:auto;padding:6px 10px;border-radius:16px;background:linear-gradient(#0C4A6E,#082F49)}
+.pt-row{display:grid;grid-template-columns:18px 1fr 1fr;gap:6px;align-items:center}
+.pt-row > i{font-style:normal;font-size:.65rem;color:rgba(255,255,255,.5);text-align:right}
+.pt-t{position:relative;display:flex;align-items:center;justify-content:center;gap:2px;height:clamp(22px,calc((var(--sbh,520px) - 120px) / 9),40px);border-radius:7px;background:repeating-linear-gradient(90deg,#A16207 0 10px,#92400E 10px 12px);box-shadow:0 2px 0 rgba(0,0,0,.4);font-size:.85rem}
+.pt-t.is-now{box-shadow:0 0 0 2px #FDE68A,0 2px 0 rgba(0,0,0,.4)}
+.pt-t.is-safe{background:repeating-linear-gradient(90deg,#16A34A 0 10px,#15803D 10px 12px)}
+.pt-t.is-broke{background:transparent;box-shadow:inset 0 0 0 1px rgba(255,255,255,.15)}
+.pt-t.is-fake{box-shadow:inset 0 0 0 2px #EF4444}
+.pt-av{display:grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--pc);font-size:.7rem;box-shadow:0 0 0 1.5px rgba(0,0,0,.5)}
+.pt-t small{font-size:.6rem;font-weight:800}
+.pt-end,.pt-start{text-align:center;font-size:.72rem;font-weight:800;color:rgba(255,255,255,.6)}
+.pt-end{font-size:1rem}
+.pt-side{display:grid;gap:10px;align-content:start}
+.pt-msg{text-align:center}
+.pt-msg.is-ok{color:#86EFAC;font-weight:800}
+.pt-msg.is-bad{color:#FCA5A5;font-weight:800}
+.pt-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pt-hints{text-align:center;font-size:.9rem;color:#FDE68A}
+.pt-people{display:flex;flex-wrap:wrap;justify-content:center;gap:6px}
+.pt-p{position:relative}
+.pt-p.is-down{opacity:.45}
+.pt-p small{position:absolute;right:-6px;bottom:-4px;padding:0 4px;border-radius:999px;background:var(--surface-solid);font-size:.62rem;font-weight:800}
+@media (min-width:760px) and (min-aspect-ratio:5/4){
+  .pt{grid-template-columns:minmax(220px,300px) minmax(0,1fr);align-items:start;column-gap:24px}
+  .pt-bridge{width:100%}
+}
+
+/* ---------- Linha de 4 Gigante ---------- */
+.l4{display:grid;gap:8px;justify-items:center}
+.l4-bar{width:100%;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:4px 12px;padding:6px 12px;border-radius:14px;background:var(--surface-solid);border:1px solid var(--line);font-size:.88rem}
+.l4-bar small{color:#FDE68A}
+.l4-wait{display:inline-block;width:46px;height:6px;border-radius:999px;background:rgba(255,255,255,.12);overflow:hidden;vertical-align:middle}
+.l4-wait i{display:block;height:100%;background:var(--g);animation:l4Wait linear forwards}
+@keyframes l4Wait{from{width:0}to{width:100%}}
+.l4-grid{display:grid;grid-template-columns:repeat(var(--cols),minmax(0,1fr));gap:2px;width:min(100%,calc((var(--sbh,520px) - 100px) * var(--cols) / var(--rows)));padding:5px;border-radius:14px;background:#1E3A8A;box-shadow:inset 0 0 0 2px rgba(255,255,255,.08)}
+.l4-c{display:grid;place-items:center;min-width:0;aspect-ratio:1;padding:0;border-radius:50%;background:rgba(0,0,0,.4);font-size:clamp(8px,calc((var(--sbh,520px) - 100px) / var(--rows) * .5),20px);line-height:1}
+button.l4-c:not(:disabled):hover{background:rgba(255,255,255,.2)}
+.l4-c:disabled{cursor:default}
+.l4-c.is-me{background:var(--pc);box-shadow:inset 0 0 0 2px #fff}
+.l4-c.is-o{background:color-mix(in srgb,var(--pc) 75%,#000)}
+.l4-c.is-pop{animation:l4Pop .6s ease}
+@keyframes l4Pop{40%{transform:scale(1.5);background:#FDE68A}}
 </style>
 </head>
 <body>
@@ -4578,7 +4895,8 @@ Games.digita = {
         <span class="ty-track"><i style="width:${(d.prog[id] || 0) * 10}%"></i></span><b class="ty-pos">${k >= 0 ? `${k + 1}º` : ''}</b></li>`;
     }).join('');
   },
-  targetHTML(text) { return [...text].map((ch, i) => `<span class="ty-c" data-i="${i}">${ch === ' ' ? '&nbsp;' : esc(ch)}</span>`).join(''); },
+  // <wbr> depois de cada espaço: com só &nbsp; a frase virava uma linha inteira e passava da tela do celular.
+  targetHTML(text) { return [...text].map((ch, i) => ch === ' ' ? `<span class="ty-c" data-i="${i}">&nbsp;</span><wbr>` : `<span class="ty-c" data-i="${i}">${esc(ch)}</span>`).join(''); },
   doneHTML(g, me) {
     const d = g.data, k = d.order.indexOf(me);
     return `<p class="dw-got" id="tyBox">${icon('check')} Terminou em ${(d.fin[me] / 1000).toFixed(1).replace('.', ',')} s (${tyWpm(d.text.length, d.fin[me])} palavras por minuto). Você foi o ${k + 1}º.</p>`;
@@ -5563,7 +5881,7 @@ GAME_ORDER.push('proibida', 'telefone', 'mapa', 'lobisomem');
 Games.proibida.secret = g => g.phase === 'play' ? [g.data.card.w] : [];
 
 // Categorias para o filtro do lobby.
-const GAME_CATS = { palavras: 'Palavras', desenho: 'Desenho', saber: 'Conhecimento', blefe: 'Blefe', social: 'Social', rapidez: 'Rapidez' };
+const GAME_CATS = { palavras: 'Palavras', desenho: 'Desenho', saber: 'Conhecimento', blefe: 'Blefe', social: 'Social', rapidez: 'Rapidez', cartas: 'Cartas', tabuleiro: 'Tabuleiro' };
 Object.entries({ mane: 'saber', provavel: 'social', impostor: 'blefe', geo: 'saber', stop: 'palavras', fato: 'saber', desenho: 'desenho', termo: 'palavras',
   reflexo: 'rapidez', emoji: 'palavras', mente: 'social', bomba: 'rapidez', mentira: 'blefe', legenda: 'social', preco: 'saber', linha: 'saber',
   digita: 'rapidez', proibida: 'palavras', telefone: 'desenho', mapa: 'saber', lobisomem: 'blefe' }).forEach(([id, c]) => { if (Games[id]) Games[id].cat = c; });
@@ -6873,6 +7191,1131 @@ Object.assign(Games.quemsou, { cat: 'social' });
 Object.assign(Games.memoria, { cat: 'rapidez' });
 Object.assign(Games.cegas, { cat: 'desenho' });
 
+/* ---------- 35. Trilha da Galera (tabuleiro) ---------- */
+// 31 casas: 0 é a largada e 30 a chegada. Cada rodada tem 3 dados; depois de cada dado vem uma pergunta do Quiz.
+const TR_LEN = 30, TR_COLS = 8, TR_STEPS = 3;
+const TR_SQ = { 4: '🚀', 7: '⭐', 9: '🕳️', 12: '🎁', 14: '🔁', 17: '🚀', 19: '⭐', 21: '🕳️', 23: '🎁', 25: '🔁', 27: '🕳️', 28: '⭐' };
+const TR_FX = { '🚀': 'Atalho: anda mais 3', '🕳️': 'Buraco: volta 3', '⭐': 'Estrela: +1 ponto', '🎁': 'Presente: +2 pontos', '🔁': 'Troca de lugar com quem está logo à frente' };
+const trRoll = () => 1 + Math.floor(Math.random() * 6);
+const trProg = (g, id) => ((g.laps || {})[id] || 0) * (TR_LEN + 1) + ((g.pos || {})[id] || 0);
+function trMove(g, s) {
+  const d = g.data, q = QUIZ_Q[d.qi], right = d.ord.indexOf(q.a), pts = {};
+  const ids = Object.keys(d.rolls).filter(id => s.players[id] && inRoster(g, id));
+  ids.forEach(id => {
+    const a = d.answers[id], bonus = !a ? 0 : a.v === right ? 2 : -1, from = g.pos[id] || 0;
+    let to = Math.max(0, from + d.rolls[id] + bonus), fx = '', fin = false;
+    if (to < TR_LEN) {
+      fx = TR_SQ[to] || '';
+      if (fx === '🚀') to += 3; else if (fx === '🕳️') to = Math.max(0, to - 3);
+      else if (fx === '⭐') add(pts, id, 1); else if (fx === '🎁') add(pts, id, 2);
+    }
+    if (to >= TR_LEN) {
+      fin = true; to = 0; add(pts, id, 5); add(g.laps, id, 1);
+      addMoment(s, { k: 'trail', pid: id, n: g.laps[id], sc: g.laps[id] + (s.players[id].isBot ? 0 : .5) });
+    }
+    g.pos[id] = to;
+    d.moves[id] = { from, roll: d.rolls[id], q: bonus, to, fx, fin };
+  });
+  // 🔁 só depois que todo mundo andou: troca com quem ficou logo à frente.
+  ids.filter(id => d.moves[id].fx === '🔁' && !d.moves[id].fin).forEach(id => {
+    const mine = g.pos[id], ahead = g.roster.filter(o => o !== id && s.players[o] && (g.pos[o] || 0) > mine).sort((a, b) => g.pos[a] - g.pos[b])[0];
+    if (!ahead) return;
+    g.pos[id] = g.pos[ahead]; g.pos[ahead] = mine;
+    d.moves[id].sw = ahead; d.moves[id].to = g.pos[id];
+    if (d.moves[ahead]) d.moves[ahead].to = mine;
+  });
+  updateScores(s, pts);
+}
+function trBoard(g, s, me) {
+  const rows = Math.ceil((TR_LEN + 1) / TR_COLS), at = {};
+  g.roster.forEach(id => { if (s.players[id]) (at[g.pos[id] || 0] = at[g.pos[id] || 0] || []).push(id); });
+  let cells = '';
+  for (let i = 0; i <= TR_LEN; i++) {
+    // Caminho em zigue-zague: uma fileira vai para a direita, a de baixo volta.
+    const r = Math.floor(i / TR_COLS), c = r % 2 ? TR_COLS - 1 - (i % TR_COLS) : i % TR_COLS;
+    const who = at[i] || [], has = who.includes(me), ord = has ? [me, ...who.filter(x => x !== me)] : who;
+    const toks = ord.slice(0, 3).map(id => `<span class="tr-tok ${id === me ? 'is-me' : ''}" style="--pc:${s.players[id].color}">${esc(s.players[id].avatar || '🙂')}</span>`).join('') + (who.length > 3 ? `<span class="tr-more">+${who.length - 3}</span>` : '');
+    const e = i === 0 ? '🏁' : i === TR_LEN ? '🏆' : TR_SQ[i] || '';
+    cells += `<div class="tr-sq ${TR_SQ[i] ? 'is-sp' : ''} ${i === 0 || i === TR_LEN ? 'is-end' : ''} ${has ? 'has-me' : ''}" style="grid-row:${r + 1};grid-column:${c + 1}" title="${esc(TR_FX[e] || 'Casa ' + i)}">
+      <i class="tr-n">${i}</i>${e ? `<span class="tr-e" aria-hidden="true">${e}</span>` : ''}<span class="tr-toks">${toks}</span></div>`;
+  }
+  return `<div class="tr-board" style="--cols:${TR_COLS};--rows:${rows}">${cells}</div>`;
+}
+Games.trilha = {
+  id: 'trilha', name: 'Trilha da Galera', tag: 'Corrida de tabuleiro', icon: 'dice', color: '#22C55E', lip: '#15803D', min: 1,
+  how: `Todo mundo rola o dado ao mesmo tempo e responde uma pergunta: acertou, anda mais 2; errou, volta 1. Cada rodada tem ${TR_STEPS} dados. Casas especiais: 🚀 atalho (+3 casas), 🕳️ buraco (volta 3), ⭐ +1 ponto, 🎁 +2 pontos e 🔁 troca de lugar com quem está logo à frente. Cruzar a chegada vale +5 e começa outra volta. No fim da rodada, os 3 mais adiantados ganham +3, +2 e +1.`,
+  first: 'roll',
+  init(g) {
+    g.pos = g.pos || {}; g.laps = g.laps || {};
+    g.roster.forEach(id => { if (!(id in g.pos)) g.pos[id] = 0; });
+    g.data = { step: 0, rolls: {}, qi: 0, ord: [0, 1, 2, 3], answers: {}, moves: {} };
+  },
+  phases: {
+    roll: { label: 'Role o dado', dur: 10, bot: [1, 5], next: 'quiz', allIn: (g, s) => active(g, s).every(id => id in g.data.rolls), enter(g) {
+      const d = g.data;
+      d.step++; d.rolls = {}; d.answers = {}; d.moves = {};
+      d.qi = drawItem(g, QUIZ_Q); d.ord = shuffle([0, 1, 2, 3]);
+    } },
+    quiz: { label: 'Pergunta da casa', dur: 15, bot: [2, 11], next: 'move', allIn: (g, s) => active(g, s).every(id => id in g.data.answers), enter(g, s) {
+      // Quem não rolou a tempo rola automaticamente.
+      active(g, s).forEach(id => { if (!(id in g.data.rolls)) g.data.rolls[id] = trRoll(); });
+    } },
+    move: { label: 'Andando…', dur: 6, next: g => g.data.step < TR_STEPS ? 'roll' : 'reveal', enter(g, s) { trMove(g, s); } },
+    reveal: { label: 'Fim da rodada', dur: 10, enter(g, s) {
+      // Os 3 mais adiantados (empate divide a mesma posição) ganham +3, +2 e +1.
+      const ids = g.roster.filter(id => s.players[id]), d = {};
+      const best = [...new Set(ids.map(id => trProg(g, id)).filter(v => v > 0))].sort((a, b) => b - a).slice(0, 3);
+      ids.forEach(id => { const k = best.indexOf(trProg(g, id)); if (k >= 0) add(d, id, 3 - k); });
+      updateScores(s, d);
+    } },
+  },
+  handle(g, s, pid, a) {
+    const d = g.data;
+    if (!inRoster(g, pid)) return false;
+    if (g.phase === 'roll' && a.type === 'roll' && !(pid in d.rolls)) { d.rolls[pid] = trRoll(); return true; }
+    if (g.phase === 'quiz' && a.type === 'submit' && !(pid in d.answers)) {
+      const v = +a.value;
+      if (!(v >= 0 && v < 4)) return false;
+      d.answers[pid] = { v, t: now() - g.phaseStart }; return true;
+    }
+    return false;
+  },
+  done(g, pid) { return g.phase === 'roll' ? pid in g.data.rolls : g.phase === 'quiz' ? pid in g.data.answers : false; },
+  bot(g) {
+    if (g.phase === 'roll') return { type: 'roll' };
+    if (g.phase !== 'quiz') return null;
+    const right = g.data.ord.indexOf(QUIZ_Q[g.data.qi].a);
+    return { type: 'submit', value: Math.random() < botP(.6) ? right : pick([0, 1, 2, 3].filter(k => k !== right)) };
+  },
+  ui: {
+    roll() { buzz(30); dispatch({ type: 'roll' }); },
+    pick(el) { dispatch({ type: 'submit', value: +el.dataset.v }); },
+  },
+  view(g, s, me) {
+    const d = g.data, can = inRoster(g, me), q = QUIZ_Q[d.qi], L = 'ABCD', right = d.ord.indexOf(q.a);
+    let side;
+    if (g.phase === 'roll') {
+      const r = d.rolls[me];
+      side = !can ? waitCard('A galera está rolando o dado', 'Você entra na próxima rodada')
+        : r ? `<div class="tr-rolled"><span class="tr-die is-roll">${r}</span><p>Você tirou <b>${r}</b>!</p><p class="hint">Agora vem a pergunta: acerte e ande mais 2.</p></div>`
+        : `<button type="button" class="tr-roll" data-act="g:roll" data-autofocus><span aria-hidden="true">🎲</span><b>Rolar o dado</b></button><p class="hint center">Dado ${d.step} de ${TR_STEPS} desta rodada · você está na casa ${g.pos[me] || 0}</p>`;
+    } else if (g.phase === 'quiz') {
+      const mine = d.answers[me], r = d.rolls[me];
+      side = `<p class="tr-q-sub">${r ? `<span class="tr-die sm">${r}</span> Acertou: anda ${r + 2} · errou: anda ${Math.max(0, r - 1)}` : 'Pergunta da casa'}</p>
+        <blockquote class="ff-quote tr-q">${esc(q.q)}</blockquote>
+        <div class="qz-opts tr-opts">${d.ord.map((o, k) => `<button class="qz-opt ${mine && mine.v === k ? 'on' : ''}" data-act="g:pick" data-v="${k}" ${mine || !can ? 'disabled' : ''}><span class="qz-l">${L[k]}</span><span>${esc(q.o[o])}</span></button>`).join('')}</div>`;
+    } else if (g.phase === 'move') {
+      const ids = Object.keys(d.moves).filter(id => s.players[id]).sort((a, b) => (b === me) - (a === me) || trProg(g, b) - trProg(g, a));
+      const line = id => {
+        const m = d.moves[id], p = s.players[id];
+        const bits = [`<span class="tr-die sm">${m.roll}</span>`, m.q > 0 ? '<span class="tag tag-good">+2</span>' : m.q < 0 ? '<span class="tag tag-bad">−1</span>' : '',
+          m.fx ? `<span title="${esc(TR_FX[m.fx])}">${m.fx}</span>` : '', m.fin ? '<b>🏆 chegou! +5</b>' : '', m.sw && s.players[m.sw] ? `🔁 ${esc(nameOf(s, m.sw))}` : ''].filter(Boolean).join(' ');
+        return `<li class="tr-mv ${id === me ? 'is-me' : ''}">${avatar(p, 'sm')}<span class="tr-mv-n">${id === me ? 'Você' : esc(p.name)}</span><span class="tr-mv-x">${bits}</span><b class="tr-mv-to">${m.fin ? '🏁' : m.to}</b></li>`;
+      };
+      side = `<p class="tr-ans">Resposta: <b>${L[right]} · ${esc(q.o[q.a])}</b></p><ul class="tr-mvs">${ids.slice(0, 8).map(line).join('')}</ul>${ids.length > 8 ? `<p class="hint center">E mais ${plural(ids.length - 8, 'jogador andou', 'jogadores andaram')}</p>` : ''}`;
+    } else {
+      const ids = g.roster.filter(id => s.players[id]).sort((a, b) => trProg(g, b) - trProg(g, a));
+      side = `<p class="hint">Os mais adiantados levam +3, +2 e +1</p><ul class="res-list">${ids.map(id => `<li class="res-row">${avatar(s.players[id], 'sm')}<span class="res-who"><span class="res-name">${esc(nameOf(s, id))}</span>${g.laps[id] ? `<span class="res-sub">🏆 ${plural(g.laps[id], 'volta completa', 'voltas completas')}</span>` : ''}</span>
+        <span class="res-val">casa ${g.pos[id] || 0}</span>${deltaBadge(g.roundDelta[id])}</li>`).join('')}</ul>`;
+    }
+    return `<div class="tr">${trBoard(g, s, me)}<div class="tr-side">${side}</div></div>`;
+  },
+  mount(g, s, me) {
+    const L = Store.local, key = g.round + ':' + g.pkey;
+    if (L.trSeen === key) return;
+    L.trSeen = key;
+    if (g.phase === 'move') { const m = g.data.moves[me]; if (m) Sound.play(m.fin ? 'fanfare' : m.q > 0 ? 'correct' : m.q < 0 ? 'wrong' : 'click'); }
+  },
+};
+
+/* ---------- 36. Feira do Rolo (cartas) ---------- */
+// Cada carta tem um valor secreto (só o dono vê). Na troca, quem recebe passa a ver o valor.
+const FR_ITEMS = [['🥾', 'Bota velha'], ['💎', 'Joia'], ['🐔', 'Galinha'], ['📻', 'Rádio antigo'], ['🧸', 'Ursinho'], ['🎻', 'Violino'], ['🪑', 'Cadeira bamba'],
+  ['🖼️', 'Quadro'], ['⌚', 'Relógio'], ['🧦', 'Meia furada'], ['🏺', 'Vaso'], ['📚', 'Pilha de livros'], ['🎮', 'Videogame'], ['🛼', 'Patins'], ['🪀', 'Ioiô'],
+  ['🍳', 'Frigideira'], ['🎩', 'Cartola'], ['🧯', 'Extintor'], ['🔭', 'Luneta'], ['🪕', 'Banjo'], ['🧲', 'Ímã'], ['🪆', 'Matrioska'], ['🕹️', 'Fliperama'],
+  ['📟', 'Pager'], ['🥁', 'Tambor'], ['🪴', 'Planta'], ['🧳', 'Mala'], ['🎲', 'Dado de ouro'], ['🦆', 'Pato de borracha'], ['🪃', 'Bumerangue'], ['📼', 'Fita VHS'],
+  ['🏆', 'Troféu'], ['🧩', 'Quebra-cabeça'], ['🛎️', 'Campainha'], ['🪙', 'Moeda rara'], ['🥚', 'Ovo misterioso']];
+const FR_VALS = [-3, -2, -1, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 6, 7, 8];
+const FR_HAND = 5, FR_TTL = 20000;
+// Frases prontas para acompanhar a oferta (dá para mentir à vontade).
+const FR_LINES = ['Confia, é ouro! ✨', 'Tô perdendo nessa 😭', 'Última chance!', 'Troca justa 🤝', 'Essa é rara 💎', 'Sem pegadinha 😇'];
+const frHand = (d, id) => Object.keys(d.cards).filter(c => d.cards[c].o === id);
+const frSum = (d, id) => frHand(d, id).reduce((t, c) => t + d.cards[c].v, 0);
+const frVal = v => `<span class="fr-v ${v < 0 ? 'neg' : v >= 5 ? 'hi' : ''}">${v > 0 ? '+' : ''}${v}</span>`;
+// O bot aceita fácil quando se livra de uma carta ruim e segura as boas.
+const frBotYes = (d, o) => { const v = d.cards[o.want].v; return v <= 0 ? .85 : v >= 5 ? .12 : .45; };
+function frLog(d, x) { d.log.unshift(x); if (d.log.length > 6) d.log.length = 6; }
+function frSwap(g, s, o) {
+  const d = g.data, A = d.cards[o.give], B = d.cards[o.want];
+  if (!A || !B || A.o !== o.from || B.o !== o.to) return false;
+  A.o = o.to; B.o = o.from;
+  // Cartas que mudaram de dono derrubam as outras ofertas que as envolviam.
+  Object.keys(d.offers).forEach(k => { const x = d.offers[k]; if ([x.give, x.want].some(c => c === o.give || c === o.want)) delete d.offers[k]; });
+  add(d.trades, o.from, 1); add(d.trades, o.to, 1);
+  const gain = B.v - A.v, win = gain >= 0 ? o.from : o.to, n = Math.abs(gain);
+  if (n && (!d.best || n > d.best.n)) d.best = { pid: win, other: win === o.from ? o.to : o.from, n, e1: (win === o.from ? A : B).e, e2: (win === o.from ? B : A).e };
+  frLog(d, { t: 'ok', a: o.from, b: o.to, ea: A.e, eb: B.e });
+  return true;
+}
+Games.feira = {
+  id: 'feira', name: 'Feira do Rolo', tag: 'Trocas e lábia', icon: 'swap', color: '#F97316', lip: '#C2410C', min: 3,
+  how: `Cada um recebe ${FR_HAND} objetos, e só você vê quanto cada um vale (de −3 a +8). Toque numa carta sua e numa de outra pessoa para oferecer uma troca; ela aceita ou recusa. Dá para mentir à vontade! No fim da feira, cada 4 pontos de valor na mão viram +1, e a mão mais valiosa ganha +2.`,
+  first: 'trade',
+  init(g, s) {
+    const cards = {};
+    let k = 0;
+    g.roster.filter(id => s.players[id]).forEach(id => {
+      for (let j = 0; j < FR_HAND; j++) { const [e, n] = pick(FR_ITEMS); cards['c' + k++] = { e, n, v: pick(FR_VALS), o: id }; }
+    });
+    g.data = { cards, offers: {}, seq: 0, log: [], trades: {}, best: null, bwake: {}, sums: {} };
+  },
+  phases: {
+    trade: { label: 'Feira aberta', dur: 90, next: 'reveal' },
+    reveal: { label: 'Fecha a feira', dur: 12, enter(g, s) {
+      const d = g.data, ids = g.roster.filter(id => s.players[id]), pts = {};
+      ids.forEach(id => { d.sums[id] = frSum(d, id); });
+      const top = Math.max(...ids.map(id => d.sums[id]));
+      ids.forEach(id => { const p = Math.max(0, Math.round(d.sums[id] / 4)) + (top > 0 && d.sums[id] === top ? 2 : 0); if (p) pts[id] = p; });
+      d.offers = {};
+      updateScores(s, pts);
+      if (d.best && d.best.n >= 4) addMoment(s, { k: 'feira', ...d.best, sc: d.best.n });
+    } },
+  },
+  handle(g, s, pid, a) {
+    const d = g.data;
+    if (!inRoster(g, pid) || g.phase !== 'trade') return false;
+    if (a.type === 'offer') {
+      const give = d.cards[a.give], want = d.cards[a.want];
+      if (!give || !want || give.o !== pid || want.o === pid || !inRoster(g, want.o)) return false;
+      // Uma oferta por vez: a nova substitui a anterior.
+      Object.keys(d.offers).forEach(o => { if (d.offers[o].from === pid) delete d.offers[o]; });
+      d.offers['o' + ++d.seq] = { from: pid, to: want.o, give: a.give, want: a.want, at: now(), line: FR_LINES[a.line] ? +a.line : -1 };
+      return true;
+    }
+    if (a.type === 'answer') {
+      const o = d.offers[a.oid];
+      if (!o || o.to !== pid) return false;
+      delete d.offers[a.oid];
+      if (!(a.ok && frSwap(g, s, o))) frLog(d, { t: 'no', a: o.from, b: pid });
+      return true;
+    }
+    if (a.type === 'cancel') {
+      const k = Object.keys(d.offers).find(o => d.offers[o].from === pid);
+      if (!k) return false;
+      delete d.offers[k]; return true;
+    }
+    return false;
+  },
+  tick(g, s) {
+    const d = g.data, t = now();
+    if (g.phase !== 'trade') return false;
+    d.bwake = d.bwake || {};
+    let ch = false;
+    for (const k of Object.keys(d.offers)) {
+      const o = d.offers[k];
+      if (!d.offers[k]) continue;
+      if (t - o.at > FR_TTL || d.cards[o.give].o !== o.from || d.cards[o.want].o !== o.to) { delete d.offers[k]; ch = true; continue; }
+      if (!s.players[o.to]?.isBot) continue;
+      if (!o.bd) { o.bd = rand(2500, 7000) / botSpeed(); continue; }
+      if (t - o.at < o.bd) continue;
+      delete d.offers[k]; ch = true;
+      if (!(Math.random() < frBotYes(d, o) && frSwap(g, s, o))) frLog(d, { t: 'no', a: o.from, b: o.to });
+    }
+    for (const id of g.roster) {
+      if (!s.players[id]?.isBot) continue;
+      if (!d.bwake[id]) { d.bwake[id] = t + rand(3000, 12000) / botSpeed(); continue; }
+      if (t < d.bwake[id]) continue;
+      d.bwake[id] = t + rand(7000, 16000) / botSpeed();
+      const mine = frHand(d, id).sort((a, b) => d.cards[a].v - d.cards[b].v);
+      const others = Object.keys(d.cards).filter(c => d.cards[c].o !== id && inRoster(g, d.cards[c].o));
+      if (!mine.length || !others.length || Math.random() < .25) continue;
+      // O bot tenta empurrar a pior carta dele (e jura que é ótima).
+      const give = Math.random() < botP(.75) ? mine[0] : pick(mine);
+      if (this.handle(g, s, id, { type: 'offer', give, want: pick(others), line: Math.floor(Math.random() * FR_LINES.length) })) ch = true;
+    }
+    return ch;
+  },
+  done() { return false; },
+  ui: {
+    give(el) { const L = Store.local; L.frGive = L.frGive === el.dataset.c ? null : el.dataset.c; render(); },
+    want(el) { const L = Store.local; L.frWant = L.frWant === el.dataset.c ? null : el.dataset.c; render(); },
+    line(el) { const L = Store.local, v = +el.dataset.v; L.frLine = L.frLine === v ? null : v; render(); },
+    offer() {
+      const L = Store.local;
+      if (!L.frGive || !L.frWant) return;
+      dispatch({ type: 'offer', give: L.frGive, want: L.frWant, line: L.frLine ?? -1 });
+      L.frGive = L.frWant = L.frLine = null; buzz(20);
+    },
+    yes(el) { dispatch({ type: 'answer', oid: el.dataset.o, ok: true }); },
+    no(el) { dispatch({ type: 'answer', oid: el.dataset.o, ok: false }); },
+    cancel() { dispatch({ type: 'cancel' }); },
+  },
+  view(g, s, me) {
+    const d = g.data, L = Store.local, can = inRoster(g, me), P = id => s.players[id];
+    const card = (c, act, extra = '') => { const x = d.cards[c], mine = x.o === me;
+      return `<button type="button" class="fr-card ${extra}" data-act="g:${act}" data-c="${c}" ${act ? '' : 'disabled'} aria-label="${esc(x.n)}${mine ? `, vale ${x.v}` : ''}"><span class="fr-e" aria-hidden="true">${x.e}</span><span class="fr-n">${esc(x.n)}</span>${mine || g.phase === 'reveal' ? frVal(x.v) : '<span class="fr-v unk">?</span>'}</button>`; };
+    if (g.phase === 'reveal') {
+      const ids = g.roster.filter(id => P(id)).sort((a, b) => (d.sums[b] ?? 0) - (d.sums[a] ?? 0)), top = d.sums[ids[0]];
+      return `<p class="verdict center">${ids.length && top > 0 ? `Mão mais valiosa: ${ids.filter(id => d.sums[id] === top).map(id => esc(nameOf(s, id))).join(', ')} (${top}) · +2` : 'Que feira fraca!'}</p>
+        <ul class="res-list fr-res">${ids.map(id => `<li class="res-row">${avatar(P(id), 'sm')}<span class="res-who"><span class="res-name">${esc(nameOf(s, id))}</span>
+          <span class="fr-mini">${frHand(d, id).map(c => `<span title="${esc(d.cards[c].n)}">${d.cards[c].e}${frVal(d.cards[c].v)}</span>`).join('')}</span></span>
+          <span class="res-val">${d.sums[id] ?? 0}<span class="res-sub">${plural(d.trades[id] || 0, 'troca', 'trocas')}</span></span>${deltaBadge(g.roundDelta[id])}</li>`).join('')}</ul>`;
+    }
+    // Seleção do aparelho: some se a carta mudou de dono (ou se começou outra rodada).
+    if (L.frKey !== g.round + ':' + g.id) { L.frKey = g.round + ':' + g.id; L.frGive = L.frWant = L.frLine = null; }
+    if (L.frGive && d.cards[L.frGive]?.o !== me) L.frGive = null;
+    if (L.frWant && (!d.cards[L.frWant] || d.cards[L.frWant].o === me)) L.frWant = null;
+    const offers = Object.entries(d.offers), inc = offers.filter(([, o]) => o.to === me && P(o.from)), out = offers.find(([, o]) => o.from === me);
+    const left = o => `<small class="fr-t"><b data-countdown="${o.at + FR_TTL}">${Math.max(0, Math.ceil((o.at + FR_TTL - now()) / 1000))}</b>s</small>`;
+    const incHTML = inc.map(([k, o]) => `<div class="fr-offer">${avatar(P(o.from), 'sm')}<div class="fr-of-txt"><b>${esc(nameOf(s, o.from))}</b> quer sua ${d.cards[o.want].e} ${esc(d.cards[o.want].n)} ${frVal(d.cards[o.want].v)}
+        <span class="fr-of-get">e te dá ${d.cards[o.give].e} <b>${esc(d.cards[o.give].n)}</b></span>${o.line >= 0 ? `<q>${esc(FR_LINES[o.line])}</q>` : ''}</div>${left(o)}
+        <div class="fr-of-btns"><button type="button" class="btn sm pill game" data-act="g:yes" data-o="${k}">Aceitar</button><button type="button" class="btn sm pill ghost" data-act="g:no" data-o="${k}">Recusar</button></div></div>`).join('');
+    const outHTML = out ? `<div class="fr-out">Você ofereceu ${d.cards[out[1].give].e} por ${d.cards[out[1].want].e} de <b>${esc(nameOf(s, out[1].to))}</b>${left(out[1])}<button type="button" class="linkish" data-act="g:cancel">Cancelar</button></div>` : '';
+    const hand = can ? frHand(d, me).map(c => card(c, 'give', L.frGive === c ? 'sel' : '')).join('') : '';
+    const compose = can && L.frGive && L.frWant ? `<div class="fr-compose"><p>${d.cards[L.frGive].e} sua por ${d.cards[L.frWant].e} de <b>${esc(nameOf(s, d.cards[L.frWant].o))}</b></p>
+        <div class="fr-lines">${FR_LINES.map((x, i) => `<button type="button" class="${L.frLine === i ? 'on' : ''}" data-act="g:line" data-v="${i}">${esc(x)}</button>`).join('')}</div>
+        <button type="button" class="btn game pill" data-act="g:offer">Oferecer troca</button></div>`
+      : can ? `<p class="hint fr-help">${L.frGive ? 'Agora toque numa carta de alguém na banca.' : 'Toque numa carta sua e numa carta da banca para propor uma troca.'}</p>` : '';
+    const stalls = g.roster.filter(id => id !== me && P(id)).map(id => `<div class="fr-stall">${avatar(P(id), 'sm')}<b>${esc(nameOf(s, id))}</b>
+        <div class="fr-row">${frHand(d, id).map(c => card(c, can ? 'want' : '', L.frWant === c ? 'sel' : '')).join('')}</div></div>`).join('');
+    const log = d.log.filter(x => P(x.a) && P(x.b)).slice(0, 4).map(x => `<li>${x.t === 'ok' ? `✅ ${esc(nameOf(s, x.a))} ${x.ea} ⇄ ${x.eb} ${esc(nameOf(s, x.b))}` : `❌ ${esc(nameOf(s, x.b))} recusou ${esc(nameOf(s, x.a))}`}</li>`).join('');
+    // Ofertas e caixa de troca ficam fora da mão para poderem grudar na tela do celular enquanto a banca rola.
+    return `<div class="fr">${incHTML ? `<div class="fr-incs">${incHTML}</div>` : ''}
+      <div class="fr-me">${can ? `<p class="fr-sum">Sua mão vale <b>${frSum(d, me)}</b></p><div class="fr-row fr-hand">${hand}</div>` : '<p class="hint">Você só assiste esta feira.</p>'}${outHTML}</div>
+      <div class="fr-market"><p class="fr-title">Banca da galera</p>${stalls}${log ? `<ul class="fr-log">${log}</ul>` : ''}</div>${compose}</div>`;
+  },
+  mount(g, s, me) {
+    const d = g.data, L = Store.local, inc = Object.keys(d.offers).filter(k => d.offers[k].to === me), key = g.round + ':' + inc.join(',');
+    const last = d.log[0], lk = last ? `${last.t}:${last.a}:${last.b}:${last.ea || ''}` : '';
+    if (L.frSeen && L.frSeen.r === g.round) {
+      if (inc.some(k => !L.frSeen.inc.includes(k))) { Sound.play('pop'); buzz(30); }
+      if (lk && lk !== L.frSeen.lk && last.t === 'ok' && (last.a === me || last.b === me)) Sound.play('points');
+    }
+    L.frSeen = { r: g.round, inc, lk, key };
+  },
+};
+
+/* ---------- 37. Terra de Ninguém (tabuleiro) ---------- */
+// Mapa quadriculado: todo mundo escolhe uma casa por vez, em segredo. Casa disputada vira ✖ (de ninguém).
+const TN_PICKS = 5;
+const tnNb = (side, i) => { const r = Math.floor(i / side), c = i % side, o = []; if (r) o.push(i - side); if (r < side - 1) o.push(i + side); if (c) o.push(i - 1); if (c < side - 1) o.push(i + 1); return o; };
+// Casas que a pessoa pode escolher: vazias e encostadas no território dela (a primeira é livre;
+// se o território ficou cercado, libera qualquer casa vazia).
+function tnValid(d, pid) {
+  const empty = d.own.map((v, i) => v ? -1 : i).filter(i => i >= 0);
+  if (!d.own.includes(pid)) return empty;
+  const near = empty.filter(i => tnNb(d.side, i).some(j => d.own[j] === pid));
+  return near.length ? near : empty;
+}
+// Tamanho do maior pedaço ligado do território.
+function tnArea(d, pid) {
+  const seen = new Set();
+  let best = 0;
+  d.own.forEach((v, i) => {
+    if (v !== pid || seen.has(i)) return;
+    let n = 0;
+    const st = [i]; seen.add(i);
+    while (st.length) { const x = st.pop(); n++; tnNb(d.side, x).forEach(j => { if (d.own[j] === pid && !seen.has(j)) { seen.add(j); st.push(j); } }); }
+    best = Math.max(best, n);
+  });
+  return best;
+}
+Games.terra = {
+  id: 'terra', name: 'Terra de Ninguém', tag: 'Conquiste o mapa', icon: 'grid', color: '#84CC16', lip: '#4D7C0F', min: 2,
+  how: `Num mapa quadriculado, todo mundo escolhe uma casa em segredo, ao mesmo tempo, ${TN_PICKS} vezes por rodada. A primeira pode ser em qualquer lugar; as outras precisam encostar no seu território. Se duas pessoas escolhem a mesma casa, ela vira terra de ninguém ✖. No fim, cada casa sua vale +1 e a maior área ligada ganha +5 (empate: +2 para cada).`,
+  first: 'pick',
+  init(g) {
+    // Mapa apertado de propósito: as fronteiras se encontram e começa a briga por casa.
+    const side = clamp(Math.ceil(Math.sqrt(g.roster.length * TN_PICKS * .65)), 4, 12);
+    g.data = { side, own: Array(side * side).fill(null), picks: {}, step: 0, hits: [], area: {}, top: 0 };
+  },
+  phases: {
+    pick: { label: 'Escolha uma casa', dur: 10, bot: [1.5, 7], next: 'claim', allIn: (g, s) => active(g, s).every(id => id in g.data.picks), enter(g) { const d = g.data; d.step++; d.picks = {}; d.hits = []; } },
+    claim: { label: 'Conquista!', dur: 3, next: g => g.data.step < TN_PICKS ? 'pick' : 'reveal', enter(g) {
+      const d = g.data, by = {};
+      Object.entries(d.picks).forEach(([pid, i]) => { (by[i] = by[i] || []).push(pid); });
+      Object.entries(by).forEach(([i, ps]) => { if (d.own[i]) return; if (ps.length === 1) d.own[i] = ps[0]; else { d.own[i] = '#'; d.hits.push(+i); } });
+    } },
+    reveal: { label: 'Mapa final', dur: 12, enter(g, s) {
+      const d = g.data, ids = g.roster.filter(id => s.players[id]), pts = {};
+      ids.forEach(id => { d.area[id] = tnArea(d, id); const n = d.own.filter(v => v === id).length; if (n) pts[id] = n; });
+      d.top = Math.max(0, ...ids.map(id => d.area[id]));
+      const w = ids.filter(id => d.area[id] === d.top);
+      // Maior área sozinho: +5. Empate: +2 para cada.
+      if (d.top >= 2) w.forEach(id => add(pts, id, w.length === 1 ? 5 : 2));
+      updateScores(s, pts);
+      if (d.top >= 4 && w.length === 1) addMoment(s, { k: 'terra', pid: w[0], n: d.top, sc: d.top });
+    } },
+  },
+  handle(g, s, pid, a) {
+    const d = g.data;
+    if (!inRoster(g, pid) || g.phase !== 'pick' || a.type !== 'pick') return false;
+    const i = a.i | 0;
+    if (!tnValid(d, pid).includes(i)) return false;
+    d.picks[pid] = i; return true;
+  },
+  done(g, pid) { return g.phase === 'pick' && pid in g.data.picks; },
+  bot(g, s, pid) {
+    const d = g.data, ok = tnValid(d, pid);
+    if (!ok.length) return null;
+    // Cresce colado no próprio território e, se for esperto, foge da fronteira com os outros (onde dá briga).
+    const foe = j => d.own[j] && d.own[j] !== pid && d.own[j] !== '#', wary = Math.random() < botP(.6);
+    const sc = ok.map(i => { const nb = tnNb(d.side, i); return [i, nb.filter(j => d.own[j] === pid).length * 2 - (wary ? nb.filter(foe).length * 1.5 : 0) + Math.random() * 2.5]; });
+    return { type: 'pick', i: sc.sort((a, b) => b[1] - a[1])[0][0] };
+  },
+  ui: { cell(el) { buzz(15); dispatch({ type: 'pick', i: +el.dataset.i }); } },
+  view(g, s, me) {
+    const d = g.data, picking = g.phase === 'pick' && inRoster(g, me), ok = new Set(picking ? tnValid(d, me) : []), mine = picking ? d.picks[me] : null;
+    const cells = d.own.map((v, i) => {
+      const p = v && v !== '#' ? s.players[v] : null;
+      const cls = v === '#' ? 'is-x' : p ? (v === me ? 'is-me' : 'is-o') : ok.has(i) ? 'ok' : '';
+      return `<button type="button" class="tn-c ${cls} ${mine === i ? 'is-pick' : ''} ${g.phase === 'claim' && d.hits.includes(i) ? 'is-hit' : ''}" data-act="g:cell" data-i="${i}" ${ok.has(i) ? '' : 'disabled'} ${p ? `style="--pc:${p.color}"` : ''} aria-label="${v === '#' ? 'Terra de ninguém' : p ? 'Casa de ' + esc(p.name) : 'Casa livre'}">${v === '#' ? '✖' : p ? esc(p.avatar || '') : ''}</button>`;
+    }).join('');
+    const count = id => d.own.filter(v => v === id).length;
+    const ranked = g.roster.filter(id => s.players[id] && count(id)).sort((a, b) => count(b) - count(a));
+    const myN = count(me);
+    let bar;
+    if (g.phase === 'reveal') {
+      const w = ranked.filter(id => d.area[id] === d.top);
+      bar = d.top >= 2 ? `<b>Maior área:</b> ${w.map(id => esc(nameOf(s, id))).join(', ')} (${plural(d.top, 'casa ligada', 'casas ligadas')}) · ${w.length === 1 ? '+5' : '+2 cada'}` : '<b>Fim do mapa!</b> Cada casa vale +1';
+    } else if (g.phase === 'claim') {
+      const lost = d.hits.length && Object.values(d.picks).length && d.hits.includes(d.picks[me]);
+      bar = lost ? '💥 <b>Você brigou por uma casa</b> e ela virou terra de ninguém!' : d.hits.length ? `💥 ${plural(d.hits.length, 'casa disputada virou', 'casas disputadas viraram')} terra de ninguém` : 'Ninguém brigou por casa desta vez.';
+    } else bar = !picking ? 'A galera está escolhendo…' : mine != null ? '<b>Casa escolhida!</b> Dá para trocar até o tempo acabar' : myN ? '<b>Escolha uma casa</b> encostada no seu território' : '<b>Escolha sua primeira casa</b> em qualquer lugar';
+    const chips = ranked.slice(0, 8).map(id => `<span class="${id === me ? 'is-me' : ''}">${avatar(s.players[id], 'sm')}${esc(nameOf(s, id))} <b>${count(id)}</b>${g.phase === 'reveal' && d.area[id] ? `<small>área ${d.area[id]}</small>` : ''}${g.phase === 'reveal' ? deltaBadge(g.roundDelta[id]) : ''}</span>`).join('');
+    return `<div class="tn"><div class="tn-bar"><span>${bar}</span><small>Casa ${Math.min(d.step, TN_PICKS)} de ${TN_PICKS} · você tem <b>${myN}</b></small></div>
+      <div class="tn-grid ${picking ? 'is-pick' : ''}" style="--side:${d.side}">${cells}</div>${chips ? `<div class="tn-score">${chips}</div>` : ''}</div>`;
+  },
+  mount(g, s, me) {
+    const L = Store.local, key = g.round + ':' + g.pkey;
+    if (L.tnSeen === key) return;
+    L.tnSeen = key;
+    if (g.phase === 'claim') Sound.play(g.data.hits.includes(g.data.picks[me]) ? 'boom' : g.data.picks[me] != null ? 'points' : 'click');
+  },
+};
+GAME_ORDER.push('trilha', 'feira', 'terra');
+Object.assign(Games.trilha, { cat: 'tabuleiro' });
+Object.assign(Games.feira, { cat: 'cartas' });
+Object.assign(Games.terra, { cat: 'tabuleiro' });
+Object.assign(Games.mesa, { cat: 'cartas' });
+
+/* ---------- 38. Pilha no Alvo (cartas) ---------- */
+// Cada um vira cartas da própria pilha tentando chegar perto do alvo sem passar.
+const PL_SP = { x2: ['✖️2', 'Dobra a próxima carta'], undo: ['🔙', 'Desfaz a última carta'], steal: ['🫳', 'Rouba a última carta de alguém'] };
+const plDraw = () => { const r = Math.random(); return r < .07 ? 'x2' : r < .14 ? 'undo' : r < .2 ? 'steal' : 1 + Math.floor(Math.random() * 10); };
+const plTot = p => p.nums.reduce((a, b) => a + b, 0);
+function plFlip(g, s, pid) {
+  const d = g.data, p = d.p[pid];
+  if (!p || p.stop || p.bust) return false;
+  const c = plDraw();
+  p.shown.push(c); if (p.shown.length > 12) p.shown.shift();
+  if (c === 'x2') p.x2 = true;
+  else if (c === 'undo') p.nums.pop();
+  else if (c === 'steal') {
+    const vs = Object.keys(d.p).filter(o => o !== pid && s.players[o] && !d.p[o].bust && d.p[o].nums.length);
+    if (vs.length) { const v = pick(vs); p.nums.push(d.p[v].nums.pop()); d.p[v].robbed = (d.p[v].robbed || 0) + 1; }
+  } else { p.nums.push(p.x2 ? c * 2 : c); p.x2 = false; }
+  const t = plTot(p);
+  if (t > d.T) p.bust = true; else if (t === d.T) p.stop = true;  // na mosca: para sozinho
+  return true;
+}
+Games.pilha = {
+  id: 'pilha', name: 'Pilha no Alvo', tag: 'Arriscar ou parar', icon: 'target', color: '#EAB308', lip: '#A16207', min: 1,
+  how: 'Sai um alvo entre 15 e 30. Cada um vira cartas da própria pilha (de 1 a 10) e escolhe a hora de parar. Passou do alvo, estourou e fica sem nada. Na mosca vale +5; o mais perto sem passar ganha +3 e o segundo, +1. Especiais: ✖️2 dobra a próxima carta, 🔙 desfaz a última e 🫳 rouba a última carta de alguém.',
+  first: 'play',
+  init(g, s) {
+    const p = {};
+    g.roster.filter(id => s.players[id]).forEach(id => { p[id] = { nums: [], shown: [], x2: false, stop: false, bust: false }; });
+    g.data = { T: 15 + Math.floor(Math.random() * 16), p, bnext: {} };
+  },
+  phases: {
+    play: { label: 'Vire ou pare', dur: 45, next: 'reveal', allIn: g => Object.values(g.data.p).every(p => p.stop || p.bust) },
+    reveal: { label: 'Quem chegou mais perto?', dur: 10, enter(g, s) {
+      const d = g.data, pts = {};
+      const ok = Object.keys(d.p).filter(id => s.players[id] && !d.p[id].bust && d.p[id].nums.length);
+      const vals = [...new Set(ok.map(id => plTot(d.p[id])))].sort((a, b) => b - a);
+      ok.forEach(id => {
+        const t = plTot(d.p[id]), k = vals.indexOf(t), v = t === d.T ? 5 : k === 0 ? 3 : k === 1 ? 1 : 0;
+        if (v) pts[id] = v;
+        if (t === d.T) { matchStat(s, id, 'exact'); addMoment(s, { k: 'alvo', pid: id, n: d.T, sc: d.T + (s.players[id].isBot ? 0 : 5) }); }
+      });
+      updateScores(s, pts);
+    } },
+  },
+  handle(g, s, pid, a) {
+    const p = g.data.p[pid];
+    if (!inRoster(g, pid) || g.phase !== 'play' || !p) return false;
+    if (a.type === 'flip') return plFlip(g, s, pid);
+    if (a.type === 'stop' && !p.stop && !p.bust && p.nums.length) { p.stop = true; return true; }
+    return false;
+  },
+  tick(g, s) {
+    const d = g.data, t = now();
+    if (g.phase !== 'play') return false;
+    let ch = false;
+    for (const id of Object.keys(d.p)) {
+      const p = d.p[id];
+      if (!s.players[id]?.isBot || p.stop || p.bust) continue;
+      if (!d.bnext[id]) { d.bnext[id] = t + rand(900, 2200) / botSpeed(); continue; }
+      if (t < d.bnext[id]) continue;
+      d.bnext[id] = t + rand(900, 2200) / botSpeed();
+      // O bot esperto para a uns 5 do alvo; o afobado arrisca até 2.
+      // Com o ✖️2 ativo a próxima carta pesa o dobro, então ele precisa de mais folga.
+      const gap = d.T - plTot(p), safe = (Math.random() < botP(.7) ? 5 : 2) * (p.x2 ? 2 : 1);
+      if (p.nums.length && gap <= safe) p.stop = true; else plFlip(g, s, id);
+      ch = true;
+    }
+    return ch;
+  },
+  done(g, pid) { const p = g.data.p[pid]; return !!p && (p.stop || p.bust); },
+  ui: { flip() { buzz(15); dispatch({ type: 'flip' }); }, stop() { dispatch({ type: 'stop' }); } },
+  view(g, s, me) {
+    const d = g.data, mine = d.p[me];
+    const card = c => typeof c === 'number' ? `<span class="pl-card">${c}</span>` : `<span class="pl-card is-sp" title="${PL_SP[c][1]}">${PL_SP[c][0]}</span>`;
+    const bar = p => `<span class="pl-bar ${p.bust ? 'bust' : ''}"><i style="width:${Math.min(100, plTot(p) / d.T * 100).toFixed(0)}%"></i></span>`;
+    const st = p => p.bust ? '💥' : p.stop ? (plTot(p) === d.T ? '🎯' : '✋') : '';
+    const target = `<div class="pl-target"><span aria-hidden="true">🎯</span><b>${d.T}</b><small>alvo</small></div>`;
+    if (g.phase === 'reveal') {
+      const ids = Object.keys(d.p).filter(id => s.players[id]).sort((a, b) => (d.p[a].bust - d.p[b].bust) || plTot(d.p[b]) - plTot(d.p[a]));
+      return target + `<ul class="res-list">${ids.map(id => { const p = d.p[id], t = plTot(p); return `<li class="res-row">${avatar(s.players[id], 'sm')}<span class="res-who"><span class="res-name">${esc(nameOf(s, id))}</span>
+        ${p.bust ? '<span class="tag tag-bad">Estourou</span>' : t === d.T ? '<span class="tag tag-good">Na mosca</span>' : ''}</span><span class="res-val">${t}</span>${deltaBadge(g.roundDelta[id])}</li>`; }).join('')}</ul>`;
+    }
+    let meHTML = '';
+    if (mine) {
+      const t = plTot(mine);
+      meHTML = `<div class="pl-me ${mine.bust ? 'is-bust' : mine.stop ? 'is-stop' : ''}"><div class="pl-cards">${mine.shown.map(card).join('') || '<span class="hint">Vire a primeira carta!</span>'}</div>
+        <div class="pl-tot"><b>${t}</b><span>de ${d.T}</span>${bar(mine)}</div>
+        ${mine.x2 ? '<p class="pl-note">✖️2 ativo: a próxima carta vale o dobro!</p>' : ''}${mine.robbed ? `<p class="pl-note">🫳 Roubaram ${plural(mine.robbed, 'carta sua', 'cartas suas')}!</p>` : ''}
+        ${mine.bust ? '<p class="verdict center">💥 Estourou!</p>' : mine.stop ? `<p class="verdict center">${t === d.T ? '🎯 Na mosca!' : `✋ Parou com ${t}`}</p>`
+          : `<div class="pl-btns"><button type="button" class="btn game big pill" data-act="g:flip">Virar carta</button><button type="button" class="btn ghost big pill" data-act="g:stop" ${mine.nums.length ? '' : 'disabled'}>Parar</button></div>`}</div>`;
+    } else meHTML = waitCard('A galera está virando cartas', 'Você entra na próxima rodada');
+    const others = Object.keys(d.p).filter(id => id !== me && s.players[id]).map(id => { const p = d.p[id];
+      return `<li class="pl-o ${p.bust ? 'is-bust' : ''}">${avatar(s.players[id], 'sm')}<span class="pl-on">${esc(nameOf(s, id))}</span>${bar(p)}<b>${plTot(p)}</b><span class="pl-st">${st(p)}</span></li>`; }).join('');
+    return `<div class="pl">${target}${meHTML}${others ? `<ul class="pl-list">${others}</ul>` : ''}</div>`;
+  },
+  mount(g, s, me) {
+    const p = g.data.p[me], L = Store.local, key = g.round + ':' + g.id;
+    if (!p) return;
+    const n = p.shown.length + (p.bust ? 100 : 0);
+    if (L.plSeen?.key === key && n !== L.plSeen.n) Sound.play(p.bust ? 'boom' : p.stop && plTot(p) === g.data.T ? 'fanfare' : 'click');
+    L.plSeen = { key, n };
+  },
+};
+
+/* ---------- 39. Sino dos Pares (cartas) ---------- */
+// Cada um tem 4 cartas e passa uma por vez para o vizinho, todos ao mesmo tempo. Quem juntar 4 iguais toca o sino.
+const SN_E = ['🍎', '🐸', '⭐', '🎈', '🍩', '🐙', '🌵', '⚽', '🎸', '🦄', '🍉', '🚀', '🐝', '🎩', '🌈', '🍄', '🐳', '🔥', '🎲', '🥑', '🦊', '🍕', '👑', '🌻', '🐧', '🍒', '🛸', '🎃', '🐌', '🧊'];
+const SN_WIN = 3000;
+const snFour = h => !!h && h.length === 4 && h.every(x => x === h[0]);
+function snFill(d, id) { const h = d.hands[id], q = d.inbox[id]; while (h.length < 4 && q.length) h.push(q.shift()); }
+function snPass(g, pid, k) {
+  const d = g.data, h = d.hands[pid];
+  if (d.ring || !h || h.length < 4 || !(k >= 0 && k < 4)) return false;
+  const to = d.seats[(d.seats.indexOf(pid) + 1) % d.seats.length];
+  d.inbox[to].push(h.splice(k, 1)[0]);
+  snFill(d, to); snFill(d, pid);
+  d.lastPass[pid] = now();
+  return true;
+}
+// A carta que a pessoa tem menos (é a que menos atrapalha passar).
+const snWorst = h => { const cnt = c => h.filter(x => x === c).length; return h.indexOf([...h].sort((a, b) => cnt(a) - cnt(b))[0]); };
+function snRing(g, s, pid) {
+  const d = g.data, t = now();
+  if (d.ring) {
+    if (d.ring.by.includes(pid) || t > d.ring.until) return false;
+    d.ring.by.push(pid); return true;
+  }
+  if ((d.lock[pid] || 0) > t) return false;
+  if (!snFour(d.hands[pid])) {
+    // Sino de mentira: perde 1 e o dedo trava por 3 segundos.
+    d.lock[pid] = t + 3000; d.fake = { pid, at: t };
+    if ((s.players[pid]?.score || 0) > 0) updateScores(s, { [pid]: -1 });
+    return true;
+  }
+  d.ring = { first: pid, by: [pid], at: t, until: t + SN_WIN, card: d.hands[pid][0] };
+  return true;
+}
+Games.sino = {
+  id: 'sino', name: 'Sino dos Pares', tag: 'Junte 4 e toque', icon: 'bell', color: '#06B6D4', lip: '#0E7490', min: 3,
+  how: 'Cada um tem 4 cartas. Toque numa carta para passá-la ao vizinho; a carta que vem do outro lado entra na sua mão. Juntou 4 iguais? Toque o 🔔 (+3). Aí todo mundo tem 3 segundos para tocar também: quem não tocar, ou for o último, perde 2. Tocar sem ter 4 iguais tira 1 e trava o sino por 3 segundos.',
+  first: 'play',
+  init(g, s) {
+    const seats = shuffle(g.roster.filter(id => s.players[id])), types = shuffle(SN_E.map((_, i) => i)).slice(0, Math.max(3, seats.length));
+    let deck;
+    // Ninguém começa com 4 iguais.
+    do { deck = shuffle(types.flatMap(t => [t, t, t, t])); } while (seats.some((_, i) => snFour(deck.slice(i * 4, i * 4 + 4))));
+    const hands = {}, inbox = {};
+    seats.forEach((id, i) => { hands[id] = deck.slice(i * 4, i * 4 + 4); inbox[id] = []; });
+    // Sobrou carta (sala com menos de 3)? Vai para a fila do primeiro.
+    inbox[seats[0]] = deck.slice(seats.length * 4);
+    g.data = { seats, hands, inbox, lock: {}, ring: null, fake: null, over: false, losers: [], bnext: {}, lastPass: {} };
+  },
+  phases: {
+    play: { label: 'Passa e junta', dur: 90, next: 'reveal', allIn: g => g.data.over },
+    reveal: { label: 'Quem bateu o sino?', dur: 10, enter(g, s) {
+      const d = g.data;
+      if (d.ring && !d.over) Games.sino.closeRing(g, s);
+    } },
+  },
+  closeRing(g, s) {
+    const d = g.data, r = d.ring, pts = { [r.first]: 3 };
+    const late = d.seats.filter(id => s.players[id] && (s.players[id].isBot || s.players[id].connected) && !r.by.includes(id));
+    // Todo mundo tocou? Quem tocou por último perde.
+    d.losers = late.length ? late : r.by.length > 1 ? [r.by[r.by.length - 1]] : [];
+    d.losers.forEach(id => { const sc = s.players[id]?.score || 0; if (sc > 0) add(pts, id, -Math.min(2, sc)); });
+    updateScores(s, pts);
+    d.over = true;
+    addMoment(s, { k: 'sino', pid: r.first, e: SN_E[r.card], sc: 1 + (s.players[r.first].isBot ? 0 : 1) });
+  },
+  handle(g, s, pid, a) {
+    if (!inRoster(g, pid) || g.phase !== 'play' || g.data.over) return false;
+    if (a.type === 'pass') return snPass(g, pid, a.k | 0);
+    if (a.type === 'ring') return snRing(g, s, pid);
+    return false;
+  },
+  tick(g, s) {
+    const d = g.data, t = now();
+    if (g.phase !== 'play' || d.over) return false;
+    if (d.ring && t > d.ring.until) { this.closeRing(g, s); return true; }
+    let ch = false;
+    d.lastPass = d.lastPass || {};
+    // Quem fica parado com carta chegando segura a roda inteira: depois de 6 s, passa sozinho.
+    if (!d.ring) for (const id of d.seats) {
+      if (s.players[id]?.isBot || d.hands[id]?.length < 4 || !d.inbox[id]?.length) continue;
+      if (!d.lastPass[id]) { d.lastPass[id] = t; continue; }
+      if (t - d.lastPass[id] > 6000 && !snFour(d.hands[id]) && snPass(g, id, snWorst(d.hands[id]))) ch = true;
+    }
+    for (const id of d.seats) {
+      if (!s.players[id]?.isBot) continue;
+      if (d.ring) {
+        if (d.ring.by.includes(id)) continue;
+        // Reação ao sino: uns são rápidos, outros dormem no ponto.
+        if (!d.bnext[id] || d.bnext[id] < d.ring.at) { d.bnext[id] = d.ring.at + rand(350, 3600) / botSpeed(); continue; }
+        if (t >= d.bnext[id] && snRing(g, s, id)) ch = true;
+        continue;
+      }
+      if (!d.bnext[id]) { d.bnext[id] = t + rand(700, 1600) / botSpeed(); continue; }
+      if (t < d.bnext[id]) continue;
+      d.bnext[id] = t + rand(700, 1600) / botSpeed();
+      const h = d.hands[id];
+      if (snFour(h)) { if (snRing(g, s, id)) ch = true; continue; }
+      if (h.length < 4) continue;
+      // Passa a carta que ele tem menos (às vezes erra).
+      const k = Math.random() < botP(.8) ? snWorst(h) : Math.floor(Math.random() * 4);
+      if (snPass(g, id, k)) ch = true;
+    }
+    return ch;
+  },
+  done() { return false; },
+  ui: {
+    pass(el) { buzz(10); dispatch({ type: 'pass', k: +el.dataset.k }); },
+    ring() { buzz([30, 30, 60]); dispatch({ type: 'ring' }); },
+  },
+  view(g, s, me) {
+    const d = g.data, h = d.hands[me], r = d.ring, t = now(), can = !!h && inRoster(g, me);
+    const nm = id => id === me ? 'Você' : esc(nameOf(s, id));
+    if (g.phase === 'reveal') {
+      const by = r ? r.by : [];
+      return `<p class="verdict center">${r ? `🔔 ${nm(r.first)} juntou 4 ${SN_E[r.card]}!` : 'Ninguém juntou 4 iguais desta vez.'}</p>
+        <ul class="res-list">${d.seats.filter(id => s.players[id]).sort((a, b) => (by.includes(a) ? by.indexOf(a) : 99) - (by.includes(b) ? by.indexOf(b) : 99)).map(id => `<li class="res-row">${avatar(s.players[id], 'sm')}
+          <span class="res-who"><span class="res-name">${esc(nameOf(s, id))}</span>${r && id === r.first ? '<span class="tag tag-good">Primeiro</span>' : d.losers.includes(id) ? '<span class="tag tag-bad">Atrasado</span>' : ''}</span>
+          <span class="res-val sn-mini">${(d.hands[id] || []).map(c => SN_E[c]).join('')}</span>${g.roundDelta[id] ? `<span class="delta ${g.roundDelta[id] < 0 ? 'neg' : ''}">${g.roundDelta[id] > 0 ? '+' : ''}${g.roundDelta[id]}</span>` : '<span></span>'}</li>`).join('')}</ul>`;
+    }
+    const locked = (d.lock[me] || 0) > t, rang = r && r.by.includes(me);
+    const status = r ? (rang ? `🔔 ${r.first === me ? '<b>Você tocou primeiro!</b> +3' : 'Você tocou! Ufa.'}` : `<b>🔔 ${nm(r.first)} tocou! Toque rápido!</b>`)
+      : d.fake && t - d.fake.at < 2500 ? `😅 ${nm(d.fake.pid)} tocou de mentira (−1)` : 'Passe cartas e junte <b>4 iguais</b>';
+    const hand = can ? h.map((c, k) => `<button type="button" class="sn-card" data-act="g:pass" data-k="${k}" ${r || h.length < 4 ? 'disabled' : ''} aria-label="Passar ${SN_E[c]}">${SN_E[c]}</button>`).join('')
+      + Array.from({ length: 4 - h.length }, () => '<span class="sn-card is-wait" aria-hidden="true">…</span>').join('') : '';
+    const four = can && snFour(h);
+    const bell = can ? `<button type="button" class="sn-bell ${r && !rang ? 'is-go' : ''} ${four ? 'is-ready' : ''}" data-act="g:ring" ${rang || locked ? 'disabled' : ''}>🔔<b>${r ? (rang ? 'Tocou!' : 'TOCA!') : locked ? 'Travado…' : 'Tocar o sino'}</b></button>` : '';
+    const next = can ? d.seats[(d.seats.indexOf(me) + 1) % d.seats.length] : null, inq = can ? d.inbox[me].length : 0;
+    const ring = d.seats.filter(id => s.players[id]).map(id => `<span class="sn-p ${r && r.by.includes(id) ? 'is-rang' : ''} ${id === me ? 'is-me' : ''}">${avatar(s.players[id], 'sm')}<small>${r && r.by.includes(id) ? '🔔' : ''}</small></span>`).join('');
+    return `<div class="sn"><p class="sn-status ${r && !rang ? 'is-alarm' : ''}">${status}</p>
+      ${can ? `<div class="sn-hand">${hand}</div><p class="hint center">${h.length < 4 ? 'Esperando a carta do vizinho…' : `Toque numa carta para passar para <b>${esc(nameOf(s, next))}</b>`}${inq ? ` · 📥 ${plural(inq, 'carta na fila', 'cartas na fila')}` : ''}</p>${bell}` : waitCard('A galera está trocando cartas', 'Você entra na próxima rodada')}
+      <div class="sn-ring">${ring}</div></div>`;
+  },
+  mount(g, s, me) {
+    const d = g.data, L = Store.local, key = g.round + ':' + g.id, rk = d.ring ? d.ring.at : 0;
+    if (L.snSeen?.key === key && rk && rk !== L.snSeen.rk) { Sound.play('alarm'); buzz([60, 40, 60]); }
+    L.snSeen = { key, rk };
+  },
+};
+
+/* ---------- 40. Passa-Passa (cartas) ---------- */
+// Draft: cada um guarda 1 carta e passa o resto para o vizinho, até acabar. No fim, as cartas guardadas formam combos.
+const PP_F = ['🍎', '🍌', '🍇', '🍉', '🍓', '🍍'], PP_C = ['#EF4444', '#3B82F6', '#22C55E', '#EAB308'], PP_N = 6;
+const ppNew = () => Math.random() < 1 / 16 ? { f: -1, c: -1 } : { f: Math.floor(Math.random() * PP_F.length), c: Math.floor(Math.random() * PP_C.length) };
+function ppScore(cards) {
+  const cnt = {}, combos = [];
+  let star = 0;
+  cards.forEach(k => { if (k.f < 0) star++; else cnt[k.f] = (cnt[k.f] || 0) + 1; });
+  Object.entries(cnt).forEach(([f, n]) => {
+    for (let i = 0; i < Math.floor(n / 3); i++) combos.push({ n: `Trio ${PP_F[f]}`, v: 4 });
+    if (n % 3 >= 2) combos.push({ n: `Par ${PP_F[f]}`, v: 1 });
+  });
+  if (new Set(cards.filter(k => k.c >= 0).map(k => k.c)).size === PP_C.length) combos.push({ n: '🌈 4 cores', v: 3 });
+  if (star && combos.length) { const best = Math.max(...combos.map(c => c.v)); combos.push({ n: '🌟 dobra o melhor', v: best }); }
+  return { combos, total: combos.reduce((a, c) => a + c.v, 0) };
+}
+const ppCard = (k, extra = '') => k.f < 0 ? `<span class="pp-card is-star ${extra}">🌟</span>` : `<span class="pp-card ${extra}" style="--cc:${PP_C[k.c]}">${PP_F[k.f]}</span>`;
+// Quem não escolheu a tempo guarda uma carta qualquer.
+function ppAuto(g, s) { const d = g.data; d.seats.forEach(id => { if (!d.picked[id] && d.hands[id]?.length) { d.kept[id].push(d.hands[id].splice(Math.floor(Math.random() * d.hands[id].length), 1)[0]); d.picked[id] = true; } }); }
+Games.passa = {
+  id: 'passa', name: 'Passa-Passa', tag: 'Guarda uma, passa o resto', icon: 'shuffle', color: '#D946EF', lip: '#A21CAF', min: 2,
+  how: `Cada um recebe ${PP_N} cartas de fruta. Guarde 1 e passe o resto para o vizinho; repita até acabar. No fim, suas cartas guardadas formam combos: trio de frutas iguais +4, par +1, uma carta de cada uma das 4 cores +3. A 🌟 dobra o seu melhor combo.`,
+  first: 'draft',
+  init(g, s) {
+    const seats = shuffle(g.roster.filter(id => s.players[id])), hands = {}, kept = {};
+    seats.forEach(id => { hands[id] = Array.from({ length: PP_N }, ppNew); kept[id] = []; });
+    g.data = { seats, hands, kept, picked: {}, step: 0, res: {} };
+  },
+  phases: {
+    draft: { label: 'Guarde uma', dur: 12, bot: [1, 6], next: g => g.data.step < PP_N - 1 ? 'draft' : 'reveal', allIn: (g, s) => active(g, s).every(id => g.data.picked[id] || !g.data.hands[id]), enter(g, s) {
+      const d = g.data;
+      if (d.step) {
+        ppAuto(g, s);
+        // A mão que sobrou vai para o vizinho.
+        const nh = {};
+        d.seats.forEach((id, i) => { nh[d.seats[(i + 1) % d.seats.length]] = d.hands[id]; });
+        d.hands = nh;
+      }
+      d.step++; d.picked = {};
+    } },
+    reveal: { label: 'Combos', dur: 12, enter(g, s) {
+      const d = g.data, pts = {};
+      ppAuto(g, s);
+      d.seats.forEach(id => { d.kept[id].push(...d.hands[id].splice(0)); d.res[id] = ppScore(d.kept[id]); if (d.res[id].total && s.players[id]) pts[id] = d.res[id].total; });
+      updateScores(s, pts);
+      const best = Object.entries(d.res).filter(([id]) => s.players[id]).sort((a, b) => b[1].total - a[1].total)[0];
+      if (best && best[1].total >= 8) addMoment(s, { k: 'passa', pid: best[0], n: best[1].total, sc: best[1].total });
+    } },
+  },
+  handle(g, s, pid, a) {
+    const d = g.data, h = d.hands[pid];
+    if (!inRoster(g, pid) || g.phase !== 'draft' || a.type !== 'keep' || d.picked[pid] || !h) return false;
+    const k = a.k | 0;
+    if (!(k >= 0 && k < h.length)) return false;
+    d.kept[pid].push(h.splice(k, 1)[0]); d.picked[pid] = true;
+    return true;
+  },
+  done(g, pid) { return g.phase === 'draft' && !!g.data.picked[pid]; },
+  bot(g, s, pid) {
+    const d = g.data, h = d.hands[pid];
+    if (!h?.length) return null;
+    const sc = h.map((k, i) => [i, ppScore([...d.kept[pid], k]).total + (k.f < 0 ? 1.5 : 0) + Math.random() * (Math.random() < botP(.7) ? .5 : 6)]);
+    return { type: 'keep', k: sc.sort((a, b) => b[1] - a[1])[0][0] };
+  },
+  ui: { keep(el) { buzz(15); dispatch({ type: 'keep', k: +el.dataset.k }); } },
+  view(g, s, me) {
+    const d = g.data, h = d.hands[me], can = inRoster(g, me) && !!h;
+    if (g.phase === 'reveal') {
+      const ids = d.seats.filter(id => s.players[id]).sort((a, b) => (d.res[b]?.total || 0) - (d.res[a]?.total || 0));
+      return `<ul class="res-list pp-res">${ids.map(id => `<li class="res-row">${avatar(s.players[id], 'sm')}<span class="res-who"><span class="res-name">${esc(nameOf(s, id))}</span>
+        <span class="pp-row sm">${d.kept[id].map(k => ppCard(k)).join('')}</span><span class="res-sub">${(d.res[id]?.combos || []).map(c => `${c.n} +${c.v}`).join(' · ') || 'Nenhum combo'}</span></span>
+        <span class="res-val">${d.res[id]?.total || 0}</span>${deltaBadge(g.roundDelta[id])}</li>`).join('')}</ul>`;
+    }
+    if (!can) return waitCard('A galera está escolhendo cartas', 'Você entra na próxima rodada');
+    const next = d.seats[(d.seats.indexOf(me) + 1) % d.seats.length], cur = ppScore(d.kept[me]);
+    return `<div class="pp"><p class="pp-ask"><span>${d.picked[me] ? '<b>Guardada!</b> Esperando a galera…' : `<b>Guarde 1 carta.</b> O resto vai para ${esc(nameOf(s, next))}.`}</span><small>Passada ${d.step} de ${PP_N - 1}</small></p>
+      <div class="pp-row">${h.map((k, i) => `<button type="button" class="pp-pick" data-act="g:keep" data-k="${i}" ${d.picked[me] ? 'disabled' : ''}>${ppCard(k)}</button>`).join('')}</div>
+      <p class="pp-title">Suas cartas guardadas</p><div class="pp-row sm">${d.kept[me].map(k => ppCard(k)).join('') || '<span class="hint">Nenhuma ainda</span>'}</div>
+      <p class="pp-combos">${cur.combos.length ? cur.combos.map(c => `<span>${c.n} <b>+${c.v}</b></span>`).join('') : '<span class="hint">Trio +4 · par +1 · 4 cores +3 · 🌟 dobra o melhor</span>'}</p></div>`;
+  },
+};
+
+/* ---------- 41. Ilha do Tesouro (tabuleiro) ---------- */
+// Tesouros e armadilhas escondidos. Cada buraco mostra a distância até o tesouro mais perto ainda enterrado.
+const IL_STEPS = 6;
+const ilDist = (side, a, b) => Math.abs(Math.floor(a / side) - Math.floor(b / side)) + Math.abs(a % side - b % side);
+const ilLeft = d => d.tre.filter(c => !d.dug[c]);
+Games.ilha = {
+  id: 'ilha', name: 'Ilha do Tesouro', tag: 'Cave e deduza', icon: 'chest', color: '#14B8A6', lip: '#0F766E', min: 1,
+  how: `Tem tesouros e armadilhas enterrados na ilha. Todo mundo escolhe onde cavar ao mesmo tempo, ${IL_STEPS} vezes por rodada. Cada buraco vazio mostra quantos passos faltam até o tesouro mais perto (🔥 quente, 🧊 frio), e todo mundo vê as pistas de todo mundo. Tesouro vale +5 (+3 se mais gente cavou junto); armadilha 💣 tira 2.`,
+  first: 'dig',
+  init(g) {
+    const n = g.roster.length, side = n > 12 ? 10 : 8, cells = shuffle([...Array(side * side).keys()]), nt = 3 + Math.floor(n / 6), nb = 2 + Math.floor(n / 8);
+    g.data = { side, tre: cells.slice(0, nt), traps: cells.slice(nt, nt + nb), dug: {}, picks: {}, step: 0, last: {} };
+  },
+  phases: {
+    dig: { label: 'Escolha onde cavar', dur: 10, bot: [1.5, 7], next: 'show', allIn: (g, s) => active(g, s).every(id => id in g.data.picks), enter(g) { g.data.step++; g.data.picks = {}; } },
+    show: { label: 'Cavando…', dur: 3.5, next: g => g.data.step < IL_STEPS && ilLeft(g.data).length ? 'dig' : 'reveal', enter(g, s) {
+      const d = g.data, by = {}, pts = {};
+      d.last = {};
+      Object.entries(d.picks).forEach(([pid, c]) => { (by[c] = by[c] || []).push(pid); });
+      const found = Object.keys(by).map(Number).filter(c => d.tre.includes(c));
+      Object.entries(by).forEach(([c, ps]) => {
+        c = +c;
+        const k = d.tre.includes(c) ? 'gold' : d.traps.includes(c) ? 'trap' : 0;
+        d.dug[c] = { by: ps, k };
+        ps.forEach(pid => {
+          d.last[pid] = c;
+          if (k === 'gold') add(pts, pid, ps.length > 1 ? 3 : 5);
+          else if (k === 'trap') { const sc = s.players[pid]?.score || 0; if (sc > 0) add(pts, pid, -Math.min(2, sc)); }
+        });
+        if (k === 'gold') addMoment(s, { k: 'tesouro', pid: ps[0], n: ps.length, sc: 1 + (s.players[ps[0]].isBot ? 0 : 1) });
+      });
+      // Distância calculada depois de tirar os tesouros achados agora.
+      const left = d.tre.filter(c => !found.includes(c) && !d.dug[c]);
+      Object.keys(by).map(Number).forEach(c => { if (d.dug[c].k === 0) d.dug[c].k = left.length ? Math.min(...left.map(t => ilDist(d.side, c, t))) : -1; });
+      updateScores(s, pts);
+    } },
+    reveal: { label: 'Mapa do tesouro', dur: 10 },
+  },
+  handle(g, s, pid, a) {
+    const d = g.data, c = a.i | 0;
+    if (!inRoster(g, pid) || g.phase !== 'dig' || a.type !== 'dig' || !(c >= 0 && c < d.side * d.side) || d.dug[c]) return false;
+    d.picks[pid] = c; return true;
+  },
+  done(g, pid) { return g.phase === 'dig' && pid in g.data.picks; },
+  bot(g) {
+    const d = g.data, n = d.side * d.side, open = [...Array(n).keys()].filter(c => !d.dug[c]);
+    if (!open.length) return null;
+    if (Math.random() > botP(.65)) return { type: 'dig', i: pick(open) };
+    // Usa as pistas: um tesouro não pode estar mais perto de um buraco do que o número que ele mostrou.
+    const clues = Object.entries(d.dug).filter(([, x]) => typeof x.k === 'number' && x.k > 0).map(([c, x]) => [+c, x.k]);
+    const sc = open.map(c => [c, clues.reduce((t, [q, k]) => { const dd = ilDist(d.side, c, q); return t + (dd < k ? -20 : dd === k ? 3 / k : 0); }, 0) + Math.random()]);
+    return { type: 'dig', i: sc.sort((a, b) => b[1] - a[1])[0][0] };
+  },
+  ui: { dig(el) { buzz(15); dispatch({ type: 'dig', i: +el.dataset.i }); } },
+  view(g, s, me) {
+    const d = g.data, n = d.side * d.side, digging = g.phase === 'dig' && inRoster(g, me), mine = digging ? d.picks[me] : null, end = g.phase === 'reveal';
+    const heat = k => k <= 1 ? 'h1' : k <= 2 ? 'h2' : k <= 4 ? 'h3' : 'h4';
+    let cells = '';
+    for (let c = 0; c < n; c++) {
+      const x = d.dug[c];
+      if (x) {
+        const lbl = x.k === 'gold' ? '💰' : x.k === 'trap' ? '💣' : x.k < 0 ? '·' : x.k;
+        cells += `<span class="il-c is-dug ${x.k === 'gold' ? 'is-gold' : x.k === 'trap' ? 'is-trap' : x.k > 0 ? heat(x.k) : ''} ${x.by.includes(me) ? 'is-me' : ''}" title="${x.by.map(id => esc(nameOf(s, id))).join(', ')}">${lbl}</span>`;
+      } else if (end && (d.tre.includes(c) || d.traps.includes(c))) cells += `<span class="il-c is-hidden">${d.tre.includes(c) ? '💰' : '💣'}</span>`;
+      else cells += `<button type="button" class="il-c ${mine === c ? 'is-pick' : ''}" data-act="g:dig" data-i="${c}" ${digging ? '' : 'disabled'} aria-label="Cavar aqui"></button>`;
+    }
+    const lc = d.last[me], lx = lc != null && d.dug[lc];
+    const bar = end ? `<b>Fim da caçada!</b> ${ilLeft(d).length ? `${plural(ilLeft(d).length, 'tesouro ficou', 'tesouros ficaram')} enterrado${ilLeft(d).length > 1 ? 's' : ''}` : 'Acharam todos os tesouros!'}`
+      : g.phase === 'show' ? (lx ? (lx.k === 'gold' ? '💰 <b>Você achou um tesouro!</b>' : lx.k === 'trap' ? '💣 <b>Armadilha!</b> −2' : lx.k > 0 ? `Seu buraco: <b>${lx.k}</b> ${plural(lx.k, 'passo', 'passos').replace(/^\d+ /, '')} do tesouro mais perto` : 'Cavou!') : 'Cavando…')
+      : digging ? (mine != null ? '<b>Lugar escolhido!</b> Dá para trocar até o tempo acabar' : '<b>Escolha onde cavar.</b> Use as pistas da galera!') : 'A galera está escolhendo onde cavar…';
+    return `<div class="il"><div class="il-bar"><span>${bar}</span><small>Cavada ${Math.min(d.step, IL_STEPS)} de ${IL_STEPS} · 💰 ${ilLeft(d).length} enterrado${ilLeft(d).length === 1 ? '' : 's'}</small>
+      <small class="il-leg"><i class="h1"></i>1 <i class="h2"></i>2 <i class="h3"></i>3–4 <i class="h4"></i>5+ passos</small></div>
+      <div class="il-grid" style="--side:${d.side}">${cells}</div></div>`;
+  },
+  mount(g, s, me) {
+    const L = Store.local, key = g.round + ':' + g.pkey;
+    if (L.ilSeen === key) return;
+    L.ilSeen = key;
+    const lc = g.data.last[me], x = lc != null && g.data.dug[lc];
+    if (g.phase === 'show' && x) Sound.play(x.k === 'gold' ? 'fanfare' : x.k === 'trap' ? 'boom' : 'click');
+  },
+};
+GAME_ORDER.push('pilha', 'sino', 'passa', 'ilha');
+Object.assign(Games.pilha, { cat: 'cartas' });
+Object.assign(Games.sino, { cat: 'cartas' });
+Object.assign(Games.passa, { cat: 'cartas' });
+Object.assign(Games.ilha, { cat: 'tabuleiro' });
+
+/* ---------- 42. Vaza Maluca (cartas) ---------- */
+// Vazas jogadas ao mesmo tempo: o naipe que manda ganha de tudo; dentro dele (ou sem ele), vale a carta mais alta.
+// Salas grandes viram várias mesas de até 6.
+const VZ_S = ['🔥', '💧', '🌿', '⚡'], VZ_HAND = 5;
+const vzS = k => k >> 4, vzV = k => k & 15;
+const vzPow = (d, k) => (vzS(k) === d.trump ? 100 : 0) + vzV(k);
+const vzTable = (d, pid) => d.tables.findIndex(t => t.includes(pid));
+function vzCard(k, cls = '') { return `<span class="vz-card ${cls}" data-s="${vzS(k)}"><b>${vzV(k)}</b><i>${VZ_S[vzS(k)]}</i></span>`; }
+function vzResolve(g, s) {
+  const d = g.data, pts = {};
+  d.res = d.tables.map((tb, t) => {
+    const here = tb.filter(id => s.players[id] && d.hands[id]?.length);
+    // Quem não jogou a tempo joga a carta mais fraca.
+    here.forEach(id => { if (!d.fold[id] && !d.play[id]) d.play[id] = { k: [...d.hands[id]].sort((a, b) => vzPow(d, a) - vzPow(d, b))[0], at: now() }; });
+    const inn = here.filter(id => !d.fold[id] && d.play[id]);
+    inn.forEach(id => { const h = d.hands[id]; h.splice(h.indexOf(d.play[id].k), 1); });
+    const win = inn.sort((a, b) => vzPow(d, d.play[b].k) - vzPow(d, d.play[a].k) || d.play[a].at - d.play[b].at)[0] || null, val = d.raise[t] ? 2 : 1;
+    if (win) { add(pts, win, val); add(d.won, win, 1); }
+    const folds = here.filter(id => d.fold[id]);
+    // Quem fugiu do "Aumenta!" entrega 1 ponto para quem pediu.
+    if (d.raise[t] && folds.length) add(pts, d.raise[t], folds.length);
+    return { win, val, cards: Object.fromEntries(inn.map(id => [id, d.play[id].k])), folds };
+  });
+  updateScores(s, pts);
+}
+Games.vaza = {
+  id: 'vaza', name: 'Vaza Maluca', tag: 'Vazas e blefe', icon: 'cards', color: '#8B5CF6', lip: '#6D28D9', min: 2,
+  how: `Cada um recebe ${VZ_HAND} cartas de 4 naipes (🔥 💧 🌿 ⚡), de 1 a 10. A cada vaza, todo mundo da mesa joga uma carta em segredo: o naipe que manda ganha de tudo e, dentro dele (ou sem ele), vence a carta mais alta. A vaza vale +1. Depois de jogar, você pode gritar "Aumenta!": a vaza passa a valer +2, e quem fugir entrega 1 ponto para você.`,
+  first: 'play',
+  init(g, s) {
+    const seats = shuffle(g.roster.filter(id => s.players[id])), nT = Math.max(1, Math.ceil(seats.length / 6));
+    const tables = Array.from({ length: nT }, (_, i) => seats.filter((_, j) => j % nT === i)), hands = {};
+    tables.forEach(tb => { const deck = shuffle([0, 1, 2, 3].flatMap(su => Array.from({ length: 10 }, (_, v) => su * 16 + v + 1))); tb.forEach(id => { hands[id] = deck.splice(0, VZ_HAND); }); });
+    g.data = { tables, hands, trump: Math.floor(Math.random() * 4), trick: 0, won: {}, play: {}, raise: {}, fold: {}, fdec: {}, res: [] };
+  },
+  phases: {
+    play: { label: 'Jogue uma carta', dur: 15, bot: [1.5, 8], next: 'trick', allIn: (g, s) => active(g, s).every(id => g.data.play[id] || g.data.fold[id] || !g.data.hands[id]?.length), enter(g) {
+      const d = g.data; d.trick++; d.play = {}; d.raise = {}; d.fold = {}; d.fdec = {}; d.res = [];
+    } },
+    trick: { label: 'Quem leva a vaza?', dur: 4, next: g => g.data.trick < VZ_HAND ? 'play' : 'reveal', enter(g, s) { vzResolve(g, s); } },
+    reveal: { label: 'Placar das vazas', dur: 10, enter(g, s) {
+      const best = Object.entries(g.data.won).filter(([id]) => s.players[id]).sort((a, b) => b[1] - a[1])[0];
+      if (best && best[1] >= 4) addMoment(s, { k: 'vaza', pid: best[0], n: best[1], sc: best[1] });
+    } },
+  },
+  handle(g, s, pid, a) {
+    const d = g.data, t = vzTable(d, pid), h = d.hands[pid];
+    if (!inRoster(g, pid) || g.phase !== 'play' || t < 0 || !h) return false;
+    if (a.type === 'play') {
+      const k = +a.k;
+      if (d.play[pid] || d.fold[pid] || !h.includes(k)) return false;
+      d.play[pid] = { k, at: now() }; return true;
+    }
+    if (a.type === 'raise') { if (!d.play[pid] || d.raise[t] != null) return false; d.raise[t] = pid; return true; }
+    if (a.type === 'fold') { if (d.raise[t] == null || d.raise[t] === pid || d.fold[pid]) return false; d.fold[pid] = true; delete d.play[pid]; return true; }
+    return false;
+  },
+  tick(g, s) {
+    const d = g.data;
+    if (g.phase !== 'play') return false;
+    let ch = false;
+    // Bot que levou um "Aumenta!" decide uma vez: carta fraca, foge.
+    d.tables.forEach((tb, t) => {
+      if (d.raise[t] == null) return;
+      tb.forEach(id => {
+        if (!s.players[id]?.isBot || id === d.raise[t] || d.fold[id] || d.fdec[id] || !d.play[id]) return;
+        d.fdec[id] = true;
+        const k = d.play[id].k;
+        if (vzS(k) !== d.trump && vzV(k) < 7 && Math.random() < botP(.6)) { d.fold[id] = true; delete d.play[id]; ch = true; }
+      });
+    });
+    return ch;
+  },
+  done(g, pid) { return g.phase === 'play' && !!(g.data.play[pid] || g.data.fold[pid]); },
+  bot(g, s, pid) {
+    const d = g.data, h = d.hands[pid];
+    if (!h?.length) return null;
+    const sorted = [...h].sort((a, b) => vzPow(d, b) - vzPow(d, a)), k = Math.random() < .55 ? sorted[0] : sorted[sorted.length - 1];
+    const acts = [{ type: 'play', k }];
+    if (vzS(k) === d.trump && vzV(k) >= 8 && Math.random() < botP(.5)) acts.push({ type: 'raise' });
+    return acts;
+  },
+  ui: {
+    card(el) { buzz(15); dispatch({ type: 'play', k: +el.dataset.k }); },
+    raise() { buzz([30, 30, 60]); dispatch({ type: 'raise' }); },
+    fold() { dispatch({ type: 'fold' }); },
+  },
+  view(g, s, me) {
+    const d = g.data, t = vzTable(d, me), h = d.hands[me] || [], tb = t >= 0 ? d.tables[t] : [];
+    const trump = `<p class="vz-trump">Naipe que manda: <b data-s="${d.trump}">${VZ_S[d.trump]}</b><small>Vaza ${Math.min(d.trick, VZ_HAND)} de ${VZ_HAND}${d.tables.length > 1 ? ` · mesa ${t + 1} de ${d.tables.length}` : ''}</small></p>`;
+    if (g.phase === 'reveal') {
+      const ids = g.roster.filter(id => s.players[id]).sort((a, b) => (d.won[b] || 0) - (d.won[a] || 0));
+      return trump + `<ul class="res-list">${ids.map(id => `<li class="res-row">${avatar(s.players[id], 'sm')}<span class="res-who"><span class="res-name">${esc(nameOf(s, id))}</span></span>
+        <span class="res-val">${plural(d.won[id] || 0, 'vaza', 'vazas')}</span>${deltaBadge(g.roundDelta[id])}</li>`).join('')}</ul>`;
+    }
+    const seats = tb.filter(id => s.players[id]).map(id => {
+      const r = d.res[t], k = g.phase === 'trick' && r ? r.cards[id] : null, st = d.fold[id] ? '🏳️' : d.play[id] ? '✅' : '…';
+      return `<div class="vz-seat ${r && r.win === id ? 'is-win' : ''} ${id === me ? 'is-me' : ''}">${avatar(s.players[id], 'sm')}<b>${id === me ? 'Você' : esc(nameOf(s, id))}</b>
+        ${k != null ? vzCard(k, 'sm') : `<span class="vz-st">${g.phase === 'trick' && d.fold[id] ? '🏳️ fugiu' : st}</span>`}<small>${plural(d.won[id] || 0, 'vaza', 'vazas')}</small></div>`;
+    }).join('');
+    const raiser = d.raise[t];
+    let bar = '';
+    if (g.phase === 'trick') { const r = d.res[t]; bar = r?.win ? `🏆 <b>${r.win === me ? 'Você levou' : esc(nameOf(s, r.win)) + ' levou'}</b> a vaza${r.val > 1 ? ' valendo +2' : ''}!${r.folds.length ? ` ${plural(r.folds.length, 'fujão entregou', 'fujões entregaram')} ponto.` : ''}` : 'Vaza sem dono.'; }
+    else if (raiser != null) bar = `📣 <b>${raiser === me ? 'Você pediu' : esc(nameOf(s, raiser)) + ' pediu'} AUMENTA!</b> A vaza vale +2.`;
+    const mine = d.play[me];
+    const acts = g.phase !== 'play' || t < 0 ? '' : d.fold[me] ? '<p class="hint center">Você fugiu desta vaza.</p>'
+      : raiser != null && raiser !== me ? `<div class="vz-acts"><button type="button" class="btn ghost pill" data-act="g:fold">🏳️ Fugir (entrega 1 ponto)</button><span class="hint">ou fique e jogue</span></div>`
+      : mine && raiser == null ? '<div class="vz-acts"><button type="button" class="btn game pill vz-raise" data-act="g:raise">📣 Aumenta!</button></div>' : '';
+    const hand = h.length ? `<div class="vz-hand">${[...h].sort((a, b) => vzS(a) - vzS(b) || vzV(a) - vzV(b)).map(k => `<button type="button" class="vz-pick ${mine?.k === k ? 'on' : ''} ${vzS(k) === d.trump ? 'is-trump' : ''}" data-act="g:card" data-k="${k}" ${g.phase !== 'play' || mine || d.fold[me] ? 'disabled' : ''}>${vzCard(k)}</button>`).join('')}</div>` : '';
+    return `<div class="vz">${trump}<div class="vz-table">${seats}</div>${bar ? `<p class="vz-bar">${bar}</p>` : ''}${hand}${acts}</div>`;
+  },
+  mount(g, s, me) {
+    const L = Store.local, key = g.round + ':' + g.pkey;
+    if (L.vzSeen === key) return;
+    L.vzSeen = key;
+    const t = vzTable(g.data, me), r = g.data.res[t];
+    if (g.phase === 'trick' && r) Sound.play(r.win === me ? 'points' : 'click');
+  },
+};
+
+/* ---------- 43. Ponte que Cai (tabuleiro) ---------- */
+// Em cada fileira, uma das tábuas é falsa. Quem cai sai da ponte, mas passa a ver as tábuas falsas e pode dar dica (ou mentir).
+const PT_ROWS = 6;
+const ptRow = d => d.row - 1;
+Games.ponte = {
+  id: 'ponte', name: 'Ponte que Cai', tag: 'Sorte e confiança', icon: 'bridge', color: '#64748B', lip: '#334155', min: 1,
+  how: `Uma ponte com ${PT_ROWS} fileiras: em quase todas, a tábua da esquerda ou a da direita é falsa (em algumas, as duas aguentam). Todo mundo pula ao mesmo tempo. Cada fileira atravessada vale +1 e chegar ao fim vale +5. Quem cai sai da ponte, mas passa a ver as tábuas falsas e pode dar dica para quem ainda está de pé… ou mentir.`,
+  first: 'jump',
+  init(g, s) {
+    // -1: as duas tábuas aguentam (uns 30% das fileiras), para a ponte não virar só cara ou coroa.
+    g.data = { fake: Array.from({ length: PT_ROWS }, () => Math.random() < .3 ? -1 : Math.random() < .5 ? 0 : 1), row: 0, alive: g.roster.filter(id => s.players[id]), pos: {}, fell: {}, choice: {}, hints: {}, known: {} };
+  },
+  phases: {
+    jump: { label: 'Esquerda ou direita?', dur: 9, bot: [1.5, 6.5], next: 'fall', allIn: (g, s) => active(g, s).filter(id => g.data.alive.includes(id)).every(id => id in g.data.choice), enter(g) { const d = g.data; d.row++; d.choice = {}; d.hints = {}; } },
+    fall: { label: 'Segura!', dur: 3, next: g => g.data.alive.length && g.data.row < PT_ROWS ? 'jump' : 'reveal', enter(g, s) {
+      const d = g.data, r = ptRow(d), pts = {}, down = [];
+      d.alive.forEach(id => { if (!(id in d.choice)) d.choice[id] = Math.random() < .5 ? 0 : 1; });
+      d.alive.forEach(id => { if (d.choice[id] === d.fake[r]) { d.fell[id] = d.row; down.push(id); } else { d.pos[id] = d.row; add(pts, id, 1); } });
+      d.known[r] = { safe: d.fake[r] < 0 ? -1 : 1 - d.fake[r], broke: down.length > 0 };
+      d.alive = d.alive.filter(id => !down.includes(id));
+      if (d.row === PT_ROWS) d.alive.forEach(id => { add(pts, id, 5); addMoment(s, { k: 'ponte', pid: id, sc: 2 + (s.players[id].isBot ? 0 : 1) }); });
+      updateScores(s, pts);
+    } },
+    reveal: { label: 'Fim da ponte', dur: 10 },
+  },
+  handle(g, s, pid, a) {
+    const d = g.data, v = a.v === 1 ? 1 : 0;
+    if (!inRoster(g, pid) || g.phase !== 'jump') return false;
+    if (a.type === 'jump' && d.alive.includes(pid)) { d.choice[pid] = v; return true; }
+    if (a.type === 'hint' && d.fell[pid]) { d.hints[pid] = v; return true; }
+    return false;
+  },
+  done(g, pid) { return g.phase === 'jump' && g.data.alive.includes(pid) && pid in g.data.choice; },
+  bot(g, s, pid) {
+    const d = g.data, r = ptRow(d);
+    if (d.fell[pid]) return { type: 'hint', v: d.fake[r] < 0 ? (Math.random() < .5 ? 0 : 1) : Math.random() < botP(.7) ? 1 - d.fake[r] : d.fake[r] };
+    if (!d.alive.includes(pid)) return null;
+    // Confia na maioria das dicas (às vezes).
+    const hs = Object.values(d.hints), l = hs.filter(x => x === 0).length, rr = hs.length - l;
+    return { type: 'jump', v: hs.length && l !== rr && Math.random() < botP(.6) ? (l > rr ? 0 : 1) : Math.random() < .5 ? 0 : 1 };
+  },
+  ui: {
+    jump(el) { buzz(20); dispatch({ type: 'jump', v: +el.dataset.v }); },
+    hint(el) { dispatch({ type: 'hint', v: +el.dataset.v }); },
+  },
+  view(g, s, me) {
+    const d = g.data, r = ptRow(d), alive = d.alive.includes(me), fell = !!d.fell[me], end = g.phase === 'reveal';
+    let rows = '';
+    for (let i = PT_ROWS - 1; i >= 0; i--) {
+      const k = d.known[i], who = Object.keys(d.pos).filter(id => s.players[id] && d.pos[id] === i + 1 && d.alive.includes(id));
+      const tile = side => {
+        const broken = k && k.broke && k.safe >= 0 && side !== k.safe, safe = k && (k.safe < 0 || side === k.safe), seeFake = (fell || end) && !k && d.fake[i] === side;
+        // Quem está de pé fica na tábua firme da última fileira que atravessou.
+        const here = safe && (k.safe >= 0 || side === 0) ? who : [];
+        return `<span class="pt-t ${broken ? 'is-broke' : ''} ${safe ? 'is-safe' : ''} ${seeFake ? 'is-fake' : ''} ${i === r && g.phase === 'jump' ? 'is-now' : ''}">${broken ? '💥' : seeFake ? '❌' : ''}${here.slice(0, 4).map(id => `<span class="pt-av" style="--pc:${s.players[id].color}">${esc(s.players[id].avatar)}</span>`).join('')}${here.length > 4 ? `<small>+${here.length - 4}</small>` : ''}</span>`;
+      };
+      rows += `<div class="pt-row"><i>${i + 1}</i>${tile(0)}${tile(1)}</div>`;
+    }
+    const hs = Object.values(d.hints), hl = hs.filter(x => x === 0).length, hr = hs.length - hl;
+    let panel;
+    if (end) panel = `<p class="verdict center">${d.alive.length ? `🏁 ${d.alive.filter(id => s.players[id]).map(id => esc(nameOf(s, id))).join(', ')} ${d.alive.length > 1 ? 'chegaram' : 'chegou'} ao fim!` : 'Ninguém atravessou a ponte!'}</p>`;
+    else if (g.phase === 'fall') panel = alive ? `<p class="pt-msg is-ok">😮‍💨 Tábua firme! +1</p>` : d.fell[me] === d.row ? '<p class="pt-msg is-bad">💥 A tábua quebrou! Você caiu.</p>' : '<p class="pt-msg">Segura…</p>';
+    else if (alive) panel = `<p class="pt-msg">Fileira <b>${d.row}</b> de ${PT_ROWS}: escolha uma tábua</p>
+      <div class="pt-btns"><button type="button" class="btn big pill ${d.choice[me] === 0 ? 'game' : 'ghost'}" data-act="g:jump" data-v="0">⬅️ Esquerda</button><button type="button" class="btn big pill ${d.choice[me] === 1 ? 'game' : 'ghost'}" data-act="g:jump" data-v="1">Direita ➡️</button></div>
+      ${hs.length ? `<p class="pt-hints">Dicas de quem caiu: <b>⬅️ ${hl}</b> · <b>➡️ ${hr}</b></p>` : ''}`;
+    else if (fell) panel = `<p class="pt-msg">Você caiu, mas vê as tábuas falsas ❌. Dê uma dica (ou minta 😈):</p>
+      <div class="pt-btns"><button type="button" class="btn pill ${d.hints[me] === 0 ? 'game' : 'ghost'}" data-act="g:hint" data-v="0">Dica: ⬅️</button><button type="button" class="btn pill ${d.hints[me] === 1 ? 'game' : 'ghost'}" data-act="g:hint" data-v="1">Dica: ➡️</button></div>`;
+    else panel = waitCard('A galera está atravessando', 'Você entra na próxima rodada');
+    const people = g.roster.filter(id => s.players[id]).map(id => `<span class="pt-p ${d.fell[id] ? 'is-down' : ''}">${avatar(s.players[id], 'sm')}<small>${d.fell[id] ? '💥' : d.pos[id] || 0}</small></span>`).join('');
+    return `<div class="pt"><div class="pt-bridge"><div class="pt-end">🏁</div>${rows}<div class="pt-start">Começo</div></div><div class="pt-side">${panel}<div class="pt-people">${people}</div></div></div>`;
+  },
+  mount(g, s, me) {
+    const L = Store.local, key = g.round + ':' + g.pkey;
+    if (L.ptSeen === key) return;
+    L.ptSeen = key;
+    if (g.phase === 'fall') Sound.play(g.data.fell[me] === g.data.row ? 'boom' : g.data.alive.includes(me) ? 'correct' : 'click');
+  },
+};
+
+/* ---------- 44. Linha de 4 Gigante (tabuleiro) ---------- */
+// Todo mundo joga ao mesmo tempo, com 3 s de espera entre uma peça e outra. Fechou 4 em linha: +3 e as peças somem.
+const L4_COOL = 3000, L4_DIRS = [[1, 0], [0, 1], [1, 1], [1, -1]];
+function l4Put(g, s, pid, i) {
+  const d = g.data, t = now();
+  if (g.phase !== 'play' || !(i >= 0 && i < d.b.length) || d.b[i] || (d.cool[pid] || 0) > t) return false;
+  d.b[i] = pid; d.age[i] = ++d.seq; d.cool[pid] = t + L4_COOL;
+  const x0 = i % d.cols, y0 = Math.floor(i / d.cols), gone = new Set();
+  let n = 0;
+  L4_DIRS.forEach(([dx, dy]) => {
+    const run = [i];
+    for (const sg of [1, -1]) { let x = x0 + dx * sg, y = y0 + dy * sg; while (x >= 0 && y >= 0 && x < d.cols && y < d.rows && d.b[y * d.cols + x] === pid) { run.push(y * d.cols + x); x += dx * sg; y += dy * sg; } }
+    if (run.length >= 4) { n++; run.forEach(c => gone.add(c)); }
+  });
+  if (n) {
+    gone.forEach(c => { d.b[c] = null; delete d.age[c]; });
+    d.flash = [...gone]; d.last = { pid, n, at: t };
+    add(d.lines, pid, n);
+    updateScores(s, { [pid]: 3 * n });
+  }
+  // Tabuleiro quase cheio: as peças mais antigas saem para abrir espaço.
+  const full = d.b.filter(Boolean).length;
+  if (full > d.b.length * .8) Object.keys(d.age).sort((a, b) => d.age[a] - d.age[b]).slice(0, full - Math.floor(d.b.length * .6)).forEach(c => { d.b[c] = null; delete d.age[c]; });
+  return true;
+}
+function l4Best(d, pid) {
+  // Nota de cada casa vazia: quanto ela aumenta a sua linha, e quanto atrapalha a maior linha de outra pessoa.
+  const run = (i, who) => {
+    const x0 = i % d.cols, y0 = Math.floor(i / d.cols);
+    return Math.max(...L4_DIRS.map(([dx, dy]) => { let n = 1; for (const sg of [1, -1]) { let x = x0 + dx * sg, y = y0 + dy * sg; while (x >= 0 && y >= 0 && x < d.cols && y < d.rows && d.b[y * d.cols + x] === who) { n++; x += dx * sg; y += dy * sg; } } return n; }));
+  };
+  const foes = j => { const x0 = j % d.cols, y0 = Math.floor(j / d.cols), out = new Set(); for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const x = x0 + dx, y = y0 + dy; if (x >= 0 && y >= 0 && x < d.cols && y < d.rows) { const o = d.b[y * d.cols + x]; if (o && o !== pid) out.add(o); } } return [...out]; };
+  const smart = Math.random() < botP(.7);
+  let best = -1, bs = -Infinity;
+  d.b.forEach((v, i) => {
+    if (v) return;
+    const mine = run(i, pid), block = smart ? Math.max(0, ...foes(i).map(o => run(i, o))) : 0;
+    const sc = mine * mine + (block >= 4 ? 12 : block >= 3 ? 4 : 0) + Math.random() * 2;
+    if (sc > bs) { bs = sc; best = i; }
+  });
+  return best;
+}
+Games.linha4 = {
+  id: 'linha4', name: 'Linha de 4 Gigante', tag: 'Todo mundo ao mesmo tempo', icon: 'four', color: '#EF4444', lip: '#B91C1C', min: 2,
+  how: 'Um tabuleiro gigante e ninguém espera a vez: cada um põe uma peça onde quiser, com 3 segundos de espera entre uma e outra. Fechou 4 peças suas em linha (deitada, em pé ou na diagonal)? +3, e essas peças somem. Dá para atrapalhar a linha dos outros!',
+  first: 'play',
+  init(g) {
+    const n = g.roster.length, cols = clamp(7 + Math.ceil(n / 2), 8, 14), rows = clamp(6 + Math.ceil(n / 3), 7, 10);
+    g.data = { cols, rows, b: Array(cols * rows).fill(null), age: {}, seq: 0, cool: {}, lines: {}, flash: [], last: null, bnext: {} };
+  },
+  phases: {
+    play: { label: 'Linha de 4!', dur: 60, next: 'reveal' },
+    reveal: { label: 'Quem fez mais linhas?', dur: 10, enter(g, s) {
+      const best = Object.entries(g.data.lines).filter(([id]) => s.players[id]).sort((a, b) => b[1] - a[1])[0];
+      if (best && best[1] >= 3) addMoment(s, { k: 'linha4', pid: best[0], n: best[1], sc: best[1] });
+    } },
+  },
+  handle(g, s, pid, a) {
+    if (!inRoster(g, pid) || a.type !== 'put') return false;
+    return l4Put(g, s, pid, a.i | 0);
+  },
+  tick(g, s) {
+    const d = g.data, t = now();
+    if (g.phase !== 'play') return false;
+    let ch = false;
+    for (const id of g.roster) {
+      if (!s.players[id]?.isBot) continue;
+      if (!d.bnext[id]) { d.bnext[id] = t + rand(1500, 4500) / botSpeed(); continue; }
+      if (t < d.bnext[id] || (d.cool[id] || 0) > t) continue;
+      d.bnext[id] = t + rand(L4_COOL + 200, L4_COOL + 2600) / botSpeed();
+      const i = l4Best(d, id);
+      if (i >= 0 && l4Put(g, s, id, i)) ch = true;
+    }
+    return ch;
+  },
+  done() { return false; },
+  ui: { put(el) { buzz(12); dispatch({ type: 'put', i: +el.dataset.i }); } },
+  view(g, s, me) {
+    const d = g.data, can = inRoster(g, me) && g.phase === 'play', wait = Math.max(0, (d.cool[me] || 0) - now()), fresh = d.last && now() - d.last.at < 1500 ? d.flash : [];
+    const cells = d.b.map((v, i) => {
+      const p = v && s.players[v];
+      return `<button type="button" class="l4-c ${p ? (v === me ? 'is-me' : 'is-o') : ''} ${fresh.includes(i) ? 'is-pop' : ''}" data-act="g:put" data-i="${i}" ${can && !v ? '' : 'disabled'} ${p ? `style="--pc:${p.color}"` : ''} aria-label="${p ? 'Peça de ' + esc(p.name) : 'Casa livre'}">${p ? esc(p.avatar || '') : ''}</button>`;
+    }).join('');
+    const ranked = g.roster.filter(id => s.players[id] && d.lines[id]).sort((a, b) => d.lines[b] - d.lines[a]);
+    const chips = ranked.slice(0, 8).map(id => `<span class="${id === me ? 'is-me' : ''}">${avatar(s.players[id], 'sm')}${esc(nameOf(s, id))} <b>${plural(d.lines[id], 'linha', 'linhas')}</b></span>`).join('');
+    const last = d.last && s.players[d.last.pid] && now() - d.last.at < 4000 ? `🎉 <b>${d.last.pid === me ? 'Você' : esc(nameOf(s, d.last.pid))}</b> fechou ${d.last.n > 1 ? d.last.n + ' linhas' : 'uma linha'}! +${3 * d.last.n}` : '';
+    const bar = g.phase === 'reveal' ? (ranked.length ? `<b>${esc(nameOf(s, ranked[0]))}</b> fez mais linhas (${d.lines[ranked[0]]})` : 'Ninguém fechou linha!')
+      : !can ? 'A galera está jogando…' : wait ? `<span class="l4-wait"><i style="animation-duration:${wait}ms"></i></span> Espere ${Math.ceil(wait / 1000)} s` : '<b>Pronto!</b> Toque numa casa livre';
+    return `<div class="l4"><div class="l4-bar"><span>${bar}</span>${last ? `<small>${last}</small>` : ''}</div>
+      <div class="l4-grid" style="--cols:${d.cols};--rows:${d.rows}">${cells}</div>${chips ? `<div class="tn-score">${chips}</div>` : ''}</div>`;
+  },
+  mount(g, s, me) {
+    const d = g.data, L = Store.local, key = g.round + ':' + (d.last ? d.last.at : 0);
+    if (L.l4Seen && L.l4Seen !== key && d.last) Sound.play(d.last.pid === me ? 'fanfare' : 'pop');
+    L.l4Seen = key;
+    // A espera acaba sem nenhuma novidade na sala: redesenha para liberar o tabuleiro.
+    clearTimeout(L.l4Timer);
+    const wait = (d.cool[me] || 0) - now();
+    if (g.phase === 'play' && wait > 0) L.l4Timer = setTimeout(() => render(), wait + 30);
+  },
+};
+GAME_ORDER.push('vaza', 'ponte', 'linha4');
+Object.assign(Games.vaza, { cat: 'cartas' });
+Object.assign(Games.ponte, { cat: 'tabuleiro' });
+Object.assign(Games.linha4, { cat: 'tabuleiro' });
+
 /* =====================================================================
    Extras da partida: medalhas, melhores momentos, números de cada um,
    imagens para compartilhar, narração, vibração, temas, conteúdo da sala,
@@ -6954,6 +8397,16 @@ const momentLine = (s, m) => {
     case 'mane': return `<b>O chute mais doido</b><p>${nm(m.pid)} chutou ${fmtNum(m.v)} para “${esc(m.q)}”. Era ${fmtNum(m.a)}.</p>`;
     case 'type': return `<b>Dedos mais rápidos</b><p>${nm(m.pid)} digitou a ${m.wpm} palavras por minuto.</p>`;
     case 'dare': return `<b>Coragem da noite</b><p>${nm(m.pid)} topou: “${esc(m.text)}”</p>`;
+    case 'vaza': return `<b>Rei das vazas</b><p>${nm(m.pid)} levou ${m.n} vazas na Vaza Maluca.</p>`;
+    case 'ponte': return `<b>Travessia</b><p>${nm(m.pid)} atravessou a Ponte que Cai inteira 🌉</p>`;
+    case 'linha4': return `<b>Mestre das linhas</b><p>${nm(m.pid)} fechou ${m.n} linhas de 4.</p>`;
+    case 'alvo': return `<b>Na mosca</b><p>${nm(m.pid)} parou exatamente no ${m.n} na Pilha no Alvo 🎯</p>`;
+    case 'sino': return `<b>Mão mais rápida</b><p>${nm(m.pid)} juntou 4 ${m.e} e tocou o sino primeiro 🔔</p>`;
+    case 'passa': return `<b>Combo da noite</b><p>${nm(m.pid)} fez ${m.n} pontos de combo no Passa-Passa.</p>`;
+    case 'tesouro': return `<b>Achou o tesouro</b><p>${nm(m.pid)} cavou no lugar certo da Ilha do Tesouro 💰</p>`;
+    case 'trail': return `<b>Volta completa</b><p>${nm(m.pid)} cruzou a chegada da Trilha da Galera 🏆</p>`;
+    case 'feira': return `<b>Negócio da China</b><p>${nm(m.pid)} deu ${m.e1} e levou ${m.e2} na Feira do Rolo: lucrou ${m.n}.</p>`;
+    case 'terra': return `<b>Dono do mapa</b><p>${nm(m.pid)} juntou ${m.n} casas ligadas na Terra de Ninguém.</p>`;
     case 'auction': return `<b>Pior compra do leilão</b><p>${nm(m.pid)} pagou ${plural(m.bid, 'moeda', 'moedas')} por ${m.e} ${esc(m.name)}.</p>`;
     case 'jump': return `<b>Rodada mais lucrativa</b><p>${nm(m.pid)} fez ${plural(m.n, 'ponto', 'pontos')} numa rodada só${Games[m.g] ? ` (${Games[m.g].name})` : ''}.</p>`;
     case 'fire': return `<b>Em chamas</b><p>${nm(m.pid)} pontuou ${m.n} rodadas seguidas 🔥</p>`;
@@ -6974,7 +8427,7 @@ function momentsHTML(s) {
 }
 
 // Cada momento vira um slide do replay.
-const RP_ORDER = ['drawd', 'draw', 'lie', 'cap', 'map', 'reflex', 'termo', 'type', 'mane', 'auction', 'dare', 'jump', 'fire', 'ach'];
+const RP_ORDER = ['drawd', 'draw', 'lie', 'cap', 'map', 'reflex', 'termo', 'type', 'mane', 'auction', 'feira', 'terra', 'trail', 'alvo', 'sino', 'passa', 'tesouro', 'vaza', 'ponte', 'linha4', 'dare', 'jump', 'fire', 'ach'];
 function replaySlide(s, m) {
   const P = s.players[m.pid], nm = esc(P?.name || 'Alguém'), av = P ? avatar(P, 'xl') : '', big = e => `<span class="rp-e">${esc(e)}</span>`;
   const cv = st => `<canvas class="rp-cv" width="1000" height="750" data-tel='${JSON.stringify(st || []).replace(/'/g, '&#39;')}' role="img" aria-label="Desenho"></canvas>`;
@@ -6989,6 +8442,16 @@ function replaySlide(s, m) {
     case 'termo': return { c, tag: 'Gênio do Termo', art: `<div class="rp-tiles">${[...String(m.word || '')].map((l, i) => `<b style="--i:${i}">${esc(l)}</b>`).join('')}</div>`, title: `em ${plural(m.n, 'chute', 'chutes')}!`, text: `${nm} achou a palavra` };
     case 'type': return { c, tag: 'Dedos mais rápidos', art: av, title: `${m.wpm} palavras/min`, text: `${nm} digitou como um foguete` };
     case 'mane': return { c, tag: 'O chute mais doido', art: av, title: `${fmtNum(m.v)}?!`, text: `${nm} chutou isso para “${esc(m.q)}”. Era ${fmtNum(m.a)}.` };
+    case 'vaza': return { c, tag: 'Rei das vazas', art: av, title: `${m.n} vazas`, text: `${nm} mandou na Vaza Maluca` };
+    case 'ponte': return { c, tag: 'Travessia', art: big('🌉'), title: 'Chegou ao fim!', text: `${nm} atravessou a Ponte que Cai` };
+    case 'linha4': return { c, tag: 'Mestre das linhas', art: av, title: `${m.n} linhas de 4`, text: `${nm} dominou o tabuleiro gigante` };
+    case 'alvo': return { c, tag: 'Na mosca', art: big('🎯'), title: `Exatamente ${m.n}`, text: `${nm} parou no alvo da Pilha` };
+    case 'sino': return { c, tag: 'Mão mais rápida', art: big(m.e), title: '🔔 Primeiro!', text: `${nm} juntou 4 iguais e tocou o sino` };
+    case 'passa': return { c, tag: 'Combo da noite', art: av, title: `+${m.n} de combo`, text: `${nm} montou a melhor mão do Passa-Passa` };
+    case 'tesouro': return { c, tag: 'Achou o tesouro', art: big('💰'), title: 'Cavou certo!', text: `${nm} achou um tesouro na Ilha` };
+    case 'trail': return { c, tag: 'Volta completa', art: av, title: 'Cruzou a chegada! 🏆', text: `${nm} completou ${plural(m.n, 'volta', 'voltas')} na Trilha da Galera` };
+    case 'feira': return { c, tag: 'Negócio da China', art: big(m.e2), title: `+${m.n} numa troca`, text: `${nm} deu ${esc(m.e1)} e levou isso na Feira do Rolo` };
+    case 'terra': return { c, tag: 'Dono do mapa', art: av, title: `${m.n} casas ligadas`, text: `${nm} dominou a Terra de Ninguém` };
     case 'auction': return { c, tag: 'Pior compra do leilão', art: big(m.e), title: plural(m.bid, 'moeda', 'moedas'), text: `${nm} pagou isso por ${esc(m.name)}` };
     case 'dare': return { c, tag: 'Coragem da noite', art: av, title: `“${esc(m.text)}”`, text: `${nm} topou o desafio` };
     case 'jump': return { c, tag: 'Rodada mais lucrativa', art: av, title: `+${m.n} pontos`, text: `${nm} numa rodada só${gm ? ` de ${gm.name}` : ''}` };
@@ -8056,6 +9519,15 @@ function shiftTimers(g, d) {
   if (x.botAt) x.botAt += d;
   if (x.turnAt) x.turnAt += d;
   if (x.hideAt) x.hideAt += d;
+  // Feira do Rolo: hora de cada bot agir e das ofertas abertas.
+  if (x.bwake) Object.keys(x.bwake).forEach(k => { x.bwake[k] += d; });
+  if (x.offers) Object.values(x.offers).forEach(o => { if (o.at) o.at += d; });
+  // Pilha no Alvo e Sino dos Pares: hora de cada bot, sino tocando e sino travado.
+  if (x.bnext) Object.keys(x.bnext).forEach(k => { x.bnext[k] += d; });
+  if (x.lastPass) Object.keys(x.lastPass).forEach(k => { x.lastPass[k] += d; });
+  if (x.ring?.until) { x.ring.at += d; x.ring.until += d; }
+  if (x.lock) Object.keys(x.lock).forEach(k => { x.lock[k] += d; });
+  if (x.cool) Object.keys(x.cool).forEach(k => { x.cool[k] += d; });
   // Só o Termo guarda horários absolutos dos bots (os outros contam a partir do início da etapa).
   if (x.bots) Object.values(x.bots).forEach(pl => { if (Array.isArray(pl?.times)) pl.times = pl.times.map(t => t + d); });
 }
@@ -8503,6 +9975,16 @@ const GUIDE = {
   quemsou: [['❓', 'Uma pessoa fica na berlinda e não vê quem ela é. Todo mundo vê!'], ['💬', 'Ela faz perguntas de sim ou não, e a galera responde nos botões.'], ['🎯', 'Ela tem 3 chutes. Quem responde também ganha +1.']],
   memoria: [['🃏', 'Um tabuleiro de cartas viradas, igual para todos.'], ['👆', 'Na sua vez, vire 2. Par igual é seu e você joga de novo.'], ['👀', 'Olhe as jogadas dos outros! O par da ⭐ vale +3.']],
   cegas: [['🙈', 'Todo mundo desenha a mesma palavra, mas a tela fica tampada.'], ['✏️', 'Desenhe confiando na memória e aperte Pronto.'], ['❤️', 'Depois, vote no desenho mais parecido. Cada voto vale +1.']],
+  trilha: [['🎲', 'Todo mundo rola o dado ao mesmo tempo.'], ['❓', 'Depois vem uma pergunta: acertou, anda mais 2; errou, volta 1.'], ['🚀', 'Casas especiais: 🚀 atalho, 🕳️ buraco, ⭐ e 🎁 dão pontos, 🔁 troca de lugar.'], ['🏆', 'Cruzar a chegada vale +5. No fim da rodada, os 3 mais adiantados pontuam.']],
+  feira: [['🃏', 'Você recebe 5 objetos. Só você vê quanto cada um vale.'], ['🔁', 'Toque numa carta sua e numa da banca para oferecer uma troca.'], ['🤥', 'Pode mentir à vontade! Aceite ou recuse as ofertas que chegarem.'], ['💰', 'No fim, quanto mais valer a sua mão, mais pontos.']],
+  pilha: [['🎯', 'Sai um alvo. Vire cartas da sua pilha e pare quando quiser.'], ['💥', 'Passou do alvo? Estourou e fica sem nada.'], ['🃏', 'Especiais: ✖️2 dobra a próxima, 🔙 desfaz a última, 🫳 rouba de alguém.'], ['🏆', 'Na mosca vale +5. O mais perto ganha +3 e o segundo, +1.']],
+  sino: [['🃏', 'Você tem 4 cartas. Toque numa para passar ao vizinho.'], ['🔁', 'A carta que vem do outro lado entra na sua mão.'], ['🔔', 'Juntou 4 iguais? Toque o sino (+3). Os outros têm 3 segundos para tocar também.'], ['⚠️', 'Quem não tocar perde 2. Tocar sem 4 iguais tira 1.']],
+  passa: [['🍎', 'Você recebe 6 cartas de fruta.'], ['🔁', 'Guarde 1 e passe o resto para o vizinho. Repete até acabar.'], ['🏆', 'Combos: trio +4, par +1, uma de cada cor +3. A 🌟 dobra o melhor.']],
+  ilha: [['🏝️', 'Tem tesouros e armadilhas enterrados na ilha.'], ['⛏️', 'Todo mundo escolhe onde cavar ao mesmo tempo.'], ['🔥', 'Cada buraco mostra quantos passos faltam até o tesouro mais perto. Use as pistas de todos!'], ['💰', 'Tesouro vale +5. Armadilha 💣 tira 2.']],
+  vaza: [['🃏', 'Você recebe 5 cartas de 4 naipes, de 1 a 10.'], ['👑', 'Todo mundo joga uma carta ao mesmo tempo. O naipe que manda ganha de tudo; depois, vale a mais alta.'], ['📣', 'Jogou? Grite "Aumenta!": a vaza vale +2, e quem fugir te entrega 1 ponto.']],
+  ponte: [['🌉', 'Em cada fileira da ponte, uma das tábuas é falsa.'], ['⬅️', 'Todo mundo escolhe esquerda ou direita ao mesmo tempo.'], ['💥', 'Caiu? Você vê as tábuas falsas e pode dar dica… ou mentir.'], ['🏁', 'Cada fileira vale +1. Chegar ao fim vale +5.']],
+  linha4: [['🧱', 'Um tabuleiro gigante. Ninguém espera a vez!'], ['⏱️', 'Ponha uma peça onde quiser. Depois, espere 3 segundos para a próxima.'], ['🎉', 'Fechou 4 suas em linha? +3, e as peças somem. Atrapalhe os outros!']],
+  terra: [['🟩', 'Todo mundo escolhe uma casa do mapa em segredo, ao mesmo tempo.'], ['📐', 'Depois da primeira, as casas precisam encostar no seu território.'], ['✖', 'Duas pessoas na mesma casa? Ela vira terra de ninguém.'], ['🏆', 'Cada casa vale +1. A maior área ligada ganha +5 (empate: +2 para cada).']],
 };
 // Jogo sem passo a passo escrito: usa as frases da descrição.
 const guideOf = id => GUIDE[id] || String(Games[id]?.how || '').split(/(?<=[.!?])\s+/).filter(Boolean).slice(0, 4).map((x, i) => [['1️⃣', '2️⃣', '3️⃣', '4️⃣'][i], x]);
@@ -8623,7 +10105,13 @@ function renderTop() {
 
 /* ---------- Ícones (SVG em linha, traço de 2px) ---------- */
 const ICONS = {
-  cards: '<rect x="3.2" y="5.5" width="10" height="14" rx="2" transform="rotate(-12 8.2 12.5)"/><rect x="10.8" y="4.5" width="10" height="14" rx="2" transform="rotate(10 15.8 11.5)"/>',
+  dice: '<rect x="4" y="4" width="16" height="16" rx="3.5"/><path d="M8.6 8.6h.01M15.4 8.6h.01M12 12h.01M8.6 15.4h.01M15.4 15.4h.01" stroke-width="2.8"/>',
+  swap: '<path d="M4 8.5h15l-4-4M20 15.5H5l4 4"/>',
+  bell: '<path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.5 2h-15z"/><path d="M10 21h4"/>',
+  bridge: '<path d="M2 15h20M4 15v5M20 15v5M2 10c4 0 6 2.5 10 2.5S18 10 22 10"/><path d="M8 11.6V15M12 12.5V15M16 11.6V15"/>',
+  four: '<circle cx="5.5" cy="18.5" r="2.2"/><circle cx="10" cy="14" r="2.2"/><circle cx="14.5" cy="9.5" r="2.2"/><circle cx="19" cy="5" r="2.2"/>',
+  chest: '<rect x="3" y="10" width="18" height="10" rx="2"/><path d="M3 14h18M5 10a7 5 0 0 1 14 0M12 13v3"/>',
+  cards:'<rect x="3.2" y="5.5" width="10" height="14" rx="2" transform="rotate(-12 8.2 12.5)"/><rect x="10.8" y="4.5" width="10" height="14" rx="2" transform="rotate(10 15.8 11.5)"/>',
   blind: '<path d="M2.8 12s3.4-6 9.2-6c1.5 0 2.9.4 4.1 1M21.2 12s-3.4 6-9.2 6c-1.5 0-2.9-.4-4.1-1"/><path d="M4 20 20 4"/>',
   pairs: '<rect x="3" y="4" width="8" height="11" rx="1.8"/><rect x="13" y="9" width="8" height="11" rx="1.8"/><path d="M7 8.3v2.4M17 13.3v2.4"/>',
   question: '<circle cx="12" cy="12" r="9"/><path d="M9.2 9.3a2.9 2.9 0 0 1 5.6.9c0 1.9-2.8 2.6-2.8 2.6"/><path d="M12 16.7h.01" stroke-width="2.8"/>',
@@ -9611,7 +11099,7 @@ function suggestBarHTML(s, host) {
 MEDALS.push({ k: 'kudos', e: '💖', name: 'Mais querido', desc: 'recebeu mais GGs' }, { k: 'throws', e: '🍅', name: 'Atirador de elite', desc: 'mais arremessos' });
 
 /* ---------- Chat ao vivo e reações flutuantes ---------- */
-const Chat = { open: false, seen: 0, lastN: null, built: false };
+const Chat = { open: false, seen: 0, lastN: null, built: false, toEnd: false };
 function renderChat() {
   const root = $('#chatRoot'), s = Store.room;
   document.body.classList.toggle('in-room', !!(s && Store.me));
@@ -9666,7 +11154,9 @@ function renderChat() {
   const nearBottom = list.scrollHeight - list.scrollTop - list.clientHeight < 60;
   const listHTML = msgs.map(m => chatItem(s, m)).join('') || '<li class="chat-sys">Ninguém falou nada ainda. Puxa o assunto!</li>';
   if (list.__html !== listHTML) list.innerHTML = list.__html = listHTML;
-  if (nearBottom || Chat.open) list.scrollTop = list.scrollHeight;
+  // Só desce sozinho se a pessoa já estava no fim (ou acabou de abrir o chat / mandar mensagem). Antes descia
+  // em toda atualização da sala com o chat aberto: quem rolava para ler mensagens antigas era puxado de volta.
+  if (nearBottom || Chat.toEnd) { list.scrollTop = list.scrollHeight; Chat.toEnd = false; }
   const unread = msgs.filter(m => m.n > Chat.seen && !m.sys && m.pid !== me).length, badge = $('#chatBadge');
   badge.hidden = !unread;
   badge.textContent = unread > 9 ? '9+' : unread;
@@ -10142,7 +11632,7 @@ const Actions = {
     if (!panel) return;
     panel.hidden = !Chat.open;
     $$('[data-act="chat"]').forEach(b => b.setAttribute('aria-expanded', Chat.open));
-    if (Chat.open) { const tray = $('#reactTray'); if (tray) tray.hidden = true; renderChat(); setTimeout(() => $('#chatIn')?.focus(), 30); }
+    if (Chat.open) { const tray = $('#reactTray'); if (tray) tray.hidden = true; Chat.toEnd = true; renderChat(); setTimeout(() => $('#chatIn')?.focus(), 30); }
     else renderChat();
   },
   chatMax() { const v = ChatSize.get(); v.max = !v.max; ChatSize.save(v); applyChatSize(); },
@@ -10330,6 +11820,7 @@ const Forms = {
     const input = $('#chatIn'), text = (input.value || '').trim();
     if (!text) return;
     input.value = '';
+    Chat.toEnd = true;
     dispatch({ type: 'chat', text });
     input.focus();
   },
