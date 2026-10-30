@@ -992,6 +992,35 @@ body.fx-shake #app{animation:fxShake .6s}
 @keyframes fxAch{0%{transform:translateX(-50%) scale(.3) rotate(-8deg);opacity:0}12%{transform:translateX(-50%) scale(1.08) rotate(2deg);opacity:1}20%{transform:translateX(-50%) scale(1) rotate(0)}85%{opacity:1;transform:translateX(-50%) scale(1)}100%{opacity:0;transform:translateX(-50%) scale(.9) translateY(-20px)}}
 .fx-roulette{position:fixed;inset:0;display:grid;place-items:center;background:rgba(5,5,10,.55);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);animation:screenIn .2s ease;transition:opacity .4s}
 .fx-roulette.out{opacity:0}
+.go-veil.is-intro{z-index:46;padding:16px;overflow:auto}
+.go-card{display:grid;gap:12px;width:min(480px,100%);padding:20px;border-radius:24px;background:var(--surface-solid);border:1px solid color-mix(in srgb,var(--gc) 55%,transparent);box-shadow:0 30px 80px -20px color-mix(in srgb,var(--gc) 70%,transparent);animation:rpIn .45s cubic-bezier(.2,.9,.3,1.2) both}
+.go-head{display:flex;align-items:center;gap:12px}
+.go-head .go-ic{display:grid;place-items:center;width:52px;height:52px;flex:none;border-radius:16px;background:var(--gc);color:#fff;font-size:1.6rem}
+.go-head .go-ic svg{width:28px;height:28px}
+.go-head .go-name{display:block;margin:0;font-size:1.35rem;line-height:1.1}
+.go-head small{color:var(--muted)}
+.go-steps{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.go-steps li{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:14px;background:color-mix(in srgb,var(--gc) 12%,transparent);animation:rpIn .45s both;animation-delay:calc(.15s + var(--i) * .12s)}
+.go-steps li > span{flex:none;font-size:1.5rem;line-height:1}
+.go-steps p{margin:0;font-size:.95rem;line-height:1.3}
+.go-foot{display:grid;justify-items:center;gap:10px;text-align:center}
+.go-foot .hint{margin:0}
+.go-ok{min-width:200px}
+.go-ready{display:flex;flex-wrap:wrap;justify-content:center;gap:4px}
+.go-ready span{opacity:.35;filter:grayscale(1);transition:opacity .3s,filter .3s,transform .3s}
+.go-ready span.on{opacity:1;filter:none;transform:scale(1.08)}
+.go-bar{width:100%;height:4px;border-radius:4px;background:rgba(255,255,255,.1);overflow:hidden}
+.go-bar i{display:block;height:100%;background:var(--gc);transform-origin:left;animation:goBar linear forwards}
+@keyframes goBar{from{transform:scaleX(1)}to{transform:scaleX(0)}}
+.how-btn{display:inline-flex;align-items:center;gap:6px;margin-left:auto;padding:6px 12px;border:1px solid var(--line);border-radius:999px;background:var(--surface-solid);color:inherit;font-size:.8rem;font-weight:700;cursor:pointer;flex:none}
+.how-btn .ic{width:16px;height:16px}
+.how-btn:hover{border-color:var(--game,#6366F1)}
+@media (max-width:520px){.how-btn span{display:none}.how-btn{padding:7px}}
+.how-card{display:grid;gap:12px;text-align:left}
+.how-card .go-head{justify-content:flex-start;text-align:left}
+.how-card .go-steps p,.go-card .go-steps p{text-align:left}
+.how-more summary{cursor:pointer;color:var(--muted);font-size:.85rem}
+.how-more p{margin:8px 0 0;font-size:.88rem;color:var(--muted)}
 .rp-veil{position:fixed;inset:0;z-index:45;display:grid;place-items:center;padding:52px 16px 24px;background:radial-gradient(circle at 50% 42%,color-mix(in srgb,var(--c,#6366F1) 42%,transparent),rgba(5,5,10,.93) 66%);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);animation:screenIn .25s ease;transition:opacity .3s;overflow:hidden}
 .rp-veil.out{opacity:0}
 .rp-bars{position:absolute;top:16px;left:16px;right:64px;display:flex;gap:5px;z-index:2}
@@ -2480,12 +2509,33 @@ function engineStart(s, gameId, rounds) {
   // Alguns jogos longos (como o Lobisomem) limitam o número de rodadas.
   s.game = { id: gameId, round: 0, total: Games[gameId].rounds ? Math.min(Games[gameId].rounds, rounds) : rounds, phase: null, phaseStart: 0, deadline: null, dur: 0, data: {}, earned: {}, roundDelta: {}, used: [], roster: [] };
   engineNextRound(s);
-  // Contagem antes do jogo: o relógio da primeira etapa só começa depois do "VAI!".
-  const cd = cfg(s, 'countdown');
-  if (cd && s.game.phase !== 'final') { s.game.cd = now() + cd * 1000; s.game.cdLen = cd; shiftTimers(s.game, cd * 1000); }
+  // Antes do jogo: tela de regras (espera quem nunca jogou neste aparelho tocar "Entendi", até 15 s)
+  // e depois a contagem. O relógio da primeira etapa só começa depois do "VAI!".
+  const cd = cfg(s, 'countdown'), need = introNeed(s, s.game).length;
+  if (s.game.phase !== 'final' && (cd || need)) {
+    const wait = need ? INTRO_MAX : 0;
+    if (need) s.game.intro = { until: now() + wait, ready: {} };
+    s.game.cd = now() + wait + cd * 1000; s.game.cdLen = cd;
+    shiftTimers(s.game, wait + cd * 1000);
+  }
   botsGreet(s);
 }
 const counting = g => !!(g?.cd && now() < g.cd);
+const INTRO_MAX = 15000;
+// Quem precisa ler as regras: as pessoas da rodada (bots, plateia e telão não seguram o jogo).
+const introNeed = (s, g) => (g?.roster || []).filter(id => { const p = s.players[id]; return p && !p.isBot && (p.connected || id === s.hostId); });
+function introEnd(g) {
+  const it = g.intro, rem = Math.max(0, it.until - now());
+  it.done = true; it.until = now();
+  if (rem) { shiftTimers(g, -rem); g.cd -= rem; }
+}
+function introReady(s, pid) {
+  const g = s.game, it = g?.intro;
+  if (!it || it.done || !inRoster(g, pid) || it.ready[pid]) return false;
+  it.ready[pid] = 1;
+  if (introNeed(s, g).every(id => it.ready[id])) introEnd(g);
+  return true;
+}
 function engineNextRound(s) {
   const g = s.game;
   g.round++; g.roundDelta = {};
@@ -7681,6 +7731,8 @@ function hostHandle(from, a) {
     }
   } else if (a.type === 'warm') {
     if (s.screen === 'lobby') { (s.warm = s.warm || {})[from] = (s.warm[from] || 0) + clamp(a.n | 0, 0, 25); changed = true; }
+  } else if (a.type === 'gready') {
+    changed = introReady(s, from) || changed;
   } else if (a.type === 'joker') {
     changed = useJoker(s, from) || changed;
   } else if (a.type === 'kudos') {
@@ -7731,7 +7783,7 @@ function hostCommand(s, a) {
     case 'host:next':
       if (!s.game || s.game.phase === 'final') return false;
       // Durante a contagem, "Pular" só pula a contagem.
-      if (counting(s.game)) { shiftTimers(s.game, now() - s.game.cd); delete s.game.cd; return true; }
+      if (counting(s.game)) { shiftTimers(s.game, now() - s.game.cd); delete s.game.cd; if (s.game.intro) s.game.intro.done = true; return true; }
       engineAdvance(s);
       return true;
     case 'host:lobby':
@@ -7965,6 +8017,7 @@ function hostTick() {
     if (!g.autoAt) { g.autoAt = now() + 9000; changed = true; }
     else if (now() >= g.autoAt) { autoNext(s); changed = true; }
   }
+  if (g?.intro && !g.intro.done && (now() >= g.intro.until || introNeed(s, g).every(id => g.intro.ready[id]))) { introEnd(g); changed = true; }
   if (g && g.phase && g.phase !== 'final' && !g.paused && !counting(g)) {
     const mod = Games[g.id], ph = mod.phases[g.phase];
     if (ph.bot) {
@@ -8270,9 +8323,9 @@ function measureStage() {
 function eventRoulette(g) {
   const key = `${g.id}:${g.round}:${g.phaseStart}`;
   if (Store.local.evShown === key || now() - g.phaseStart > 3500) return;
-  if (counting(g)) {
+  if (counting(g) || $('.go-veil')) {
     clearTimeout(Store.local.evWait);
-    Store.local.evWait = setTimeout(() => { const r = Store.room; if (r?.game?.ev && r.screen === 'game') eventRoulette(r.game); }, clamp(g.cd - now(), 0, 5000) + 1000);
+    Store.local.evWait = setTimeout(() => { const r = Store.room; if (r?.game?.ev && r.screen === 'game') eventRoulette(r.game); }, 600);
     return;
   }
   Store.local.evShown = key;
@@ -8292,16 +8345,96 @@ function eventRoulette(g) {
   spin();
 }
 // Tela cheia com 3, 2, 1, VAI! (roda no aparelho; o host segura o jogo enquanto isso).
+// Passo a passo curto de cada jogo (aparece antes do jogo e no botão "Como jogar").
+const GUIDE = {
+  mane: [['🔢', 'Chute um número para a pergunta.'], ['🤡', 'Antes da resposta, vote em quem chutou mais longe: o Mané.'], ['🏆', 'Mais perto vale +2. Acertar o Mané vale +1.']],
+  provavel: [['🤔', 'Aparece uma situação: quem é mais provável de…'], ['🗳️', 'Vote em segredo em alguém da sala.'], ['🏆', 'O mais votado leva +2. Quem votou com a maioria, +1.']],
+  impostor: [['🤫', 'Todo mundo recebe a mesma palavra, menos o impostor.'], ['💬', 'Cada um dá uma pista de uma palavra só. O impostor tem que blefar!'], ['🗳️', 'No fim, votem em quem é o impostor.']],
+  geo: [['🖼️', 'Aparece a imagem de um lugar.'], ['👆', 'Escolha uma das 4 opções antes do tempo acabar.'], ['🏆', 'Acertar vale +2, e o mais rápido ganha +1.']],
+  stop: [['🔤', 'Sai uma letra e 3 categorias.'], ['✍️', 'Escreva uma palavra com essa letra para cada categoria.'], ['✋', 'Completou? Aperte Stop e trava todo mundo. Resposta única vale 2.']],
+  fato: [['🧐', 'Aparece uma afirmação bizarra.'], ['✅', 'Diga se é Fato ou Fake. Quanto mais rápido, mais vale (x3, x2, x1).'], ['🎲', 'Tem certeza? Aposte x2 ou x3, mas errar com aposta tira pontos.']],
+  desenho: [['✏️', 'Um jogador desenha a palavra secreta.'], ['⌨️', 'O resto digita os chutes. Quem acerta primeiro ganha mais.'], ['🎨', 'Quem desenha ganha 1 ponto por acerto.']],
+  termo: [['🔠', 'Descubra a palavra de 5 letras em até 6 chutes.'], ['🟩', 'Verde: letra no lugar certo. Amarelo: existe, mas em outro lugar.'], ['🏆', 'Menos chutes valem mais. O primeiro a resolver ganha bônus.']],
+  reflexo: [['⏳', 'Espere a tela ficar azul.'], ['👆', 'Aí toque o mais rápido que puder.'], ['🔥', 'Tocou antes? Queimou a largada. Os 3 mais rápidos pontuam.']],
+  emoji: [['🧩', 'Os emojis escondem um filme ou expressão.'], ['⌨️', 'Digite o que você acha que é.'], ['💡', 'No meio do tempo aparece uma dica. O primeiro a acertar ganha 3.']],
+  mente: [['💭', 'Aparece um tema.'], ['✍️', 'Escreva uma resposta em segredo, tentando pensar igual à maioria.'], ['🤝', 'Cada pessoa que escreveu o mesmo que você vale 1 ponto.']],
+  bomba: [['💣', 'Quem está com a bomba digita uma palavra com a sílaba da vez.'], ['➡️', 'Palavra certa passa a bomba para o próximo.'], ['💥', 'Ninguém sabe quando explode! Quem estiver com ela fica sem ponto.']],
+  mentira: [['📜', 'Aparece um fato curioso com uma lacuna.'], ['🤥', 'Invente uma resposta falsa que pareça verdade.'], ['🔍', 'Depois ache a verdadeira (+2). Cada um que cair na sua mentira te dá +1.']],
+  legenda: [['🖼️', 'Aparece uma cena maluca.'], ['✍️', 'Escreva a legenda mais engraçada que conseguir.'], ['🗳️', 'A galera vota na melhor. Cada voto vale +1.']],
+  preco: [['🏷️', 'Aparece um produto.'], ['💰', 'Chute quanto custou, sem passar do valor.'], ['🏆', 'O mais perto leva +3. Acertar em cheio dá bônus.']],
+  linha: [['🔀', 'Cinco acontecimentos aparecem embaralhados.'], ['↕️', 'Coloque do mais antigo para o mais recente e envie.'], ['🏆', 'Cada um no lugar certo vale +1. Linha perfeita dá +2.']],
+  digita: [['⌨️', 'Todo mundo digita a mesma frase ao mesmo tempo.'], ['🔡', 'Acentos e maiúsculas não contam.'], ['🏁', 'O primeiro a terminar ganha +3.']],
+  proibida: [['🤐', 'Um jogador recebe uma palavra e 4 palavras proibidas.'], ['💬', 'Ele escreve dicas sem usar nenhuma delas.'], ['⌨️', 'O resto chuta. Quem acerta primeiro ganha mais.']],
+  telefone: [['✍️', 'Cada um escreve uma frase.'], ['🔁', 'Ela passa adiante: um desenha, o próximo adivinha pelo desenho, e assim vai.'], ['📖', 'No fim, o álbum mostra tudo. Vote no desenho favorito.']],
+  mapa: [['📍', 'Aparece um lugar famoso.'], ['🗺️', 'Toque no mapa onde ele fica (dá para dar zoom) e confirme.'], ['🏆', 'Até 300 km vale +5. Quanto mais longe, menos pontos.']],
+  lobisomem: [['🎭', 'Cada um recebe um papel secreto: lobisomem, vidente, médico ou aldeão.'], ['🌙', 'À noite, o lobo ataca, a vidente investiga e o médico protege.'], ['☀️', 'De dia, conversem no chat e votem para eliminar alguém.']],
+  quemdisse: [['✍️', 'Responda uma pergunta sobre você, em segredo.'], ['🕵️', 'Depois, adivinhe quem escreveu cada resposta.'], ['🏆', 'Acertar vale +1. Cada um que errar a sua te dá +1.']],
+  mimica: [['🎬', 'Um jogador escolhe um filme ou expressão.'], ['😀', 'Ele conta só com emojis, um por um.'], ['⌨️', 'O resto chuta. Quem acerta primeiro ganha mais.']],
+  leilao: [['🪙', 'Cada um começa com algumas moedas.'], ['📦', 'Vai a leilão um lote fechado, com uma dica do valor. O lance é secreto.'], ['⚠️', 'Quem dá o maior lance leva: pode valer pontos… ou ser um mico!']],
+  detalhe: [['👀', 'Duas cenas quase iguais.'], ['👆', 'Toque nas 5 diferenças, em qualquer uma das cenas.'], ['⚠️', 'Errou o lugar? O dedo trava por 1 segundo.']],
+  ritmo: [['🥁', 'Uma batida acende e toca no ritmo.'], ['👆', 'Toque no círculo bem no tempo de cada batida.'], ['🤫', 'Não toque nas pausas! Quanto mais certeiro, mais pontos.']],
+  vod: [['🎲', 'Na sua vez, escolha verdade ou desafio.'], ['🗣️', 'Responda ou cumpra em voz alta (ao vivo ou na chamada).'], ['🗳️', 'A galera vota se valeu: verdade +2, desafio +3.']],
+  quiz: [['❓', 'Uma pergunta com 4 alternativas.'], ['⚡', 'Quanto mais rápido acertar, mais vale (x3, x2, x1).'], ['😌', 'Errar não tira pontos.']],
+  mesa: [['🃏', 'Jogue uma carta da mesma cor ou do mesmo número da carta do meio.'], ['📥', 'Não tem? Compre no monte. Quem esvaziar a mão primeiro ganha.'], ['🍅', 'Especiais: Tomatada (+2), Redemoinho 🌀, Camaleão 🎨, Pula e Inverte.'], ['🔔', 'Alguém ficou com 1 carta? Toque na campainha primeiro: +1.']],
+  quemsou: [['❓', 'Uma pessoa fica na berlinda e não vê quem ela é. Todo mundo vê!'], ['💬', 'Ela faz perguntas de sim ou não, e a galera responde nos botões.'], ['🎯', 'Ela tem 3 chutes. Quem responde também ganha +1.']],
+  memoria: [['🃏', 'Um tabuleiro de cartas viradas, igual para todos.'], ['👆', 'Na sua vez, vire 2. Par igual é seu e você joga de novo.'], ['👀', 'Olhe as jogadas dos outros! O par da ⭐ vale +3.']],
+  cegas: [['🙈', 'Todo mundo desenha a mesma palavra, mas a tela fica tampada.'], ['✏️', 'Desenhe confiando na memória e aperte Pronto.'], ['❤️', 'Depois, vote no desenho mais parecido. Cada voto vale +1.']],
+};
+// Jogo sem passo a passo escrito: usa as frases da descrição.
+const guideOf = id => GUIDE[id] || String(Games[id]?.how || '').split(/(?<=[.!?])\s+/).filter(Boolean).slice(0, 4).map((x, i) => [['1️⃣', '2️⃣', '3️⃣', '4️⃣'][i], x]);
+const guideHTML = id => `<ol class="go-steps">${guideOf(id).map(([e, x], i) => `<li style="--i:${i}"><span aria-hidden="true">${e}</span><p>${esc(x)}</p></li>`).join('')}</ol>`;
+// Jogos que este aparelho já conhece (já leu as regras ou já jogou).
+const HowSeen = {
+  key: 'playbox:howSeen',
+  list() { try { return JSON.parse(localStorage.getItem(this.key)) || []; } catch { return []; } },
+  has(id) { return this.list().includes(id) || (MyStats.get().games || {})[id] > 0; },
+  add(id) { const l = this.list(); if (l.includes(id)) return; l.push(id); try { localStorage.setItem(this.key, JSON.stringify(l)); } catch {} },
+};
+// Antes de cada jogo: regras rápidas e depois 3, 2, 1, VAI! Quem já conhece o jogo
+// confirma sozinho, então a tela de regras só segura o jogo quando tem alguém novo.
+const GoRT = { el: null, key: null, mode: null };
+function goClose() {
+  const el = GoRT.el;
+  GoRT.el = null; GoRT.mode = null;
+  if (el) { el.classList.add('out'); setTimeout(() => el.remove(), 350); }
+}
 function goCount(s) {
   const g = s?.screen === 'game' ? s.game : null;
-  if (!g?.cd) { $$('.go-veil').forEach(e => e.remove()); return; }
-  const key = g.id + ':' + g.cd;
-  if (Store.local.goShown === key) return;
-  Store.local.goShown = key;
+  if (!g?.cd) { if (GoRT.el) goClose(); GoRT.key = null; return; }
+  const key = g.id + ':' + g.pkey, mod = Games[g.id], me = Store.me?.id, plays = inRoster(g, me);
+  if (GoRT.key !== key) {
+    GoRT.key = key;
+    if (GoRT.el) { GoRT.el.remove(); GoRT.el = null; }
+    if (g.intro && !g.intro.done) {
+      const el = GoRT.el = document.createElement('div');
+      GoRT.mode = 'intro';
+      el.className = 'go-veil is-intro'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Como jogar ' + mod.name);
+      el.style.setProperty('--gc', mod.color || '#6366F1');
+      const known = HowSeen.has(g.id);
+      el.innerHTML = `<div class="go-card"><div class="go-head"><span class="go-ic" aria-hidden="true">${gameIcon(mod)}</span><div><b class="go-name">${esc(mod.name)}</b><small>${esc(mod.tag || '')}</small></div></div>
+        ${guideHTML(g.id)}<div class="go-foot">${plays ? `<button type="button" class="btn primary pill go-ok" data-act="introOk" ${known ? 'disabled' : ''}>${known ? 'Você já conhece · esperando a galera' : 'Entendi!'}</button>`
+          : `<p class="hint">${myRole() === 'tv' ? 'Leiam as regras! O jogo começa quando todo mundo tocar em Entendi.' : 'O jogo começa quando a galera tocar em Entendi.'}</p>`}
+        <div class="go-ready" aria-label="Quem já está pronto"></div><div class="go-bar"><i style="animation-duration:${clamp(g.intro.until - now(), 1000, INTRO_MAX)}ms"></i></div></div></div>`;
+      document.body.appendChild(el);
+      Sound.play('phase');
+      if (plays && known) setTimeout(() => dispatch({ type: 'gready' }), 0);
+    } else GoRT.mode = null;
+  }
+  if (GoRT.mode === 'intro' && GoRT.el) {
+    if (!g.intro || g.intro.done) { GoRT.el.remove(); GoRT.el = null; GoRT.mode = null; }
+    else {
+      const box = GoRT.el.querySelector('.go-ready'), need = introNeed(s, g);
+      const html = need.map(id => `<span class="${g.intro.ready[id] ? 'on' : ''}" title="${esc(nameOf(s, id))}">${avatar(s.players[id], 'sm')}</span>`).join('');
+      if (box && box.__html !== html) { box.innerHTML = html; box.__html = html; }
+      return;
+    }
+  }
+  if (GoRT.mode === 'count' || GoRT.mode === 'done') return;
+  GoRT.mode = 'done';
   const left = clamp(g.cd - now(), 0, (g.cdLen || 3) * 1000);
   if (left < 400) return;
-  $$('.go-veil').forEach(e => e.remove());
-  const el = document.createElement('div'), mod = Games[g.id];
+  GoRT.mode = 'count';
+  const el = GoRT.el = document.createElement('div');
   el.className = 'go-veil'; el.setAttribute('role', 'status'); el.setAttribute('aria-live', 'assertive');
   el.style.setProperty('--gc', mod.color || '#6366F1');
   el.innerHTML = `<div class="go-box"><span class="go-ic" aria-hidden="true">${gameIcon(mod)}</span><b class="go-name">${esc(mod.name)}</b><b class="go-n"></b><span class="go-sub">Prepare-se!</span></div>`;
@@ -8318,13 +8451,23 @@ function goCount(s) {
     n.textContent = 'VAI!'; n.classList.remove('pop'); void n.offsetWidth; n.classList.add('pop', 'go');
     el.querySelector('.go-sub').textContent = '';
     Sound.play('start'); buzz([60, 40, 120]);
-    setTimeout(() => { el.classList.add('out'); setTimeout(() => el.remove(), 350); }, 700);
+    setTimeout(() => { if (GoRT.el === el) GoRT.el = null; el.classList.add('out'); setTimeout(() => el.remove(), 350); }, 700);
   };
   step();
+}
+// "Como jogar" a qualquer momento (não pausa o jogo).
+function howOpen(id) {
+  const mod = Games[id];
+  if (!mod) return;
+  $('#modalRoot').innerHTML = `<div class="modal" data-act="closeModal"><div class="modal-card how-card" role="dialog" aria-modal="true" aria-labelledby="howTitle" data-keep-open style="--gc:${mod.color}">
+    <div class="go-head"><span class="go-ic" aria-hidden="true">${gameIcon(mod)}</span><div><h2 id="howTitle" class="go-name">${esc(mod.name)}</h2><small>${esc(mod.tag || '')}</small></div></div>
+    ${guideHTML(id)}<details class="how-more"><summary>Regras completas</summary><p>${esc(mod.how)}</p></details>
+    <button type="button" class="btn primary pill" data-act="closeModal">Entendi</button></div></div>`;
 }
 function afterRender(s) {
   measureStage();
   goCount(s);
+  { const g = s?.game, me = Store.me?.id; if (g && s.screen === 'game' && g.phase === 'reveal' && inRoster(g, me) && Store.local.howMarked !== g.id) { Store.local.howMarked = g.id; HowSeen.add(g.id); } }
   { const g = s?.game; if (g && g.ev && s.screen === 'game' && g.phase && g.phase !== 'final' && (g.phase === Games[g.id].first || Games[g.id].phases[g.phase]?.betting)) eventRoulette(g); }
   syncPinSlots();
   $$('canvas[data-tel]:not([data-painted])').forEach(cv => { cv.dataset.painted = '1'; try { padPaint(cv, JSON.parse(cv.dataset.tel) || []); } catch {} });
@@ -8640,9 +8783,8 @@ function viewGame(s) {
     ${watcher && role !== 'tv' ? `<p class="watch-pill">${icon('eye')}${host ? 'Você está só apresentando' : 'Você está na plateia'}</p>` : ''}
     <div class="stage">
       <header class="stage-head"><span class="sh-icon">${gameIcon(mod)}</span>
-        <div><h1 class="sh-name">${mod.name}</h1><p class="sh-sub">${ph.label}</p></div></header>
+        <div><h1 class="sh-name">${mod.name}</h1><p class="sh-sub">${ph.label}</p></div>${role === 'tv' ? '' : `<button type="button" class="how-btn" data-act="howOpen" aria-label="Como jogar ${mod.name}">${icon('question')}<span>Como jogar</span></button>`}</header>
       ${stagePills(firstStep && g.surprise ? `<p class="surprise-pill">${icon('shuffle')}Jogo surpresa!</p>` : '', firstStep && g.voted ? `<p class="surprise-pill">${icon('vote')}A galera escolheu!</p>` : '', eventPillsHTML(g), jokerHTML(s, g, me))}
-      ${firstStep ? `<p class="sh-how" tabindex="0" title="Toque para ler tudo">${esc(mod.how)}</p>` : ''}
       <div class="stage-body">${body}</div>
       ${modeRevealHTML(s, g)}
       ${cryHTML(s, g)}
@@ -9967,6 +10109,8 @@ const Actions = {
   narr() { Narrator.toggle(); render(); },
   vib() { try { localStorage.setItem('playbox:vib', vibOn() ? 'off' : 'on'); } catch {} buzz(60); render(); },
   replay() { if (Store.room) Replay.open(Store.room); },
+  introOk(el) { const g = Store.room?.game; if (!g) return; HowSeen.add(g.id); el.disabled = true; el.textContent = 'Pronto! Esperando a galera…'; buzz(30); dispatch({ type: 'gready' }); },
+  howOpen() { const g = Store.room?.game; if (g) howOpen(g.id); },
   rpNext() { Replay.go(Replay.i + 1); },
   rpPrev() { Replay.go(Replay.i - 1); },
   rpClose() { Replay.close(); },
